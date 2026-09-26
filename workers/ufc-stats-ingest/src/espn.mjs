@@ -11,6 +11,7 @@
  * Every accessor validates the shape it needs and throws SchemaAssertionError
  * otherwise — never returns a half-parsed bout.
  */
+import { associationOf } from './training.mjs';
 import { SchemaAssertionError } from './ufcstats.mjs';
 import ENUMS from './shared/enums.json' with { type: 'json' };
 import { pickOverallRecord, parseEspnRecordItem } from './fighterRecord.mjs';
@@ -319,8 +320,9 @@ export class Espn {
     };
   }
 
-  /* Athlete identity + physicals. */
-  async athlete(refOrId) {
+  /* Athlete identity + physicals (+ current camp, migration 032). `records: false`
+   * skips the career-record sub-document for callers that only need the athlete. */
+  async athlete(refOrId, { records = true } = {}) {
     const url = String(refOrId).startsWith('http') ? refOrId : `${CORE}/athletes/${refOrId}?lang=en&region=us`;
     const a = await this.json(url);
     if (!a?.id || !a?.fullName) throw new SchemaAssertionError(url, 'athlete id/fullName missing');
@@ -329,7 +331,7 @@ export class Espn {
      * no contests, or { error } — see fighterRecord.mjs for the verified shape. */
     let record = null;
     let recordDetail = { error: 'athlete has no records $ref' };
-    if (a.records?.$ref) {
+    if (records && a.records?.$ref) {
       try {
         const r = await this.json(a.records.$ref);
         const overall = pickOverallRecord(r);
@@ -353,6 +355,9 @@ export class Espn {
       active: a.active === true,
       record,
       record_detail: recordDetail,
+      /* Current camp: association id + name ONLY (owner decision 2026-09-26).
+       * association.location is the fighter's country, never the gym's. */
+      association: associationOf(a),
       source_url: url,
     };
   }

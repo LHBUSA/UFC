@@ -128,6 +128,16 @@ export async function patchCount(env, table, filter, values) {
   return Array.isArray(r) ? r.length : 0;
 }
 
+/* POST rpc/<fn>. The functions called this way are idempotent per call
+ * (ufc_training_record_association re-stamps an unchanged observation). */
+export function rpc(env, fn, args) {
+  return request(env, `rpc/${fn}`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(args || {}),
+  });
+}
+
 export function patch(env, table, filter, values) {
   return request(env, `${table}?${filter}`, {
     method: 'PATCH',

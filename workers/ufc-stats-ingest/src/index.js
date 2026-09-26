@@ -47,6 +47,7 @@
  */
 
 import { selectAll, select, insert, insertIgnore, upsert, patch, patchCount, count } from './supabase.mjs';
+import { captureAssociation, newTrainingNotes, activeRoster, planCampSweep, CAMP_SWEEP } from './training.mjs';
 import { discord } from './discord.mjs';
 import { cardWatchDue, cardWatchDates, cardContradictions, contradictionAlertDecision, CARD_WATCH } from './cardWatch.mjs';
 import { Fetcher, SchemaAssertionError, AccessGateError } from './ufcstats.mjs';
@@ -125,7 +126,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.9.4';
+const VERSION = 'v0.9.5';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -156,6 +157,10 @@ const STATE = {
   /* Last record-refresh outcome per fighter: pending_source retries, mismatches
    * awaiting a human, and when a verified record was last re-read. */
   recordRefresh: 'ufc-raw/_state/record_refresh.json',
+  /* Camp sweep: when each roster fighter's athlete document was last read for
+   * the current-camp capture (absent associations included, so they do not
+   * re-queue every day). */
+  campSweep: 'ufc-raw/_state/camp_sweep.json',
 };
 async function getState(env, key) {
   if (!env.RAW) return null;
@@ -201,6 +206,7 @@ export const espnLanes = { writeFightTotals, reconcileScorecard, fightTotalsInco
 
 /* Fighter record refresh, exposed for the offline tests. */
 export const recordRefresh = { refreshEspnFighterProfile, refreshFighterRecords, recordWindow, noteRecordTrigger, STATE_KEY: STATE.recordRefresh };
+export const campCapture = { campSweep, STATE_KEY: STATE.campSweep, CAMP_SWEEP };
 
 /* Road to UFC lane, exposed for the offline tests. */
 export const roadToUfc = { roadToUfcPass, linkRoadToUfcEvent, espnBouts };
@@ -468,6 +474,10 @@ async function runIngest(env, { invoked = 'cron', cron = null, skipEspn = false,
      * a bounded reconcile of recent cards so a late ESPN update self-heals.
      * Never fatal; a stale record is a staleness, not a reason to lose the run. */
     if (!skipEspn) run.notes.record_refresh = await refreshFighterRecords(env, espn, ctx, run, { mode });
+    /* Current camp (migration 032): the daily lane tops up roster fighters whose
+     * athlete document the pass did not already read. Never fatal. */
+    if (!skipEspn && mode === 'daily') run.notes.camp_sweep = await campSweep(env, espn, ctx);
+    if (!skipEspn) run.notes.training_capture = ctx.training;
     /* The round-stat pass being off is a silent, months-long outage: ESPN
      * keeps writing events and results, so every dashboard looks healthy
      * while no round data lands at all. The flag state is therefore recorded
@@ -617,6 +627,8 @@ async function loadContext(env) {
     recordRefresh: new Map(),
     /* fighter ids whose ESPN athlete document was already read this run. */
     espnAthletesFetched: new Set(),
+    /* current-camp capture counts for this run (src/training.mjs). */
+    training: newTrainingNotes(),
     reviewQueued: 0,
     reviewDeduplicated: 0,
   };
@@ -868,6 +880,7 @@ async function ensureEspnFighter(env, espn, ctx, run, f, weightClass, eventId = 
   }
   registerFighter(ctx, row);
   ctx.espnAthletesFetched?.add(row.id);
+  await captureAssociation(env, ctx.training, row, a);
   await upsert(env, 'ufc_fighter_aliases', [
     ...aliasRowsForFighter(row.id, a.name, a.nickname).map((r) => ({ ...r, source: r.source === 'ufcstats' ? 'espn' : 'espn_nickname' })),
     ...(a.display_name && normalize(a.display_name) !== normalize(a.name) ? [{ fighter_id: row.id, alias: a.display_name, source: 'espn', normalized: normalize(a.display_name) }] : []),
@@ -1102,6 +1115,7 @@ async function refreshEspnFighterProfile(env, espn, ctx, fighter, { expected = [
   if (String(a?.espn_athlete_id) !== String(fighter.espn_athlete_id)) {
     return { ...base, action: 'mismatch', reason: `identity: asked for athlete ${fighter.espn_athlete_id}, ESPN answered ${a?.espn_athlete_id}` };
   }
+  await captureAssociation(env, ctx?.training, fighter, a);
   const d = decideRecordRefresh({ stored: fighter, source: a.record_detail, expected, staleProof });
   const out = { ...base, source: a.record_detail && !a.record_detail.error ? fmtRecord(a.record_detail) : null, nc_source: a.record_detail?.nc_source ?? null,
     action: d.action, reason: d.reason, expected: expected.map((x) => x.outcome ?? '?').join(',') };
@@ -1114,6 +1128,55 @@ async function refreshEspnFighterProfile(env, espn, ctx, fighter, { expected = [
   if (n !== 1) return { ...out, action: 'write_skipped', reason: `identity-guarded PATCH matched ${n} rows` };
   Object.assign(fighter, changes);
   return { ...out, to: fmtRecord(storedRecord(fighter)), changes };
+}
+
+/**
+ * Current-camp top-up (daily lane). The active roster (UFC bout in the last 18
+ * months, or booked) is read from the context already loaded; fighters whose
+ * athlete document this run already read are skipped because their capture
+ * already ran. Booked fighters go first so a fight-week card carries a fresh
+ * camp. Reads only the athlete document (no records sub-request). Bounded by
+ * CAMP_SWEEP.max. Never throws.
+ */
+async function campSweep(env, espn, ctx, { now = Date.now() } = {}) {
+  const out = { roster: 0, due: 0, planned: 0, read: 0, source_unavailable: 0, error: null };
+  try {
+    const today = new Date(now).toISOString().slice(0, 10);
+    const roster = activeRoster({ bouts: ctx.bouts, events: ctx.events, resultsByBout: ctx.resultsByBout, today });
+    out.roster = roster.size;
+    const state = (await getState(env, STATE.campSweep)) || {};
+    const reads = { ...(state.fighters || {}) };
+    const lastRead = new Map(Object.entries(reads));
+    /* OBSERVED affiliation rows are written only by this capture. */
+    const stamps = await selectAll(env, 'ufc_training_observations', 'select=fighter_id,last_confirmed_at&fact=eq.AFFILIATION&certainty=eq.OBSERVED');
+    for (const r of stamps || []) {
+      const cur = lastRead.get(r.fighter_id);
+      if (!cur || r.last_confirmed_at > cur) lastRead.set(r.fighter_id, r.last_confirmed_at);
+    }
+    const plan = planCampSweep({ roster, fighters: ctx.fightersById, lastConfirmed: lastRead, fetched: ctx.espnAthletesFetched, now, today });
+    out.due = plan.due; out.planned = plan.ids.length;
+    for (const fid of plan.ids) {
+      const f = ctx.fightersById.get(fid);
+      let a;
+      try {
+        a = await espn.athlete(String(f.espn_athlete_id), { records: false });
+      } catch (_) {
+        out.source_unavailable += 1;
+        continue;
+      }
+      ctx.espnAthletesFetched.add(fid);
+      await captureAssociation(env, ctx.training, f, a);
+      reads[fid] = nowIso();
+      out.read += 1;
+    }
+    /* Keep the state to the current roster so it cannot grow without bound. */
+    const kept = Object.fromEntries(Object.entries(reads).filter(([fid]) => roster.has(fid)));
+    if (out.read) await putState(env, STATE.campSweep, { updated_at: nowIso(), fighters: kept });
+  } catch (e) {
+    out.error = String(e?.message || e).slice(0, 200);
+    console.error(`[${SERVICE}] camp sweep failed: ${out.error}`);
+  }
+  return out;
 }
 
 /**

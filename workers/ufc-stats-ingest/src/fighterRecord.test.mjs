@@ -120,6 +120,7 @@ test('plan: bounded, deduplicated, triggered first, recently verified records sk
 function makeDb(seed) {
   const T = Object.fromEntries(Object.entries(seed).map(([k, v]) => [k, v.map((r) => ({ ...r }))]));
   const writes = [];
+  const rpcCalls = [];
   let seq = 0;
   const matcher = (params) => {
     const f = [...params].filter(([k]) => !['select', 'order', 'limit', 'on_conflict', 'offset'].includes(k));
@@ -145,6 +146,12 @@ function makeDb(seed) {
       if (h.range) { const [a, b] = h.range.split('-').map(Number); out = out.slice(a, b + 1); }
       return new Response(JSON.stringify(out), { status: 200 });
     }
+    /* Current-camp capture (migration 032) is an RPC, not a table write: recorded
+     * apart from `writes` so the record-column assertions below stay exact. */
+    if (table.startsWith('rpc/')) {
+      rpcCalls.push({ fn: table.slice(4), args: JSON.parse(init.body) });
+      return new Response(JSON.stringify({ action: 'absent' }), { status: 200 });
+    }
     writes.push({ method, table, query: u.search, body: init.body ? JSON.parse(init.body) : null });
     if (method === 'POST') {
       const conflict = (u.searchParams.get('on_conflict') || 'id').split(',');
@@ -165,7 +172,7 @@ function makeDb(seed) {
     }
     throw new Error(`mock: ${method}`);
   };
-  return { T, writes, handle };
+  return { T, writes, rpcCalls, handle };
 }
 
 const CORE = 'https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc';
@@ -262,6 +269,14 @@ test('daily reconcile: updates stale records, pending_source and mismatch write 
     assert.ok(Object.keys(p.body).every((k) => ['record_w', 'record_l', 'record_d', 'record_nc', 'updated_at'].includes(k)), `record fields only: ${Object.keys(p.body)}`);
   }
   assert.equal(run.fighters_touched, 2);
+  /* Current camp (migration 032): every athlete document read is captured once,
+   * keyed on the fighter's STORED ESPN id; the capture never writes ufc_fighters. */
+  assert.equal(db.rpcCalls.length, s.planned, 'one camp capture per athlete read');
+  for (const c of db.rpcCalls) {
+    assert.equal(c.fn, 'ufc_training_record_association');
+    assert.equal(c.args.p_espn_athlete_id, by(c.args.p_fighter_id).espn_athlete_id);
+  }
+  assert.equal(ctx.training.absent, s.planned, 'fixtures carry no association: nothing is claimed');
   assert.ok(s.mismatches.some((m) => /decreased/.test(m.reason)) && s.mismatches.some((m) => /added 2 fight/.test(m.reason)), JSON.stringify(s.mismatches));
   const state = JSON.parse(r2.get(recordRefresh.STATE_KEY));
   assert.equal(state.fighters.p1.outcome, 'pending_source', 'pending retry recorded');
