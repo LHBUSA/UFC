@@ -62,3 +62,12 @@ To represent a dated claim without a stated effective date, STATED rows could so
 
 ## Resume
 The web-search budget was still exhausted in the same session (200/200), so no new research happened. The next session starts from `ENRICHMENT_RESUME_QUEUE.md`, in priority order, with 2-3 agents.
+
+## Reported camp moves (migration 034, 2026-09-27)
+The Bellato and Moura conflicts are now stored truthfully as **reported moves**: a STATED `reported_only` observation plus a `CAMP_MOVE_REPORTED` event with `exact_date_known = false`, no effective date and the source's publication date. They are excluded from the stint/current views, so the current camp stays the observed ESPN affiliation. The profile lists them under "Reported camp moves"; the API lists them as `reported_moves[]`.
+- Rodolfo Bellato: reported move to American Top Team (MMA Junkie, 2026-03-08). The current camp is still Team Nogueira.
+- Eduarda Moura: reported move from Galpão da Luta to "Fight House" (AG Fight, 2026-02-06). "Fight House" is kept as a raw name because Academia Fight House is not proven to be the same gym. The current camp is still Galpão da Luta.
+
+Global check: 2 fighters with reported moves, and 0 current camps overridden. CLI: `enrich.mjs reported-move --to <camp|name> [--from] --published YYYY-MM-DD --source <url>`.
+
+Research was still blocked at 2026-09-27T00:00Z because the session's WebSearch budget is 200/200. `ENRICHMENT_RESUME_QUEUE.md` is unchanged and is the starting point.
