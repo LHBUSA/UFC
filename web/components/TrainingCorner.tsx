@@ -14,7 +14,7 @@ import s from "./TrainingCorner.module.css";
 const MANUAL = "ufc_training_manual";
 
 function hasAnything(t: TrainingPayload) {
-  return Boolean(t.current_camp || t.fighting_out_of || t.training_location || t.coaches.length || t.other_camps.length || t.camp_history.length);
+  return Boolean(t.current_camp || t.fighting_out_of || t.training_location || t.coaches.length || t.other_camps.length || t.camp_history.length || t.reported_moves.length);
 }
 
 export function TrainingCorner({ training: t, fighterName }: { training: TrainingPayload; fighterName: string }) {
@@ -106,6 +106,22 @@ export function TrainingCorner({ training: t, fighterName }: { training: Trainin
               </ul>
               <p>&quot;First observed&quot; is when our capture first saw the affiliation, not a join date. &quot;Joined&quot; is shown only when a cited source states it.</p>
             </details>
+          </div>
+        )}
+
+        {/* Reported moves (migration 034): a dated source says the fighter moved, with no stated move date.
+            History only; the current camp above is always the observed affiliation. */}
+        {t.reported_moves.length > 0 && (
+          <div className={s.history} data-testid="training-reported-moves">
+            <div className="eyebrow dim">Reported camp moves</div>
+            <ul className={s.list}>
+              {t.reported_moves.map((m) => (
+                <li key={m.id}>
+                  {m.from ? `${m.from} → ${m.to}` : `Moved to ${m.to}`}
+                  <span className={s.meta}>· reported {m.reported_on ? fmtDate(m.reported_on, { month: "short", day: "numeric", year: "numeric" }) : "undated"} · move date not stated · <a href={m.source_url} rel="nofollow noopener" target="_blank">source</a></span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

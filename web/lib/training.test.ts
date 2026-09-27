@@ -85,7 +85,7 @@ test("new camp since last bout: a confirmed switch dated after the bout proves i
 
 test("payload: a fighter with nothing on file is all null / [] (no fabricated completeness)", () => {
   const p = trainingPayload({ current: null, stints: [], changes: [] });
-  assert.deepEqual(p, { current_camp: null, fighting_out_of: null, training_location: null, coaches: [], other_camps: [], camp_history: [], changes: [], new_camp_since_last_bout: null, updated_at: null, provenance: [] });
+  assert.deepEqual(p, { current_camp: null, fighting_out_of: null, training_location: null, coaches: [], other_camps: [], camp_history: [], changes: [], reported_moves: [], new_camp_since_last_bout: null, updated_at: null, provenance: [] });
 });
 
 test("payload: ESPN-only fighter shows the current camp with provenance, nothing else", () => {
@@ -134,4 +134,18 @@ test("no raw role code ever reaches customer copy; the raw role is kept", () => 
   assert.deepEqual(p.coaches.map((c) => [c.role, c.role_label, c.role_specified]), [["OTHER", "Coach", false], ["STRENGTH_CONDITIONING", "Strength & conditioning", true]]);
   const copy = JSON.stringify({ labels: p.changes.map((c) => [c.label, c.previous_value, c.new_value]), roles: p.coaches.map((c) => c.role_label) });
   assert.doesNotMatch(copy, /OTHER|STRENGTH_CONDITIONING|MUAY_THAI/);
+});
+
+test("a reported move (no stated move date) is history only: current camp, stints and new-camp chronology untouched", () => {
+  const current: CurrentRow = { fighter_id: "f", current_camp: { camp_id: "c1", name: "Team Nogueira", slug: "team-nogueira", first_observed_at: "2026-09-26T22:00:00Z", last_confirmed_at: "2026-09-27T06:00:00Z", joined_on: null, certainty: "OBSERVED", evidence: [ev({})] },
+    fighting_out_of: null, training_location: null, coaches: [], other_camps: [], updated_at: "2026-09-27T06:00:00Z" };
+  const stints = [stint(1, { camp_id: "c1", camp_name: "Team Nogueira", is_current: true })];
+  const reported = change({ id: "rm", kind: "CAMP_MOVE_REPORTED", previous_value: null, new_value: "American Top Team", previous_camp_id: null, new_camp_id: "c9", exact_date_known: false, source_published_at: "2026-03-08T00:00:00Z", observed_at: "2026-09-27T00:10:00Z" });
+  const p = trainingPayload({ current, stints, changes: [reported], lastBoutDate: "2026-03-07" });
+  assert.equal(p.current_camp?.name, "Team Nogueira");
+  assert.equal(p.camp_history.length, 1);
+  assert.equal(p.new_camp_since_last_bout, null);
+  assert.deepEqual(p.reported_moves.map((m) => [m.to, m.reported_on, m.exact_date_known]), [["American Top Team", "2026-03-08", false]]);
+  assert.equal(p.reported_moves[0].label, "Reported move to American Top Team (reported Mar 2026; move date not stated)");
+  assert.doesNotMatch(p.reported_moves[0].label, /switch|joined/i);
 });

@@ -45,13 +45,15 @@ export type StintRow = {
 };
 
 export type ChangeRow = {
-  id: string; kind: "CAMP_CHANGED_CONFIRMED" | "AFFILIATION_CHANGED_OBSERVED" | "COACH_ADDED" | "COACH_REMOVED" | "FIGHTING_OUT_OF_CHANGED";
+  id: string; kind: "CAMP_CHANGED_CONFIRMED" | "AFFILIATION_CHANGED_OBSERVED" | "COACH_ADDED" | "COACH_REMOVED" | "FIGHTING_OUT_OF_CHANGED" | "CAMP_MOVE_REPORTED";
   previous_value: string | null; new_value: string | null; previous_camp_id: string | null; new_camp_id: string | null;
   supersedes_event_id: string | null; effective_on: string | null; observed_at: string; source_url: string;
+  /* 034: a reported move (dated source, no stated move date) has exact_date_known = false. */
+  exact_date_known?: boolean; source_published_at?: string | null;
 };
 
 export const TRAINING_STINT_COLS = "fighter_id,stint_no,camp_id,camp_name,camp_slug,stint_start_at,first_observed_at,last_confirmed_at,joined_on,certainty,next_stint_start_at,next_first_observed_at,left_on,is_current,evidence";
-export const TRAINING_CHANGE_COLS = "id,kind,previous_value,new_value,previous_camp_id,new_camp_id,supersedes_event_id,effective_on,observed_at,source_url";
+export const TRAINING_CHANGE_COLS = "id,kind,previous_value,new_value,previous_camp_id,new_camp_id,supersedes_event_id,effective_on,observed_at,source_url,exact_date_known,source_published_at";
 
 export const ROLE_LABEL: Record<string, string> = {
   HEAD: "Head coach", STRIKING: "Striking", BOXING: "Boxing", MUAY_THAI: "Muay Thai", KICKBOXING: "Kickboxing",
@@ -146,6 +148,8 @@ export function changeLabel(c: ChangeRow): string {
     case "COACH_ADDED": return `Coach added: ${coachValue(c.new_value)}`;
     case "COACH_REMOVED": return `Coach no longer listed: ${coachValue(c.previous_value)}`;
     case "FIGHTING_OUT_OF_CHANGED": return `Fighting out of changed: ${c.previous_value} → ${c.new_value}`;
+    /* Never a date the source did not state, never "switched". */
+    case "CAMP_MOVE_REPORTED": return `Reported move${c.previous_value ? ` from ${c.previous_value}` : ""} to ${c.new_value}${c.source_published_at ? ` (reported ${monthYear(c.source_published_at)}; move date not stated)` : " (move date not stated)"}`;
   }
 }
 
@@ -188,8 +192,14 @@ export function trainingPayload({ current, stints, changes, lastBoutDate = null 
       previous_value: c.kind.startsWith("COACH_") ? coachValue(c.previous_value) : c.previous_value,
       new_value: c.kind.startsWith("COACH_") ? coachValue(c.new_value) : c.new_value,
       effective_on: c.effective_on, observed_at: c.observed_at, source_url: c.source_url,
+      exact_date_known: c.exact_date_known ?? true, source_published_at: c.source_published_at ?? null,
       supersedes_event_id: c.supersedes_event_id, superseded_by_confirmation: superseded.has(c.id),
     })),
+    /* History-only claims (034). Listed apart from camp_history, which is built from observed and dated
+     * facts; a reported move can never be, or displace, the current camp. */
+    reported_moves: changes.filter((c) => c.kind === "CAMP_MOVE_REPORTED")
+      .sort((a, b) => String(b.source_published_at || "").localeCompare(String(a.source_published_at || "")))
+      .map((c) => ({ id: c.id, from: c.previous_value, to: c.new_value, to_camp_id: c.new_camp_id, reported_on: c.source_published_at ? String(c.source_published_at).slice(0, 10) : null, exact_date_known: false as const, source_url: c.source_url, label: changeLabel(c) })),
     new_camp_since_last_bout: newCampSinceLastBout(stints, changes, lastBoutDate),
     updated_at: current?.updated_at ?? null,
     provenance,

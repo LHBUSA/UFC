@@ -177,6 +177,9 @@ export const APPLIED = new Set([
   // Camp de-dup via canonical pointer (merged_into) resolved by views + capture. prove_033.ps1: 6 checks + the 032
   // suite (17) on top of it, rolled back; applied 2026-09-26 via apply_migration.ps1.
   '20260926230000_ufc_training_camp_merge.sql',
+  // Reported camp moves (no effective date) stored as reported_only observations + CAMP_MOVE_REPORTED events, excluded
+  // from the stint/current views. prove_034.ps1: 5 checks + 033 (6) + 032 (17) on top, rolled back; applied 2026-09-27.
+  '20260927000000_ufc_training_reported_moves.sql',
 ]);
 
 const parse = (dir, re) => fs.readdirSync(path.join(ROOT, dir))

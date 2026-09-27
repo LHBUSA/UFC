@@ -15,6 +15,9 @@
 //   camp               --camp --type <PRIMARY_CAMP|TEMPORARY_CAMP|CROSS_TRAINING|FIGHT_CAMP> [--since]
 //   camp-end           --camp --type [--until]
 //   switch             --to <camp> [--from <camp>] [--effective YYYY-MM-DD]   CONFIRMED camp switch
+//   reported-move      --to <camp|raw name> [--from <camp|raw name>] --published YYYY-MM-DD
+//                      a dated report of a move with NO stated move date (migration 034): history/events only,
+//                      never the current camp. Names that match no camp are kept as raw text (no camp is created).
 //   find-camp <text>   /  find-coach <text>                candidate discovery (no writes)
 //   merge-camp --from <camp> --into <camp> --note "why"    reviewed de-dup (migration 033): the duplicate keeps its
 //                      source ids and observations and resolves to the canonical camp; undo with --undo --from <camp>
@@ -197,6 +200,21 @@ async function main() {
         effective_from: date(o.since, 'since'), effective_to: date(o.until, 'until') });
       break;
     }
+    case 'reported-move': {
+      if (!p.source_published_at) throw new Error('--published is required: a reported move is dated by its source');
+      if (o.effective) throw new Error('a reported move has no effective date; use switch --effective when the source states one');
+      const side = async (ref) => {
+        if (!ref) return {};
+        try { return { id: (await resolveCamp(ref)).id }; } catch (e) {
+          if (/^(id|slug|espn):/.test(ref) || /ambiguous/.test(e.message)) throw e;
+          return { raw: String(ref).trim() };
+        }
+      };
+      const to = await side(o.to); const from = await side(o.from);
+      if (!to.id && !to.raw) throw new Error('--to is required');
+      Object.assign(p, { kind: 'reported_move', camp_id: to.id, to_raw: to.raw, from_camp_id: from.id, from_raw: from.raw });
+      break;
+    }
     case 'switch': {
       const to = await resolveCamp(o.to, opts);
       const from = o.from ? await resolveCamp(o.from) : null;
@@ -208,7 +226,8 @@ async function main() {
   }
   for (const k of Object.keys(p)) if (p[k] == null) delete p[k];
   if (o.dry) { console.log(JSON.stringify({ dry: true, payload: p }, null, 2)); return; }
-  const r = await rpc('ufc_training_add_manual', { p });  // PostgREST binds the body's keys to argument names: the one argument is p
+  const kind = p.kind; if (kind === 'reported_move') delete p.kind;
+  const r = await rpc(kind === 'reported_move' ? 'ufc_training_add_reported_move' : 'ufc_training_add_manual', { p });  // PostgREST binds the body's keys to argument names: the one argument is p
   console.log(JSON.stringify({ fighter: f.name, ...r }, null, 2));
 }
 

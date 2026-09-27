@@ -91,6 +91,9 @@ export default async function QaPreview() {
       other_camps: [], updated_at: "2027-03-01T06:00:00Z" },
     stints: tStints, changes: tChanges, lastBoutDate: "2026-12-13",
   });
+  const trainingReported = trainingPayload({ current: { fighter_id: "f-c", current_camp: { camp_id: "c4", name: "Team Nogueira", slug: "team-nogueira", first_observed_at: "2026-09-26T22:00:00Z", last_confirmed_at: "2026-09-27T06:00:00Z", joined_on: null, certainty: "OBSERVED", evidence: [tEv({})] }, fighting_out_of: null, training_location: null, coaches: [], other_camps: [], updated_at: "2026-09-27T06:00:00Z" },
+    stints: [{ ...tStints[0], fighter_id: "f-c", camp_id: "c4", camp_name: "Team Nogueira", is_current: true }],
+    changes: [{ id: "rm1", kind: "CAMP_MOVE_REPORTED", previous_value: null, new_value: "American Top Team", previous_camp_id: null, new_camp_id: "c9", supersedes_event_id: null, effective_on: null, observed_at: "2026-09-27T00:10:00Z", source_url: "https://example.invalid/report", exact_date_known: false, source_published_at: "2026-03-08T00:00:00Z" }], lastBoutDate: null });
   const trainingEspnOnly = trainingPayload({ current: { fighter_id: "f-b", current_camp: { camp_id: "c3", name: "Kill Cliff FC", slug: "kill-cliff-fc", first_observed_at: "2026-09-26T22:00:00Z", last_confirmed_at: "2026-09-26T22:00:00Z", joined_on: null, certainty: "OBSERVED", evidence: [tEv({})] }, fighting_out_of: null, training_location: null, coaches: [], other_camps: [], updated_at: "2026-09-26T22:00:00Z" },
     stints: [{ ...tStints[0], fighter_id: "f-b", camp_id: "c3", camp_name: "Kill Cliff FC", is_current: true }], changes: [], lastBoutDate: null });
 
@@ -111,6 +114,7 @@ export default async function QaPreview() {
       <section id="qa-dwcs" className="mb-7"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={new Map([["dw-1", 5], ["dw-0", 5]])} freshness={new Date().toISOString()} /></section>
       <div id="qa-training-full" className="mb-7"><TrainingCorner training={trainingFull} fighterName="Alpha Silva" /><NewCampNote note={trainingFull.new_camp_since_last_bout} fighterName="Alpha Silva" /></div>
       <div id="qa-training-espn-only" className="mb-7"><TrainingCorner training={trainingEspnOnly} fighterName="Bravo Kane" /></div>
+      <div id="qa-training-reported" className="mb-7"><TrainingCorner training={trainingReported} fighterName="Charlie Ortega" /></div>
       <section id="qa-belts" className="mb-7" style={{ display: "flex", gap: 40, alignItems: "end", flexWrap: "wrap" }}><ChampionshipBelt size="hero" label="Hero" /><ChampionshipBelt size="card" label="Card" /><ChampionshipBelt size="mini" label="Mini" /></section>
     </div>
   );
