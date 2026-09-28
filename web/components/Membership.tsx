@@ -36,7 +36,7 @@ export function AllAccessCard({ m, compact = false }: { m: Membership | null | u
     <aside className={`pbe-mbr-aa${compact ? " is-compact" : ""}`} aria-label="PropBetEdge All Access">
       <div className="pbe-mbr-aa-head"><span className="pbe-mbr-aa-eyebrow">PropBetEdge Network</span><span className="pbe-mbr-aa-price">{ALL_ACCESS_OFFER.price}</span></div>
       <h3 className="pbe-mbr-aa-title">{heading}</h3>
-      <p className="pbe-mbr-aa-copy">{ALL_ACCESS_OFFER.tagline} MLB · NFL · NBA · NHL · WNBA · UFC · Tennis, plus every sport added next.</p>
+      <p className="pbe-mbr-aa-copy">{ALL_ACCESS_OFFER.tagline} MLB · NFL · NBA · NHL · WNBA · UFC · Tennis · Soccer, plus every sport added next.</p>
       <p className="pbe-mbr-aa-promo">Launch offer: {ALL_ACCESS_OFFER.promoLine}</p>
       <div className="pbe-mbr-aa-actions">
         <a className="pbe-mbr-aa-cta" href={ALL_ACCESS_OFFER.checkoutUrl} rel="noopener" data-pbe-placement="all_access_checkout">Get All Access →</a>
