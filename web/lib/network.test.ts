@@ -17,8 +17,8 @@ test("footer PropBetEdge column renders Learn from the registry, same-tab, once"
   for (const s of ["All Access", "NETWORK.news", "NETWORK.store", "Manage billing", "Discord"]) assert.ok(col.includes(s), s);
 });
 
-test("network sports list Tennis last; the footer rail renders it from the registry", () => {
-  assert.deepEqual(NETWORK.sports.map((s) => s.key), ["mlb", "nfl", "ufc", "nhl", "nba", "wnba", "tennis"]);
+test("network sports list Soccer last; the footer rail renders it from the registry", () => {
+  assert.deepEqual(NETWORK.sports.map((s) => s.key), ["mlb", "nfl", "ufc", "nhl", "nba", "wnba", "tennis", "soccer"]);
   const tennis = NETWORK.sports.find((s) => s.key === "tennis")!;
   assert.equal(tennis.label, "Tennis");
   assert.equal(tennis.name, "Tennis Intelligence");
