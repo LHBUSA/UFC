@@ -57,7 +57,7 @@ test("contract: All Access commercial facts and links are the shared ones", () =
   assert.equal(ALL_ACCESS_OFFER.checkoutUrl, "https://buy.stripe.com/8x2eVdgmOaqy4pv8Ez7wA0N");
   assert.equal(ALL_ACCESS_URL, "https://propbetedge.ai/pro");
   assert.equal(MANAGE_URL, "https://billing.stripe.com/p/login/cNi3cv2vY7em3lr4oj7wA00");
-  assert.deepEqual(NETWORK.map((s) => s.key), ["mlb", "nfl", "nba", "nhl", "wnba", "ufc", "tennis"]);
+  assert.deepEqual(NETWORK.map((s) => s.key), ["mlb", "nfl", "nba", "nhl", "wnba", "ufc", "tennis", "soccer"]);
 });
 
 /* ---- deriving the UFC state from the verdict ------------------------------ */
