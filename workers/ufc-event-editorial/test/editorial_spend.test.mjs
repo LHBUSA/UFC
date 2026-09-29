@@ -372,3 +372,9 @@ test('pipelineEventSink never throws', async () => {
   const sink = pipelineEventSink({ insert: async () => { throw new Error('db down'); } }, 'w');
   await sink({ status: 'ok', latency_ms: 1, article_id: 'x' });
 });
+
+test('writer: the current generator (no market_watch.status) publishes rather than holding for review', async () => {
+  const row = await createdRow();
+  assert.equal(row.fact_block.market_watch.status, undefined);
+  assert.equal(row.status, 'published', String(row.fact_block.review_reason || ''));
+});

@@ -1418,7 +1418,12 @@ function gateArticle(art, world, batch) {
     if (ang.odds_status !== 'unavailable') problems.push('odds_status claims odds without a timestamped odds record');
     if (ang.model_status !== 'unavailable') problems.push('model_status claims a model output without model_version');
   }
-  if (!fb.market_watch || fb.market_watch.status !== 'unavailable') problems.push('market_watch claims a price without an odds record');
+  /* 80e44ce (2026-09-12) stopped writing market_watch.status at all -- availability
+   * is resolved at render time -- but left this gate demanding status='unavailable',
+   * so the first deploy of that generator (2026-09-29) sent every refreshed preview
+   * and results article to review. The rule it protects is unchanged: the fact
+   * block must never CLAIM a price. An absent status claims nothing. */
+  if (!fb.market_watch || (fb.market_watch.status != null && fb.market_watch.status !== 'unavailable')) problems.push('market_watch claims a price without an odds record');
   const allowInjury = cls === 'external' && (fb.item && fb.item.labels || []).some((l) => l === 'injury' || l === 'withdrawal');
   problems.push(...validateProse(`${art.headline}\n${art.dek || ''}\n${art.body_md}`, fb, { allowInjury }));
   for (const l of internalLinks(art.body_md)) if (!linkResolves(l, world, batch)) problems.push(`internal link does not resolve: ${l}`);
