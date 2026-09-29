@@ -37,6 +37,7 @@ import {
   pctPrinted, numOrNull, daysBetween,
 } from './lib.mjs';
 import { callMessages, DEFAULT_MODEL } from './anthropic.mjs';
+import { stampEditorialInput, keepDeskProse } from './editorial_digest.mjs';
 
 /* --------------------------------------------------------------- options
  *
@@ -120,7 +121,7 @@ async function loadWorld(sb) {
     sb.select('ufc_bout_results', 'select=bout_id,winner_id,method,method_raw,round,time_sec,time_format,referee,scorecards,finish_detail,has_stats'),
     sb.select('ufc_bout_round_stats', 'select=bout_id,fighter_id,round,kd,sig_str_landed,sig_str_att,total_str_landed,total_str_att,td_landed,td_att,sub_att,ctrl_sec'),
     sb.select('ufc_images', 'select=id,kind,r2_key,license,author,source_url,fighter_id&kind=eq.wikimedia'),
-    sb.select('ufc_articles', 'select=id,slug,headline,story_type,status,sources,needs_human,fighter_ids,bout_id,event_id,published_at'),
+    sb.select('ufc_articles', 'select=id,slug,headline,story_type,status,sources,needs_human,fighter_ids,bout_id,event_id,published_at,model_version'),
   ]);
 
   const boutsByEvent = new Map();
@@ -1531,13 +1532,22 @@ async function persist(sb, world, art, env, stats, batch, opts) {
     if (opts.dry) return;
     let body = art.body_md; let model = TEMPLATE_VERSION;
     ({ body, model } = await maybeRewrite(env, art, body, model, opts));
+    /* Editorial digest (scripts/news/editorial_digest.mjs). The desk's decision
+     * history is carried forward so a refresh can no longer erase it, and desk
+     * prose is kept ONLY when the new deterministic input is identical to the
+     * one the desk already edited: a refresh that changes nothing the model
+     * would see must not revert to the template just to re-buy the same edit.
+     * Any material change gets the template back and one new desk call. */
+    const stamped = stampEditorialInput(sources, { slug: art.slug, story_type: art.story_type, headline: art.headline, dek: art.dek, body_md: body, fact_block: art.fact_block }, existing.sources);
+    const keepProse = keepDeskProse(existing, stamped.digest);
     const patch = {
-      headline: art.headline, dek: art.dek, body_md: body, fact_block: art.fact_block, sources, model_version: model,
+      headline: art.headline, dek: art.dek, body_md: body, fact_block: art.fact_block, sources: stamped.sources, model_version: model,
       fighter_ids: art.fighter_ids, bout_id: art.bout_id, event_id: art.event_id, hero_image_ref: art.hero_image_ref, hero_credit: art.hero_credit,
       updated_at: new Date().toISOString(),
     };
     /* Fail closed on a gate failure; otherwise never demote a row an editor holds. A row the
      * gate itself held earlier (fact_block.review_reason set) is released once it passes. */
+    if (keepProse) { delete patch.headline; delete patch.dek; delete patch.body_md; delete patch.model_version; }
     if (problems.length) { patch.status = 'review'; patch.needs_human = true; }
     else if (existing.status === 'review' && existing.review_reason) { patch.status = 'published'; patch.needs_human = false; patch.published_at = new Date().toISOString(); }
     await sb.patch('ufc_articles', `id=eq.${existing.id}`, patch);
@@ -1552,9 +1562,10 @@ async function persist(sb, world, art, env, stats, batch, opts) {
   let body = art.body_md; let model = TEMPLATE_VERSION;
   ({ body, model } = await maybeRewrite(env, art, body, model, opts));
   const now = new Date().toISOString();
+  const stamped = stampEditorialInput(sources, { slug: art.slug, story_type: art.story_type, headline: art.headline, dek: art.dek, body_md: body, fact_block: art.fact_block });
   const row = {
     slug: art.slug, headline: art.headline, dek: art.dek, body_md: body, story_type: art.story_type, status: art.status,
-    hero_image_ref: art.hero_image_ref, hero_credit: art.hero_credit, sources, fact_block: art.fact_block,
+    hero_image_ref: art.hero_image_ref, hero_credit: art.hero_credit, sources: stamped.sources, fact_block: art.fact_block,
     fighter_ids: art.fighter_ids, bout_id: art.bout_id, event_id: art.event_id, model_version: model, needs_human: art.needs_human,
     published_at: art.status === 'published' ? now : null, updated_at: now,
   };

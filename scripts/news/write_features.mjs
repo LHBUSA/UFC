@@ -14,6 +14,7 @@
  *   Features                     = PropBetEdge's bettor-first synthesis.
  */
 import { Supabase, loadEnv, slugify, factHash, wordCount } from './lib.mjs';
+import { stampEditorialInput, keepDeskProse } from './editorial_digest.mjs';
 
 const VERSION = 'feature-template-v1';
 const HASH_SALT = 'bettor-features-v1';
@@ -345,6 +346,12 @@ async function persist(sb, article, existingBySlug, now) {
     needs_human: false,
     updated_at: new Date(now).toISOString(),
   };
+  /* Editorial digest: see scripts/news/editorial_digest.mjs and the core writer. */
+  const stamped = stampEditorialInput(row.sources, row, existing?.sources || null);
+  row.sources = stamped.sources;
+  if (existing && keepDeskProse(existing, stamped.digest)) {
+    delete row.headline; delete row.dek; delete row.body_md; delete row.model_version;
+  }
 
   if (existing) {
     await sb.patch('ufc_articles', `id=eq.${existing.id}`, row);

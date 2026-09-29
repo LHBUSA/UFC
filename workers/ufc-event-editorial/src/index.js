@@ -34,16 +34,17 @@
  * Endpoints
  *   GET  /health        unauthenticated, no writes
  *   POST /admin/write   write due event articles      (?dry=true)
- *   POST /admin/polish  editorial pass only           (?limit=&recent_hours=&force=)
+ *   POST /admin/polish  editorial pass only           (?limit=&recent_hours=&force=&canary=&attempts=&desk=anthropic)
  */
 import { main as writeArticles } from '../../../scripts/news/write_articles.mjs';
 import { main as writeFeatures } from '../../../scripts/news/write_features.mjs';
 import { main as polishArticles } from '../../../scripts/news/polish_world_class.mjs';
 import { runOpenAIEditorial, isConfigured as openaiConfigured } from '../../ufc-newsroom/src/openai_editorial.mjs';
 import { Supabase } from '../../ufc-newsroom/src/supabase.mjs';
+import { DIGEST_VERSION } from '../../../scripts/news/editorial_digest.mjs';
 
 const WORKER = 'ufc-event-editorial';
-const VERSION = 'v0.1.0';
+const VERSION = 'v0.2.0';
 
 /* The story types this Worker owns. `external` is deliberately absent and must
  * stay absent: it is ufc-news-enrich's, and this list is the enforcement. */
@@ -152,66 +153,77 @@ async function runWrite(env, { dry = false, invoked = 'cron' } = {}) {
 }
 
 /**
- * The editorial pass. OpenAI first, the Anthropic desk as fallback.
+ * The editorial pass. OpenAI only, automatically; the Anthropic desk only on an
+ * explicit admin request.
  *
- * TWO DESKS, NOT ONE, AND THEY ARE NOT INTERCHANGEABLE.
+ * SPEND POLICY (owner rule 2026-09-29, Newsroom V4). Premium prose is bought
+ * once per genuinely new editorial input -- the digest of the deterministic
+ * draft plus its fact block (scripts/news/editorial_digest.mjs):
  *
- * polish_world_class is the ANTHROPIC/Copilot desk; runOpenAIEditorial is the
- * OpenAI one, and it is the path that produced every editorial-desk-openai-v1
- * article this lane inherited. Wiring only the former -- which is what I did
- * first -- means a Worker holding a valid OPENAI_API_KEY reports `no_provider`
- * and never upgrades anything, so the deterministic template it just wrote
- * stays a deterministic template. That is precisely the thin-article outcome
- * the write guard exists to prevent, arriving through the other door.
+ *   automatic (cron, post_write, plain /admin/polish)
+ *     new digest never decided  -> ONE call, one attempt, no corrective retry
+ *     digest passed / held / failed before -> 0 calls
+ *     legacy row with no digest -> 0 calls (a legacy upgrade buys nothing)
+ *   explicit admin (/admin/polish?force=true[&canary=true][&attempts=1|2])
+ *     deliberate re-edit, up to 2 attempts, trigger admin_reedit | canary
  *
- * Order matters: OpenAI is tried first because it is the model the rest of the
- * newsroom writes with, so a preview and a wire article are edited to the same
- * standard rather than by whichever provider happened to be configured.
+ * WHY THE ANTHROPIC DESK IS NO LONGER A FALLBACK. polish_world_class ignores
+ * maxPolish, has no story_type filter (it can reach ufc-news-enrich's
+ * external articles) and knows nothing about the digest, so as an automatic
+ * fallback it re-polished whatever the OpenAI desk declined. It is reachable
+ * only as /admin/polish?desk=anthropic.
  */
-async function runPolish(env, { limit = 12, recentHours = 72, force = false, invoked = 'cron' } = {}) {
+async function runPolish(env, {
+  limit = 12, recentHours = 72, force = false, invoked = 'cron', canary = false, attempts = null, desk = 'openai',
+} = {}) {
   health.last_run_at = new Date().toISOString();
-  const attempts = [];
 
-  if (openaiConfigured(env)) {
+  if (desk === 'anthropic') {
+    if (invoked !== 'manual') return { status: 'refused', reason: 'the Anthropic desk is admin-only' };
     try {
-      const sb = new Supabase(env);
-      /* Scoped to this lane's own story types. Without this the desk selects
-       * every published article and will edit ufc-news-enrich's external
-       * stories -- which it did, once, before this argument existed. */
-      const desk = await runOpenAIEditorial(env, sb, {
-        now: Date.now(), limit, recentHours, force, maxPolish: 1,
-        storyTypes: OWNED_DESK_TYPES,
-      });
-      health.last_status = 'ok'; health.last_error = null;
-      return { status: 'ok', invoked, desk: 'openai', ...desk };
+      const out = await polishArticles(env, { limit, recentHours, force, maxPolish: 1 });
+      return { status: out?.status === 'no_provider' ? 'no_provider' : 'ok', invoked, desk: 'anthropic', ...out };
     } catch (e) {
-      /* A desk that HELD everything is not an outage: it is the gate working.
-       * The error carries the desk result in that case, and it is reported as
-       * such rather than as a failure to reach a provider. */
-      if (e && e.deskResult) {
-        health.last_status = 'held';
-        return { status: 'all_held', invoked, desk: 'openai', ...e.deskResult, error: String(e.message).slice(0, 200) };
-      }
-      attempts.push(`openai: ${String(e?.message || e).slice(0, 160)}`);
-      console.warn(`[${WORKER}] OpenAI desk unavailable, trying Anthropic: ${attempts[0]}`);
+      return { status: 'degraded', invoked, desk: 'anthropic', error: String(e?.message || e).slice(0, 300) };
     }
-  } else {
-    attempts.push('openai: not configured');
+  }
+
+  if (!openaiConfigured(env)) {
+    health.last_status = 'no_provider';
+    return { status: 'no_provider', invoked, desk: 'openai', reason: 'OPENAI_API_KEY not set; no automatic fallback desk' };
   }
 
   try {
-    const desk = await polishArticles(env, { limit, recentHours, force, maxPolish: 1 });
-    health.last_status = desk?.status === 'no_provider' ? 'no_provider' : 'ok';
-    health.last_error = null;
-    return { status: desk?.status === 'no_provider' ? 'no_provider' : 'ok', invoked, desk: 'anthropic', attempts, ...desk };
+    const sb = new Supabase(env);
+    /* Scoped to this lane's own story types. Without this the desk selects
+     * every published article and will edit ufc-news-enrich's external
+     * stories -- which it did, once, before this argument existed. */
+    const out = await runOpenAIEditorial(env, sb, {
+      now: Date.now(), limit, recentHours, force, maxPolish: 1,
+      storyTypes: OWNED_DESK_TYPES,
+      trigger: force ? (canary ? 'canary' : 'admin_reedit') : 'new_story',
+      maxAttempts: force ? attempts : 1,
+      worker: WORKER,
+    });
+    health.last_status = 'ok'; health.last_error = null;
+    health.last_polish = { at: health.last_run_at, invoked, model_calls: out.model_calls, attempted: out.attempted, skip_reasons: out.skip_reasons };
+    return { status: 'ok', invoked, desk: 'openai', ...out };
   } catch (e) {
+    /* A desk that HELD everything is not an outage: it is the gate working.
+     * The error carries the desk result in that case, and it is reported as
+     * such rather than as a failure to reach a provider. */
+    if (e && e.deskResult) {
+      health.last_status = 'held';
+      health.last_polish = { at: health.last_run_at, invoked, model_calls: e.deskResult.model_calls, attempted: e.deskResult.attempted, skip_reasons: e.deskResult.skip_reasons };
+      return { status: 'all_held', invoked, desk: 'openai', ...e.deskResult, error: String(e.message).slice(0, 200) };
+    }
     /* The polish layer is not on the publication path: an article publishes
-     * without it. So a provider outage here degrades quality, never
-     * availability, and must not be reported as a pipeline failure. */
+     * without it. A provider outage degrades quality, never availability, and
+     * there is deliberately no automatic second desk behind it. */
     health.last_status = 'degraded';
     health.last_error = String(e?.message || e).slice(0, 300);
     console.warn(`[${WORKER}] polish unavailable: ${health.last_error}`);
-    return { status: 'degraded', invoked, attempts, error: health.last_error };
+    return { status: 'degraded', invoked, desk: 'openai', error: health.last_error };
   }
 }
 
@@ -234,6 +246,14 @@ export default {
         },
         writes: ['ufc_articles (event-level story types only)'],
         writer_types: OWNED_TYPES,
+        editorial_policy: {
+          digest_version: DIGEST_VERSION,
+          automatic_max_attempts: 1,
+          automatic_eligibility: 'new editorial digest never decided (pass/hold/fail all spend it)',
+          admin_reedit: 'POST /admin/polish?force=true (up to 2 attempts)',
+          anthropic_desk: 'admin only (?desk=anthropic); never an automatic fallback',
+          telemetry: 'ufc_news_pipeline_events stage=editorial detail.kind=model_call, one row per request',
+        },
         schedule: 'cloudflare cron 15 */2 * * * (write) and 20 10 * * * (write + polish)',
         replaces: 'the write/refresh/sweep phases of ufc-newsroom, which is now control plane only',
         requirements: {
@@ -260,6 +280,9 @@ export default {
           limit: Number(url.searchParams.get('limit')) || 12,
           recentHours: Number(url.searchParams.get('recent_hours')) || 72,
           force: url.searchParams.get('force') === 'true',
+          canary: url.searchParams.get('canary') === 'true',
+          attempts: Number(url.searchParams.get('attempts')) || null,
+          desk: url.searchParams.get('desk') === 'anthropic' ? 'anthropic' : 'openai',
           invoked: 'manual',
         })),
       });

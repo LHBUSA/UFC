@@ -6,6 +6,13 @@ import {
   runOpenAIEditorial,
   DEFAULT_MODEL,
 } from './openai_editorial.mjs';
+import { stampEditorialInput } from '../../../scripts/news/editorial_digest.mjs';
+
+/* A row as the writer now stores it: its deterministic draft carries an
+ * editorial digest, which is what makes it eligible for ONE automatic call. */
+function stamped(article) {
+  return { ...article, sources: stampEditorialInput([], article).sources };
+}
 
 function responseFor(payload, model = DEFAULT_MODEL) {
   return {
@@ -61,7 +68,7 @@ test('Responses API request uses the Worker secret and strict structured output'
 
 test('OpenAI editorial pass patches only an accepted published article', async () => {
   const patches = [];
-  const article = {
+  const article = stamped({
     id: 'article-1',
     slug: 'evidence-story',
     headline: 'Existing sufficiently long article headline',
@@ -73,7 +80,7 @@ test('OpenAI editorial pass patches only an accepted published article', async (
     sources: {},
     model_version: 'template-2',
     updated_at: '2026-09-09T18:00:00.000Z',
-  };
+  });
 
   const sb = {
     select: async () => [article],
@@ -94,6 +101,7 @@ test('OpenAI editorial pass patches only an accepted published article', async (
       limit: 1,
       recentHours: 24,
       fetchImpl,
+      onModelCall: null,
     },
   );
 
@@ -104,6 +112,7 @@ test('OpenAI editorial pass patches only an accepted published article', async (
   assert.equal(patches[0].table, 'ufc_articles');
   assert.equal(patches[0].filter, 'id=eq.article-1');
   assert.match(patches[0].body.model_version, /^openai:gpt-5\.6-sol\/editorial-desk-openai-v1$/);
+  assert.equal(patches[0].body.sources.find((x) => x.kind === 'editorial_desk').decisions[0].outcome, 'passed');
 });
 
 test('already OpenAI-polished articles are idempotently skipped', async () => {
@@ -139,10 +148,10 @@ test('already OpenAI-polished articles are idempotently skipped', async () => {
   assert.equal(modelCalls, 0);
 });
 
-test('provider failure holds the article and never patches it', async () => {
-  let patched = false;
+test('provider failure holds the article, never touches its prose, and spends the digest', async () => {
+  const patches = [];
   const sb = {
-    select: async () => [{
+    select: async () => [stamped({
       id: 'article-3',
       slug: 'held-story',
       headline: 'Held story existing headline that is long enough',
@@ -154,8 +163,8 @@ test('provider failure holds the article and never patches it', async () => {
       sources: {},
       model_version: 'template-2',
       updated_at: '2026-09-09T18:00:00.000Z',
-    }],
-    patch: async () => { patched = true; },
+    })],
+    patch: async (table, filter, body) => { patches.push(body); },
   };
 
   await assert.rejects(
@@ -164,6 +173,7 @@ test('provider failure holds the article and never patches it', async () => {
       sb,
       {
         now: Date.parse('2026-09-09T19:00:00.000Z'),
+        onModelCall: null,
         fetchImpl: async () => ({
           ok: false,
           status: 500,
@@ -173,5 +183,7 @@ test('provider failure holds the article and never patches it', async () => {
     ),
     /every attempted candidate was held/,
   );
-  assert.equal(patched, false);
+  assert.equal(patches.length, 1, 'only the decision is written');
+  assert.deepEqual(Object.keys(patches[0]), ['sources'], 'prose, headline and model_version untouched');
+  assert.equal(patches[0].sources.find((x) => x.kind === 'editorial_desk').decisions[0].outcome, 'failed');
 });

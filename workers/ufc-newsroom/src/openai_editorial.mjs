@@ -11,11 +11,40 @@
  * Worker binding. No key is ever logged.
  */
 
+import {
+  automaticEligibility,
+  editorialDigest,
+  inputEntry,
+  modelVisibleSources,
+  recordDecision,
+  DIGEST_VERSION,
+} from '../../../scripts/news/editorial_digest.mjs';
+
 const API = 'https://api.openai.com/v1/responses';
 export const DEFAULT_MODEL = 'gpt-5.6-sol';
 const DESK_VERSION = 'editorial-desk-openai-v1';
 const DEFAULT_CALL_TIMEOUT_MS = 75 * 1000;
 const DEFAULT_MAX_POLISH_PER_RUN = 4;
+/* One automatic attempt, full stop (owner rule 2026-09-29). The corrective
+ * second rewrite doubled the spend of every held article; only an explicit
+ * admin re-edit or canary may ask for it. */
+const AUTOMATIC_MAX_ATTEMPTS = 1;
+const ADMIN_MAX_ATTEMPTS = 2;
+
+/* NOMINAL standard list rates, USD per million tokens, for gpt-5.6-sol on the
+ * Responses API. This is a yardstick, NOT a bill: the newsroom runs on the
+ * complimentary shared-token program, so nothing here is ever charged. */
+export const NOMINAL_RATES_PER_MTOK = { input: 1.25, cached_input: 0.125, output: 10 };
+
+export function nominalStandardCost(usage) {
+  const input = Number(usage?.input_tokens) || 0;
+  const cached = Number(usage?.input_tokens_details?.cached_tokens) || 0;
+  const output = Number(usage?.output_tokens) || 0;
+  const usd = (Math.max(0, input - cached) * NOMINAL_RATES_PER_MTOK.input
+    + cached * NOMINAL_RATES_PER_MTOK.cached_input
+    + output * NOMINAL_RATES_PER_MTOK.output) / 1e6;
+  return Math.round(usd * 1e6) / 1e6;
+}
 
 export const isConfigured = (env) => Boolean(env && env.OPENAI_API_KEY);
 
@@ -144,7 +173,9 @@ function sourcePacket(article) {
       current_body_md: article.body_md,
     },
     fact_block: article.fact_block,
-    sources: article.sources,
+    /* Never the digest/decision entries: a hex digest is full of digits and
+     * validate() treats every number in the packet as an allowed number. */
+    sources: modelVisibleSources(article.sources),
   }, null, 2);
 }
 
@@ -184,6 +215,7 @@ export async function callOpenAI(apiKey, {
   if (!apiKey) throw new Error('openai: no API key');
 
   const safeTimeout = Math.min(120000, Math.max(5000, Number(timeoutMs) || DEFAULT_CALL_TIMEOUT_MS));
+  let meta = { response_id: null, usage: null, model };
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), safeTimeout);
 
@@ -214,6 +246,9 @@ export async function callOpenAI(apiKey, {
     });
 
     const json = await res.json().catch(() => ({}));
+    /* Usage and response id travel with success AND failure: an incomplete or
+     * refused response still spent tokens, and telemetry must see them. */
+    meta = { response_id: json?.id || null, usage: json?.usage || null, model: json?.model || model };
     if (!res.ok) throw new Error(`openai ${res.status}: ${JSON.stringify(json).slice(0, 300)}`);
     if (json.status === 'incomplete') {
       const why = json.incomplete_details?.reason || 'unknown';
@@ -221,57 +256,165 @@ export async function callOpenAI(apiKey, {
     }
     if (json.status === 'failed') throw new Error(`openai: failed response: ${JSON.stringify(json.error || {}).slice(0, 240)}`);
 
-    return { text: extractOutputText(json), model: json.model || model };
+    return { text: extractOutputText(json), ...meta };
   } catch (error) {
-    if (controller.signal.aborted) throw new Error(`openai: timeout after ${safeTimeout}ms`);
-    throw error;
+    const out = controller.signal.aborted ? new Error(`openai: timeout after ${safeTimeout}ms`) : error;
+    if (out && typeof out === 'object') out.openaiMeta = meta;
+    throw out;
   } finally {
     clearTimeout(timer);
   }
 }
 
-async function polishOne(env, article, source, { model, fetchImpl, timeoutMs } = {}) {
+const TRIGGERS = new Set(['new_story', 'admin_reedit', 'canary']);
+
+/**
+ * One telemetry record per OpenAI request, in the network contract's field
+ * names. Written by the caller-supplied sink IMMEDIATELY after the request
+ * returns (or fails), never batched at the end of a pass: a pass that dies
+ * half-way must still have recorded what it spent.
+ */
+export function modelCallRecord({ worker, article, digest, trigger, routingReason, attempt, meta, requestedModel, latencyMs, status, now = Date.now() }) {
+  const usage = meta?.usage || null;
+  return {
+    kind: 'model_call',
+    sport: 'ufc',
+    worker,
+    story_id: article.id,
+    article_id: article.id,
+    slug: article.slug,
+    story_class: article.story_type,
+    story_subclass: article.fact_block?.story_class || null,
+    routing_lane: 'STANDARD_EDITORIAL',
+    routing_reason: routingReason,
+    model: meta?.model || requestedModel,
+    pool: 'premium',
+    trigger,
+    attempt,
+    editorial_digest: digest,
+    digest_version: DIGEST_VERSION,
+    response_id: meta?.response_id || null,
+    input_tokens: usage ? Number(usage.input_tokens) || 0 : null,
+    cached_input_tokens: usage ? Number(usage.input_tokens_details?.cached_tokens) || 0 : null,
+    output_tokens: usage ? Number(usage.output_tokens) || 0 : null,
+    reasoning_tokens: usage ? Number(usage.output_tokens_details?.reasoning_tokens) || 0 : null,
+    latency_ms: latencyMs,
+    status,
+    nominal_standard_cost_usd: usage ? nominalStandardCost(usage) : null,
+    cost_basis: 'NOMINAL standard list rate (1.25 / 0.125 cached / 10 per MTok); complimentary shared-token program, never billed',
+    timestamp: new Date(now).toISOString(),
+  };
+}
+
+/** Default sink: ufc_news_pipeline_events, the table ufc-news-enrich's cost
+ * records already use. stage/status stay inside the CHECK vocabulary
+ * (editorial; ok|held|failed) and detail.kind='model_call' marks the row, so
+ * enrich's /cost report (detail.kind=cost) never counts it. */
+export function pipelineEventSink(sb, worker) {
+  return async (rec) => {
+    if (!sb || typeof sb.insert !== 'function') return;
+    try {
+      await sb.insert('ufc_news_pipeline_events', [{
+        news_item_id: null,
+        article_id: rec.article_id || null,
+        stage: 'editorial',
+        status: rec.status === 'ok' ? 'ok' : rec.status === 'held' ? 'held' : 'failed',
+        latency_ms: rec.latency_ms,
+        worker,
+        detail: rec,
+      }]);
+    } catch (e) {
+      /* Telemetry must never be the reason an article fails -- but it must
+       * never vanish silently either. */
+      console.warn(`  telemetry write failed: ${String(e?.message || e).slice(0, 200)}`);
+    }
+  };
+}
+
+async function polishOne(env, article, source, {
+  model, fetchImpl, timeoutMs, maxAttempts = AUTOMATIC_MAX_ATTEMPTS,
+  onModelCall = null, worker = 'ufc-editorial-desk', digest = null, trigger = 'new_story', routingReason = null,
+} = {}) {
   let correction = '';
   let lastProblem = '';
   let lastModel = model || env.UFC_EDITORIAL_OPENAI_MODEL || DEFAULT_MODEL;
+  const responseIds = [];
+  const record = async (attempt, meta, started, status) => {
+    if (!onModelCall) return;
+    await onModelCall(modelCallRecord({
+      worker, article, digest, trigger, routingReason, attempt, meta,
+      requestedModel: lastModel, latencyMs: Date.now() - started, status,
+    }));
+  };
 
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const prompt = `${acceptanceInstructions(article)}${correction ? `\n\n${correction}` : ''}\n\nSOURCE PACKET:\n${source}`;
-    const envelope = await callOpenAI(env.OPENAI_API_KEY, {
-      model: lastModel,
-      input: prompt,
-      fetchImpl,
-      timeoutMs,
-    });
-    lastModel = envelope.model || lastModel;
-
+    const started = Date.now();
+    let envelope;
     try {
-      const out = JSON.parse(envelope.text);
-      const problem = validate(source, out, article);
-      if (!problem) {
-        return {
-          headline: String(out.headline).trim(),
-          dek: String(out.dek).trim(),
-          body_md: String(out.body_md).trim(),
-          provider: 'openai',
-          model: lastModel,
-          attempts: attempt,
-        };
-      }
-      lastProblem = problem;
+      envelope = await callOpenAI(env.OPENAI_API_KEY, {
+        model: lastModel,
+        input: prompt,
+        fetchImpl,
+        timeoutMs,
+      });
     } catch (error) {
-      lastProblem = `invalid output serialization: ${String(error?.message || error).slice(0, 260)}`;
+      await record(attempt, error?.openaiMeta || null, started, 'failed');
+      if (error?.openaiMeta?.response_id) responseIds.push(error.openaiMeta.response_id);
+      error.attempts = attempt;
+      error.responseIds = responseIds;
+      throw error;
     }
+    lastModel = envelope.model || lastModel;
+    if (envelope.response_id) responseIds.push(envelope.response_id);
 
-    if (attempt === 1) {
+    let problem = null;
+    let out = null;
+    try {
+      out = JSON.parse(envelope.text);
+      problem = validate(source, out, article);
+    } catch (error) {
+      problem = `invalid output serialization: ${String(error?.message || error).slice(0, 260)}`;
+    }
+    await record(attempt, envelope, started, problem ? 'held' : 'ok');
+    if (!problem) {
+      return {
+        headline: String(out.headline).trim(),
+        dek: String(out.dek).trim(),
+        body_md: String(out.body_md).trim(),
+        provider: 'openai',
+        model: lastModel,
+        attempts: attempt,
+        responseIds,
+      };
+    }
+    lastProblem = problem;
+
+    if (attempt < maxAttempts) {
       console.log(`  RETRY ${article.slug}: OpenAI held — ${lastProblem}`);
       correction = correctionInstructions(lastProblem);
     }
   }
 
-  throw new Error(`validation after corrective retry via ${lastModel}: ${lastProblem}`);
+  const error = new Error(`validation after ${maxAttempts} attempt(s) via ${lastModel}: ${lastProblem}`);
+  error.attempts = maxAttempts;
+  error.responseIds = responseIds;
+  error.gateHeld = true;
+  throw error;
 }
 
+/**
+ * The editorial desk pass.
+ *
+ * AUTOMATIC (force=false): an article is eligible only through
+ * automaticEligibility() -- a writer-stamped editorial digest that the desk has
+ * never decided. One attempt. Every outcome, pass or hold or provider failure,
+ * is recorded against the digest in the row's sources, so the same input is
+ * never bought twice and a held input is never retried automatically.
+ *
+ * ADMIN (force=true): the deliberate re-edit. Eligibility is bypassed, up to
+ * ADMIN_MAX_ATTEMPTS, trigger 'admin_reedit' (or 'canary').
+ */
 export async function runOpenAIEditorial(env, sb, {
   now = Date.now(),
   limit = 30,
@@ -282,6 +425,10 @@ export async function runOpenAIEditorial(env, sb, {
   storyTypes = null,
   callTimeoutMs = DEFAULT_CALL_TIMEOUT_MS,
   fetchImpl = fetch,
+  trigger = null,
+  maxAttempts = null,
+  onModelCall = undefined,
+  worker = 'ufc-editorial-desk',
 } = {}) {
   if (!isConfigured(env)) {
     return { status: 'no_provider', candidates: 0, passed: 0, skipped: 0, held: 0, deferred: 0, provider: null };
@@ -292,6 +439,14 @@ export async function runOpenAIEditorial(env, sb, {
   const safeMaxPolish = Math.min(8, Math.max(1, Number(maxPolish) || DEFAULT_MAX_POLISH_PER_RUN));
   const selectedModel = model || env.UFC_EDITORIAL_OPENAI_MODEL || DEFAULT_MODEL;
   const since = new Date(now - safeHours * 3600 * 1000).toISOString();
+  const effectiveTrigger = force
+    ? (TRIGGERS.has(trigger) && trigger !== 'new_story' ? trigger : 'admin_reedit')
+    : 'new_story';
+  /* Automatic runs are pinned to one attempt whatever the caller asks for. */
+  const attemptsAllowed = force
+    ? Math.min(ADMIN_MAX_ATTEMPTS, Math.max(1, Number(maxAttempts) || ADMIN_MAX_ATTEMPTS))
+    : AUTOMATIC_MAX_ATTEMPTS;
+  const sink = onModelCall === undefined ? pipelineEventSink(sb, worker) : onModelCall;
 
   /* THE DESK MAY ONLY EDIT WHAT ITS CALLER OWNS.
    *
@@ -317,16 +472,31 @@ export async function runOpenAIEditorial(env, sb, {
   let held = 0;
   let deferred = 0;
   let attempted = 0;
-  console.log(`openai editorial desk: candidates=${rows.length} limit=${safeLimit} max_polish=${safeMaxPolish} hours=${safeHours} force=${Boolean(force)} model=${selectedModel}`);
+  let modelCalls = 0;
+  const skipReasons = {};
+  const countingSink = sink ? async (rec) => { modelCalls += 1; await sink(rec); } : async () => { modelCalls += 1; };
+  console.log(`openai editorial desk: candidates=${rows.length} limit=${safeLimit} max_polish=${safeMaxPolish} hours=${safeHours} force=${Boolean(force)} trigger=${effectiveTrigger} attempts=${attemptsAllowed} model=${selectedModel}`);
 
   for (const article of rows) {
-    if (!force && String(article.model_version || '').includes(`/${DESK_VERSION}`)) {
-      skipped += 1;
-      continue;
-    }
     if (!article.fact_block || !article.body_md) {
       skipped += 1;
+      skipReasons.no_packet = (skipReasons.no_packet || 0) + 1;
       continue;
+    }
+    let digest;
+    let routingReason;
+    if (force) {
+      digest = inputEntry(article.sources)?.digest || editorialDigest(article);
+      routingReason = effectiveTrigger === 'canary' ? 'canary' : 'admin_force';
+    } else {
+      const e = automaticEligibility(article);
+      if (!e.eligible) {
+        skipped += 1;
+        skipReasons[e.reason] = (skipReasons[e.reason] || 0) + 1;
+        continue;
+      }
+      digest = e.digest;
+      routingReason = e.reason;
     }
     if (attempted >= safeMaxPolish) {
       deferred += 1;
@@ -335,11 +505,18 @@ export async function runOpenAIEditorial(env, sb, {
 
     attempted += 1;
     const source = sourcePacket(article);
+    const decidedAt = new Date(now).toISOString();
     try {
       const out = await polishOne(env, article, source, {
         model: selectedModel,
         fetchImpl,
         timeoutMs: callTimeoutMs,
+        maxAttempts: attemptsAllowed,
+        onModelCall: countingSink,
+        worker,
+        digest,
+        trigger: effectiveTrigger,
+        routingReason,
       });
       console.log(`  PASS ${article.slug} via ${out.provider}:${out.model} attempts=${out.attempts}`);
       passed += 1;
@@ -348,11 +525,30 @@ export async function runOpenAIEditorial(env, sb, {
         dek: out.dek,
         body_md: out.body_md,
         model_version: `${out.provider}:${out.model}/${DESK_VERSION}`,
+        sources: recordDecision(article.sources, {
+          digest, outcome: 'passed', trigger: effectiveTrigger, attempts: out.attempts, model: out.model, at: decidedAt,
+        }),
         updated_at: new Date(now).toISOString(),
       });
     } catch (error) {
       held += 1;
       console.log(`  HOLD ${article.slug}: ${String(error?.message || error).slice(0, 700)}`);
+      /* The held/failed decision is durable: this digest is spent. Prose and
+       * updated_at are untouched -- only the bookkeeping entry changes. */
+      try {
+        await sb.patch('ufc_articles', `id=eq.${article.id}`, {
+          sources: recordDecision(article.sources, {
+            digest,
+            outcome: error?.gateHeld ? 'held' : 'failed',
+            trigger: effectiveTrigger,
+            attempts: Number(error?.attempts) || 1,
+            model: selectedModel,
+            at: decidedAt,
+          }),
+        });
+      } catch (e) {
+        console.warn(`  decision write failed for ${article.slug}: ${String(e?.message || e).slice(0, 200)}`);
+      }
     }
   }
 
@@ -362,8 +558,13 @@ export async function runOpenAIEditorial(env, sb, {
     attempted,
     passed,
     skipped,
+    skip_reasons: skipReasons,
     held,
     deferred,
+    model_calls: modelCalls,
+    trigger: effectiveTrigger,
+    max_attempts: attemptsAllowed,
+    digest_version: DIGEST_VERSION,
     provider: `openai:${selectedModel}`,
     model: selectedModel,
   };
