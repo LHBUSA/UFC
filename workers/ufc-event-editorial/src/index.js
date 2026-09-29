@@ -34,7 +34,7 @@
  * Endpoints
  *   GET  /health        unauthenticated, no writes
  *   POST /admin/write   write due event articles      (?dry=true)
- *   POST /admin/polish  editorial pass only           (?limit=&recent_hours=&force=&canary=&attempts=&desk=anthropic)
+ *   POST /admin/polish  editorial pass only           (?limit=&recent_hours=&force=&canary=&attempts=&slug=&desk=anthropic)
  */
 import { main as writeArticles } from '../../../scripts/news/write_articles.mjs';
 import { main as writeFeatures } from '../../../scripts/news/write_features.mjs';
@@ -174,7 +174,7 @@ async function runWrite(env, { dry = false, invoked = 'cron' } = {}) {
  * only as /admin/polish?desk=anthropic.
  */
 async function runPolish(env, {
-  limit = 12, recentHours = 72, force = false, invoked = 'cron', canary = false, attempts = null, desk = 'openai',
+  limit = 12, recentHours = 72, force = false, invoked = 'cron', canary = false, attempts = null, desk = 'openai', slug = null,
 } = {}) {
   health.last_run_at = new Date().toISOString();
 
@@ -204,6 +204,7 @@ async function runPolish(env, {
       trigger: force ? (canary ? 'canary' : 'admin_reedit') : 'new_story',
       maxAttempts: force ? attempts : 1,
       worker: WORKER,
+      slugs: force && slug ? [slug] : null,
     });
     health.last_status = 'ok'; health.last_error = null;
     health.last_polish = { at: health.last_run_at, invoked, model_calls: out.model_calls, attempted: out.attempted, skip_reasons: out.skip_reasons };
@@ -274,6 +275,10 @@ export default {
       return json({ service: WORKER, ...(await runWrite(env, { dry: url.searchParams.get('dry') === 'true', invoked: 'manual' })) });
     }
     if (url.pathname === '/admin/polish') {
+      /* ?slug= re-edits exactly one named article; only as a deliberate force re-edit. */
+      const slug = url.searchParams.get('slug');
+      if (slug && url.searchParams.get('force') !== 'true') return json({ error: 'slug requires force=true', service: WORKER }, 400);
+      if (slug && url.searchParams.get('desk') === 'anthropic') return json({ error: 'slug targeting is OpenAI-desk only', service: WORKER }, 400);
       return json({
         service: WORKER,
         ...(await runPolish(env, {
@@ -283,6 +288,7 @@ export default {
           canary: url.searchParams.get('canary') === 'true',
           attempts: Number(url.searchParams.get('attempts')) || null,
           desk: url.searchParams.get('desk') === 'anthropic' ? 'anthropic' : 'openai',
+          slug: slug || null,
           invoked: 'manual',
         })),
       });

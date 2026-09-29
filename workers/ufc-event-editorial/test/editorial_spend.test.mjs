@@ -207,8 +207,9 @@ test('F: one telemetry row per request, carrying the API usage verbatim', async 
   assert.equal(d.editorial_digest, automaticEligibility(draft('f')).digest);
   assert.equal(d.nominal_standard_cost_usd, nominalStandardCost(USAGE));
   assert.equal(d.nominal_standard_cost_usd, (3800 * 1.25 + 1200 * 0.125 + 3000 * 10) / 1e6);
-  assert.match(d.cost_basis, /NOMINAL/);
-  assert.match(d.cost_basis, /never billed/);
+  assert.match(d.cost_basis, /nominal/i);
+  assert.match(d.cost_basis, /not evidence of actual billing/);
+  assert.doesNotMatch(d.cost_basis, /never billed/);
   assert.equal(e2.detail.attempt, 2);
   assert.equal(e2.detail.response_id, 'resp_2');
 });
@@ -377,4 +378,33 @@ test('writer: the current generator (no market_watch.status) publishes rather th
   const row = await createdRow();
   assert.equal(row.fact_block.market_watch.status, undefined);
   assert.equal(row.status, 'published', String(row.fact_block.review_reason || ''));
+});
+
+test('admin slug targeting: exact slug filter, force only, one named article', async () => {
+  const sb = store([draft('s1'), draft('s2')]);
+  const filters = [];
+  const select = sb.select;
+  sb.select = async (t, f) => { filters.push(f); return (await select(t, f)).filter((r) => !f.includes('slug=in.') || f.includes(`slug=in.(${r.slug})`)); };
+  const o = openai();
+  await assert.rejects(() => runOpenAIEditorial(ENV, sb, { now: NOW, fetchImpl: o.fetchImpl, onModelCall: null, slugs: ['s2-slug'] }), /requires force/);
+  assert.equal(o.calls.length, 0);
+  const r = await runOpenAIEditorial(ENV, sb, { now: NOW, fetchImpl: o.fetchImpl, onModelCall: null, force: true, maxAttempts: 1, maxPolish: 1, slugs: ['s2-slug'] });
+  assert.match(filters.at(-1), /&slug=in\.\(s2-slug\)/);
+  assert.doesNotMatch(filters.at(-1), /updated_at=gte/);
+  assert.equal(r.trigger, 'admin_reedit');
+  assert.equal(o.calls.length, 1);
+  assert.equal(sb.row('s1').model_version, 'template-2', 'the other article is untouched');
+});
+
+test('Worker: ?slug= requires force=true and is refused on the Anthropic desk', async () => {
+  const real = globalThis.fetch;
+  const hosts = [];
+  globalThis.fetch = async (url) => { hosts.push(new URL(String(url)).host); return { ok: true, headers: { get: () => null }, text: async () => '[]', json: async () => [] }; };
+  try {
+    const env = { ...WENV, OPENAI_API_KEY: 'o', ANTHROPIC_API_KEY: 'a', ADMIN_TRIGGER_TOKEN: 'tok' };
+    const h = { method: 'POST', headers: { 'x-pbe-admin-token': 'tok' } };
+    assert.equal((await worker.fetch(new Request('https://x/admin/polish?slug=a', h), env)).status, 400);
+    assert.equal((await worker.fetch(new Request('https://x/admin/polish?slug=a&force=true&desk=anthropic', h), env)).status, 400);
+    assert.equal(hosts.length, 0, 'refused before any upstream call');
+  } finally { globalThis.fetch = real; }
 });

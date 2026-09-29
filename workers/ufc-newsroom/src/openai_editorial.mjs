@@ -32,8 +32,9 @@ const AUTOMATIC_MAX_ATTEMPTS = 1;
 const ADMIN_MAX_ATTEMPTS = 2;
 
 /* NOMINAL standard list rates, USD per million tokens, for gpt-5.6-sol on the
- * Responses API. This is a yardstick, NOT a bill: the newsroom runs on the
- * complimentary shared-token program, so nothing here is ever charged. */
+ * Responses API. Nominal standard-rate estimate only; not evidence of actual
+ * billing. Complimentary shared-token usage may apply subject to eligibility
+ * and remaining daily allowance. */
 export const NOMINAL_RATES_PER_MTOK = { input: 1.25, cached_input: 0.125, output: 10 };
 
 export function nominalStandardCost(usage) {
@@ -301,7 +302,7 @@ export function modelCallRecord({ worker, article, digest, trigger, routingReaso
     latency_ms: latencyMs,
     status,
     nominal_standard_cost_usd: usage ? nominalStandardCost(usage) : null,
-    cost_basis: 'NOMINAL standard list rate (1.25 / 0.125 cached / 10 per MTok); complimentary shared-token program, never billed',
+    cost_basis: 'Nominal standard-rate estimate only (1.25 / 0.125 cached / 10 per MTok); not evidence of actual billing. Complimentary shared-token usage may apply subject to eligibility and remaining daily allowance.',
     timestamp: new Date(now).toISOString(),
   };
 }
@@ -429,6 +430,7 @@ export async function runOpenAIEditorial(env, sb, {
   maxAttempts = null,
   onModelCall = undefined,
   worker = 'ufc-editorial-desk',
+  slugs = null,
 } = {}) {
   if (!isConfigured(env)) {
     return { status: 'no_provider', candidates: 0, passed: 0, skipped: 0, held: 0, deferred: 0, provider: null };
@@ -462,9 +464,16 @@ export async function runOpenAIEditorial(env, sb, {
   const typeFilter = Array.isArray(storyTypes) && storyTypes.length
     ? `&story_type=in.(${storyTypes.map((t) => encodeURIComponent(t)).join(',')})`
     : '';
+  /* Exact-slug targeting is an ADMIN tool (one named article at a time): it
+   * replaces the updated_at window and is refused on automatic runs. */
+  const targeted = Array.isArray(slugs) && slugs.length > 0;
+  if (targeted && !force) throw new Error('slug targeting requires force (explicit admin re-edit)');
+  const slugFilter = targeted
+    ? `&slug=in.(${slugs.map((x) => encodeURIComponent(String(x))).join(',')})`
+    : `&updated_at=gte.${encodeURIComponent(since)}`;
   const rows = await sb.select(
     'ufc_articles',
-    `select=id,slug,headline,dek,body_md,story_type,status,fact_block,sources,model_version,updated_at&status=eq.published${typeFilter}&updated_at=gte.${encodeURIComponent(since)}&order=updated_at.desc&limit=${safeLimit}`,
+    `select=id,slug,headline,dek,body_md,story_type,status,fact_block,sources,model_version,updated_at&status=eq.published${typeFilter}${slugFilter}&order=updated_at.desc&limit=${safeLimit}`,
   );
 
   let passed = 0;
