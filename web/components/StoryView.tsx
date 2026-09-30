@@ -7,7 +7,7 @@ import { JsonLd, Breadcrumbs, Avatar, Octagon, FighterRow } from "@/components/u
 import { ProPreview } from "@/components/ProPreview";
 import { getUfcAccess } from "@/lib/access";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
-import { renderMarkdown, renderMarkdownBlocks, excerpt, readingMinutes } from "@/lib/markdown";
+import { renderMarkdown, renderMarkdownBlocks, excerpt, readingMinutes, linkInternalMentions } from "@/lib/markdown";
 import { fighterSlug, eventSlug, matchupSlug } from "@/lib/slug";
 import { fmtDateTime, fmtDate, eventStatusLabel, locationLine, relTime } from "@/lib/format";
 import { SITE, STORY_TYPE_LABEL } from "@/lib/site";
@@ -155,6 +155,12 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
     const ua = (await headers()).get("user-agent") || "";
     console.info(JSON.stringify({ evt: "house_promo_impression", campaign: promo.campaign.id, placement: "end", dest: promo.campaign.dest, slug: a.slug, story_class: promo.storyClass, rotation: promo.rotationVersion, bot: /bot|crawl|spider|slurp|preview|headless/i.test(ua), at: new Date().toISOString() }));
   }
+  const linkedFighters = [...new Map(people.map((f) => [f.id, f])).values()]
+    .filter((f) => f.name && (f.espn_athlete_id || f.ufcstats_id));
+  const linkedBody = linkInternalMentions(a.body_md, linkedFighters.map((f) => ({
+    label: f.name,
+    href: `/fighters/${fighterSlug(f)}`,
+  })));
   const keywords = [...new Set(["UFC", "MMA", label, event?.name, ...fighters.map((f) => f.name), "PropBetEdge UFC", "Fight Intelligence"].filter(Boolean))];
 
   return (
@@ -218,7 +224,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
         <div>
           {plan ? (
             <ArticleBody
-              md={a.body_md}
+              md={linkedBody}
               modules={[
                 <BoutContextModule key="booking" plan={plan} eventHref={event ? `/events/${eventSlug(event)}` : null} />,
                 /* The subject card and the head-to-head table state many of the same
@@ -237,7 +243,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
               ]}
             />
           ) : (
-            <div className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(a.body_md) }} />
+            <div className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(linkedBody) }} />
           )}
           {access.pro && !plan && fb.market_watch && <MarketWatch mw={fb.market_watch} em={editorialMarket} />}
           {/* Anything the plan built that no module above claimed. Without this
