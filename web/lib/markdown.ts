@@ -64,8 +64,7 @@ export function linkInternalMentions(md: string, entities: InternalEntityLink[])
   for (const e of safe) {
     const key = `${e.label}\n${e.href}`;
     if (linked.has(key)) continue;
-    const escaped = e.label.replace(/[.*+?^${}()|[\]\\]/g, "\\
-export function renderMarkdown(md: string): string {");
+    const escaped = e.label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const re = new RegExp(`(^|[^A-Za-z0-9])(${escaped})(?=$|[^A-Za-z0-9])`, "i");
     const parts = out.split(/(\[[^\]]+\]\([^\s)]+\)|`[^`]*`)/g);
     let replaced = false;
