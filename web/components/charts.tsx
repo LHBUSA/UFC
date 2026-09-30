@@ -248,7 +248,7 @@ function LineChart({ spec }: { spec: ChartSpec }) {
         {ticks.map((t, i) => (
           <g key={i}>
             <line x1={PL} x2={W - PR} y1={py(t)} y2={py(t)} stroke="rgba(255,245,220,.10)" strokeWidth="1" />
-            <text x={PL - 8} y={py(t) + 4} textAnchor="end" fill="#8e8a80" fontSize="11" fontFamily="ui-monospace, monospace">{fmt(t)}</text>
+            <text x={PL - 8} y={py(t) + 4} textAnchor="end" fill="var(--ufc-text-meta)" fontSize="12" fontWeight="600" fontFamily="ui-monospace, monospace">{fmt(t)}</text>
           </g>
         ))}
         <polyline
@@ -264,8 +264,8 @@ function LineChart({ spec }: { spec: ChartSpec }) {
             {/* 2px surface ring, so a marker crossing the line stays legible. */}
             <circle cx={px(p.x)} cy={py(p.y)} r="6" fill={CHART_HUES[0]} stroke="#1d1914" strokeWidth="2" />
             <title>{`Round ${p.x}: ${fmt(p.y)}${p.n ? ` · ${p.n} rounds sampled` : ""}`}</title>
-            <text x={px(p.x)} y={py(p.y) - 14} textAnchor="middle" fill="#f5f1eb" fontSize="12" fontWeight="700" fontFamily="ui-monospace, monospace">{fmt(p.y)}</text>
-            <text x={px(p.x)} y={H - 9} textAnchor="middle" fill="#b8b3a8" fontSize="11" fontFamily="ui-monospace, monospace">R{p.x}</text>
+            <text x={px(p.x)} y={py(p.y) - 14} textAnchor="middle" fill="var(--ufc-text-primary)" fontSize="12" fontWeight="700" fontFamily="ui-monospace, monospace">{fmt(p.y)}</text>
+            <text x={px(p.x)} y={H - 9} textAnchor="middle" fill="var(--ufc-text-secondary)" fontSize="12" fontWeight="600" fontFamily="ui-monospace, monospace">R{p.x}</text>
           </g>
         ))}
       </svg>
