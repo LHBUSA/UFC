@@ -64,7 +64,8 @@ export function linkInternalMentions(md: string, entities: InternalEntityLink[])
   for (const e of safe) {
     const key = `${e.label}\n${e.href}`;
     if (linked.has(key)) continue;
-    const escaped = e.label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const escaped = e.label.replace(/[.*+?^${}()|[\]\\]/g, "\\
+export function renderMarkdown(md: string): string {");
     const re = new RegExp(`(^|[^A-Za-z0-9])(${escaped})(?=$|[^A-Za-z0-9])`, "i");
     const parts = out.split(/(\[[^\]]+\]\([^\s)]+\)|`[^`]*`)/g);
     let replaced = false;
@@ -79,23 +80,6 @@ export function linkInternalMentions(md: string, entities: InternalEntityLink[])
   }
   return out;
 }
-export function renderMarkdown(md: string): string {");
-    const re = new RegExp(`(^|[^A-Za-z0-9])(${escaped})(?=$|[^A-Za-z0-9])`, "i");
-    const parts = out.split(/(\[[^\]]+\]\([^\s)]+\)|`[^`]*`)/g);
-    let replaced = false;
-    out = parts.map((part) => {
-      if (replaced || /^\[[^\]]+\]\([^\s)]+\)$/.test(part) || /^`[^`]*`$/.test(part)) return part;
-      const next = part.replace(re, (_, lead, name) => {
-        replaced = true;
-        return `${lead}[${name}](${e.href})`;
-      });
-      return next;
-    }).join("");
-    if (replaced) linked.add(key);
-  }
-  return out;
-}
-
 export function renderMarkdown(md: string): string {
   return renderMarkdownBlocks(md).join("\n");
 }
