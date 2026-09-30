@@ -17,6 +17,7 @@ import { DnaEvidence } from "@/components/dna";
 import { Mark } from "@/components/Brand";
 import { headers } from "next/headers";
 import { HousePromo } from "@/components/HousePromo";
+import { PreferredSource } from "@/components/PreferredSource";
 import { classifyStory, selectPromo, weightsFor } from "@/lib/housePromo";
 import { algoCallsActive } from "@/lib/algo";
 import { BettorsEdge, MatchupModule, MarketWatch, Methodology, type FactBlock } from "@/components/editorial";
@@ -249,6 +250,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
           {/* First-party product promotion: presentation only, never in the body,
             * metadata or JSON-LD. Clicks are not recorded from a desk preview. */}
           <HousePromo selection={promo} slug={a.slug} track={!preview} />
+          <PreferredSource surface="article" />
         </div>
         <aside className="stack" style={{ gap: 24 }}>
           {bout && event && (

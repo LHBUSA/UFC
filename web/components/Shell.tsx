@@ -10,6 +10,7 @@ import { UFC_OFFICIAL } from "@/lib/heritage";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { getUfcAccess } from "@/lib/access";
 import { MembershipBadge } from "./Membership";
+import { PreferredSource } from "./PreferredSource";
 import { eventSlug } from "@/lib/slug";
 import { daysUntil, eventShortName, fmtDate } from "@/lib/format";
 
@@ -124,6 +125,7 @@ export function Footer() {
             <a href={UFC_OFFICIAL.store} target="_blank" rel="noopener">Official UFC Store ↗</a>
           </div>
         </div>
+        <PreferredSource surface="footer" />
         <nav className="net" aria-label="PropBetEdge sports">
           {NETWORK.sports.map((s) => s.key === CURRENT_SPORT
             ? <Link key={s.key} href={s.href} className="here"><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></Link>

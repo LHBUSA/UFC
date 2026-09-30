@@ -36,11 +36,13 @@ import "./pbe-flagship.css";
 import "./house-promo.css";
 import "./pbe-membership.css";
 import "./all-access.css";
+import "./preferred-source.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";
 import { LiveWire } from "@/components/LiveWire";
 import { ShareRail } from "@/components/ShareRail";
 import { NetworkAnalytics } from "@/components/NetworkAnalytics";
+import { PreferredSourceMount } from "@/components/PreferredSourceMount";
 import { JsonLd } from "@/components/ui";
 import { SITE } from "@/lib/site";
 
@@ -136,6 +138,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${mono.variable}`}>
       <body style={{ ["--pbe-font-ui" as string]: "var(--font-inter), Inter, sans-serif", ["--pbe-font-display" as string]: "var(--font-playfair), Georgia, serif", ["--pbe-font-data" as string]: "var(--font-mono), Menlo, monospace" } as React.CSSProperties}>
         <NetworkAnalytics surface="ufc" />
+        <PreferredSourceMount />
         <a className="skip" href="#main">Skip to content</a>
         <JsonLd data={ORG} />
         {/* The cart is a client context and wraps everything, because the

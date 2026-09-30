@@ -11,6 +11,7 @@
     "preserve:diff": "node scripts/preservation-diff.mjs",
     "preserve:baseline": "node scripts/preservation-check.mjs --write-baseline",
     "prebuild": "node scripts/preservation-check.mjs && node scripts/check-route-css-scope.mjs",
+    "test:preferred-source": "node --experimental-strip-types --test lib/preferredSource.test.ts",
     "test:market": "node --experimental-strip-types --test lib/market.test.mjs",
     "test:store": "node --test lib/store/store.test.ts",
     "test:judges": "node --experimental-strip-types --test lib/judgeScoring.test.mjs lib/judgeSchema.test.mjs",
