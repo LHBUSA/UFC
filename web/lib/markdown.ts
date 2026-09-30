@@ -46,6 +46,42 @@ export function renderMarkdownBlocks(md: string): string[] {
   }).filter(Boolean);
 }
 
+
+type InternalEntityLink = { label: string; href: string };
+
+/**
+ * Add canonical internal links to the first unlinked body mention of each entity.
+ * Existing Markdown links and inline code are protected, so this never nests or
+ * rewrites a URL the newsroom already chose.
+ */
+export function linkInternalMentions(md: string, entities: InternalEntityLink[]): string {
+  let out = String(md || "");
+  const linked = new Set<string>();
+  const safe = entities
+    .filter((e) => e.label && e.href.startsWith("/"))
+    .sort((a, b) => b.label.length - a.label.length);
+
+  for (const e of safe) {
+    const key = `${e.label}\n${e.href}`;
+    if (linked.has(key)) continue;
+    const escaped = e.label.replace(/[.*+?^$\{\}()|[\]\\]/g, "\\
+export function renderMarkdown(md: string): string {");
+    const re = new RegExp(`(^|[^A-Za-z0-9])(${escaped})(?=$|[^A-Za-z0-9])`, "i");
+    const parts = out.split(/(\[[^\]]+\]\([^\s)]+\)|`[^`]*`)/g);
+    let replaced = false;
+    out = parts.map((part) => {
+      if (replaced || /^\[[^\]]+\]\([^\s)]+\)$/.test(part) || /^`[^`]*`$/.test(part)) return part;
+      const next = part.replace(re, (_, lead, name) => {
+        replaced = true;
+        return `${lead}[${name}](${e.href})`;
+      });
+      return next;
+    }).join("");
+    if (replaced) linked.add(key);
+  }
+  return out;
+}
+
 export function renderMarkdown(md: string): string {
   return renderMarkdownBlocks(md).join("\n");
 }
