@@ -229,8 +229,9 @@ export async function getUpcomingEvents(limit = 6, opts: { includeContenderSerie
 export async function getNextEvent(): Promise<Event | null> {
   return (await getUpcomingEvents(1))[0] || null;
 }
-export async function getRecentEvents(limit = 6): Promise<Event[]> {
-  return (await rest<Event[]>(`ufc_events?select=${EVENT_COLS}&event_date=lt.${today()}${NOT_DWCS}&order=event_date.desc&limit=${limit}`, [])).data;
+export async function getRecentEvents(limit = 6, opts: { includeContenderSeries?: boolean } = {}): Promise<Event[]> {
+  const f = opts.includeContenderSeries ? "" : NOT_DWCS;
+  return (await rest<Event[]>(`ufc_events?select=${EVENT_COLS}&event_date=lt.${today()}${f}&order=event_date.desc&limit=${limit}`, [])).data;
 }
 export async function getAllEvents(): Promise<Event[]> {
   return (await rest<Event[]>(`ufc_events?select=${EVENT_COLS}&order=event_date.desc.nullslast&limit=2000`, [], { revalidate: 3600 })).data;
