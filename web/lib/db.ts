@@ -136,6 +136,7 @@ export type Article = {
 export type NewsItem = {
   id: string; url: string | null; title: string; published_at: string | null; summary: string | null;
   taxonomy: { labels?: string[]; confidence?: number } | null; fighter_ids: string[]; event_id: string | null; bout_id: string | null;
+  topic_signature?: string | null;
   source: { name: string } | null;
 };
 export type FighterImage = {
@@ -660,7 +661,7 @@ export async function getArticleTypeCounts(): Promise<Map<string, number>> {
 const PUBLIC_WIRE_ELIGIBILITY = "&state=not.in.(skipped,duplicate)";
 
 export async function getNewsItems(limit = 12): Promise<NewsItem[]> {
-  return (await rest<NewsItem[]>(`ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)${PUBLIC_WIRE_ELIGIBILITY}&order=published_at.desc.nullslast&limit=${limit}`, [], { revalidate: 600 })).data;
+  return (await rest<NewsItem[]>(`ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,topic_signature,source:ufc_news_sources(name)${PUBLIC_WIRE_ELIGIBILITY}&order=published_at.desc.nullslast&limit=${limit}`, [], { revalidate: 600 })).data;
 }
 
 /* Attributed wire items linked to an event or any of the given fighters
@@ -882,7 +883,8 @@ export async function getTicker(limit = 12): Promise<TickerItem[]> {
   }
 
   for (const n of items) {
-    if (coveredItemIds.has(n.id)) continue;   /* we published this one */
+    if (coveredItemIds.has(n.id)) continue;   /* we published this exact item */
+    if (n.topic_signature && coveredSignatures.has(n.topic_signature)) continue; /* our article supersedes corroborating outlets */
     out.push({
       kind: "wire",
       id: n.id,
@@ -893,6 +895,7 @@ export async function getTicker(limit = 12): Promise<TickerItem[]> {
       source: n.source?.name || "Source",
       label: n.taxonomy?.labels?.[0] && n.taxonomy.labels[0] !== "other"
         ? n.taxonomy.labels[0].replace("_", " ") : null,
+      topic_signature: n.topic_signature ?? null,
     });
   }
 
@@ -905,12 +908,14 @@ export async function getTicker(limit = 12): Promise<TickerItem[]> {
   /* Never let one development occupy two slots even when the second copy came
    * from a different outlet. Titles are compared on distinctive tokens, the
    * same shape the enrich worker's clone guard uses. */
+  const seenSignatures = new Set<string>();
   const seenTokens: Array<Set<string>> = [];
   const tokens = (s: string) => new Set(
     s.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter((w) => w.length > 3),
   );
   const deduped: TickerItem[] = [];
   for (const t of out) {
+    if (t.topic_signature && seenSignatures.has(t.topic_signature)) continue;
     const tk = tokens(t.title);
     const dupe = seenTokens.some((prev) => {
       let shared = 0;
@@ -918,6 +923,7 @@ export async function getTicker(limit = 12): Promise<TickerItem[]> {
       return shared >= 3;
     });
     if (dupe) continue;
+    if (t.topic_signature) seenSignatures.add(t.topic_signature);
     seenTokens.push(tk);
     deduped.push(t);
   }
