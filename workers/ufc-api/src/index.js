@@ -1623,7 +1623,7 @@ const WIRE_STOPWORDS = new Set([
   "a", "an", "the", "and", "or", "of", "to", "in", "on", "at", "for", "with", "vs", "vs.", "v", "as", "by", "from", "is", "are",
   "his", "her", "their", "its", "this", "that", "after", "before", "over", "into", "out", "up", "off", "ufc", "mma",
 ]);
-const WIRE_ITEM_COLS = "id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name,url)";
+const WIRE_ITEM_COLS = "id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,topic_signature,source:ufc_news_sources(name,url)";
 const WIRE_BOUT_SELECT = "id,event_id,fighter_a:ufc_fighters!ufc_bouts_fighter_a_id_fkey(id,name,espn_athlete_id,ufcstats_id),fighter_b:ufc_fighters!ufc_bouts_fighter_b_id_fkey(id,name,espn_athlete_id,ufcstats_id),event:ufc_events(id,name,event_date)";
 const CONTENDER_SERIES_RE = /contender series|road to ufc/i;
 
@@ -1671,12 +1671,22 @@ function normalizeTitle(title) {
 function dedupeWireItems(items) {
   const byKey = new Map();
   for (const item of items) {
-    const key = normalizeTitle(item.title) || `id:${item.id}`;
+    const labels = item?.taxonomy && typeof item.taxonomy === "object" && Array.isArray(item.taxonomy.labels)
+      ? item.taxonomy.labels.filter(Boolean)
+      : [];
+    const eventResultKey = item.event_id && labels.includes("result") && !item.bout_id
+      ? `event-result:${item.event_id}`
+      : null;
+    const key = item.topic_signature || eventResultKey || normalizeTitle(item.title) || `id:${item.id}`;
     const prev = byKey.get(key);
     if (!prev) { byKey.set(key, item); continue; }
-    const a = String(item.published_at || "9999");
-    const b = String(prev.published_at || "9999");
-    if (a < b) byKey.set(key, item);
+
+    /* Keep the most recently published representative for a live rail. For
+     * event-level result pages (main card / prelims / scorecards), one event
+     * occupies one slot instead of three variants of the same development. */
+    const a = String(item.published_at || "");
+    const b = String(prev.published_at || "");
+    if (a > b) byKey.set(key, item);
   }
   return [...byKey.values()].sort((x, y) => String(y.published_at || "").localeCompare(String(x.published_at || "")));
 }
