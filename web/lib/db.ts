@@ -5,6 +5,7 @@ import { espnVerifiedPortrait } from "@/lib/espnPortraitGate";
 import { pickStoredPortraits } from "@/lib/portraitSelection";
 import { ufcSiteDate } from "@/lib/siteClock";
 import { trainingPayload, TRAINING_STINT_COLS, TRAINING_CHANGE_COLS, type CurrentRow, type StintRow, type ChangeRow, type TrainingPayload } from "@/lib/training";
+import { wireDevelopmentKey } from "@/lib/wireDedupe";
 /* Server-only data access. PostgREST over fetch with the service-role key
  * (RLS has no anon policies by design). Every reader is wrapped so that a
  * missing env var, a table that does not exist yet, or a network failure
@@ -135,7 +136,7 @@ export type Article = {
 };
 export type NewsItem = {
   id: string; url: string | null; title: string; published_at: string | null; summary: string | null;
-  taxonomy: { labels?: string[]; confidence?: number } | null; fighter_ids: string[]; event_id: string | null; bout_id: string | null;
+  taxonomy: { labels?: string[]; matched?: string[]; confidence?: number } | null; fighter_ids: string[]; event_id: string | null; bout_id: string | null;
   topic_signature?: string | null;
   source: { name: string } | null;
 };
@@ -681,7 +682,7 @@ export async function getWireFor(eventId: string | null, fighterIds: string[], l
     [], { revalidate: 60 },
   )).data;
 
-  const seenSignatures = new Set<string>();
+  const seenDevelopmentKeys = new Set<string>();
   const seenTokens: Array<Set<string>> = [];
   const tokens = (s: string) => new Set(
     String(s || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter((w) => w.length > 3),
@@ -689,7 +690,8 @@ export async function getWireFor(eventId: string | null, fighterIds: string[], l
 
   const out: NewsItem[] = [];
   for (const row of rows) {
-    if (row.topic_signature && seenSignatures.has(row.topic_signature)) continue;
+    const developmentKey = wireDevelopmentKey(row);
+    if (developmentKey && seenDevelopmentKeys.has(developmentKey)) continue;
 
     const tk = tokens(row.title);
     const duplicate = seenTokens.some((prev) => {
@@ -699,7 +701,7 @@ export async function getWireFor(eventId: string | null, fighterIds: string[], l
     });
     if (duplicate) continue;
 
-    if (row.topic_signature) seenSignatures.add(row.topic_signature);
+    if (developmentKey) seenDevelopmentKeys.add(developmentKey);
     seenTokens.push(tk);
     out.push(row);
     if (out.length >= limit) break;
@@ -881,7 +883,7 @@ export async function getTicker(limit = 12): Promise<TickerItem[]> {
       [], { revalidate: 60 },
     ).then((r) => r.data),
     rest<NewsItem[]>(
-      `ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)${PUBLIC_WIRE_ELIGIBILITY}&published_at=gte.${since}&order=published_at.desc.nullslast&limit=60`,
+      `ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,topic_signature,source:ufc_news_sources(name)${PUBLIC_WIRE_ELIGIBILITY}&published_at=gte.${since}&order=published_at.desc.nullslast&limit=60`,
       [], { revalidate: 60 },
     ).then((r) => r.data),
   ]);
@@ -915,9 +917,13 @@ export async function getTicker(limit = 12): Promise<TickerItem[]> {
     });
   }
 
+  const seenWireDevelopments = new Set<string>();
   for (const n of items) {
     if (coveredItemIds.has(n.id)) continue;   /* we published this exact item */
     if (n.topic_signature && coveredSignatures.has(n.topic_signature)) continue; /* our article supersedes corroborating outlets */
+    const developmentKey = wireDevelopmentKey(n);
+    if (developmentKey && seenWireDevelopments.has(developmentKey)) continue;
+    if (developmentKey) seenWireDevelopments.add(developmentKey);
     out.push({
       kind: "wire",
       id: n.id,
