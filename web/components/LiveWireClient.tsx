@@ -33,6 +33,7 @@ export function LiveWireRail({ initial, api }: { initial: Wire; api: string }) {
   /* Fight Week / Pregame own their local navigator; the wire stays in flow
    * there so the page never carries three stacked sticky bars. */
   const pathname = usePathname() || "/";
+  const home = pathname === "/";
   const quiet = /^\/(fight-week|pregame)(\/|$)/.test(pathname);
 
   useEffect(() => {
@@ -91,18 +92,21 @@ export function LiveWireRail({ initial, api }: { initial: Wire; api: string }) {
   );
 
   return (
-    <div className={`wire-rail${paused ? " paused" : ""}${f.live ? " live" : ""}${quiet ? " static" : ""}`} role="region" aria-label={label}
-      onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
-      <div className="wire-badge">
-        <i className={`wire-dot${f.live ? (f.urgent ? " hot" : " on") : ""}`} aria-hidden="true" />
-        <span>{label}</span>
-      </div>
-      <div className="wire-view">
-        <div className="wire-belt">
-          {row()}
+    <>
+      {home && <div className="wire-home-spacer" aria-hidden="true" />}
+      <div className={`wire-rail${paused ? " paused" : ""}${f.live ? " live" : ""}${quiet ? " static" : ""}${home ? " home-fixed" : ""}`} role="region" aria-label={label}
+        onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocus={() => setPaused(true)} onBlur={() => setPaused(false)}>
+        <div className="wire-badge">
+          <i className={`wire-dot${f.live ? (f.urgent ? " hot" : " on") : ""}`} aria-hidden="true" />
+          <span>{label}</span>
         </div>
+        <div className="wire-view">
+          <div className="wire-belt">
+            {row()}
+          </div>
+        </div>
+        <Link href="/news" className="wire-more">Newsroom →</Link>
       </div>
-      <Link href="/news" className="wire-more">Newsroom →</Link>
-    </div>
+    </>
   );
 }

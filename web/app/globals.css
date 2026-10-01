@@ -635,6 +635,8 @@ body::after {
    One visible copy of each story. One semantic copy of each story. The single track still moves automatically;
    it simply restarts when the last item clears instead of cloning the list.
    ===================================================================== */
+.wire-home-spacer { height: 38px; }
+.wire-rail.home-fixed { position: fixed; top: var(--hdr-h); left: 0; right: 0; width: 100%; z-index: 49; }
 .wire-rail { position: sticky; top: var(--hdr-h); z-index: 40; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: stretch; height: 38px; background: rgba(13,11,8,.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,245,220,.12); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
 .wire-badge { display: flex; align-items: center; gap: 8px; padding: 0 14px 0 var(--s-5); font: 700 var(--fs-micro)/1 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-gold); border-right: 1px solid rgba(255,245,220,.12); white-space: nowrap; background: linear-gradient(90deg, rgba(212,175,55,.08), transparent); }
 .wire-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--pbe-subtle); flex: none; }
@@ -657,6 +659,7 @@ body::after {
 .wire-rail:hover .wire-track, .wire-rail:focus-within .wire-track { animation-play-state: paused; }
 @keyframes wire-scroll-single { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 @media (max-width: 720px) {
+  .wire-home-spacer { height: 34px; }
   .wire-rail { top: var(--hdr-h); height: 34px; grid-template-columns: auto minmax(0, 1fr) auto; }
   .wire-badge { padding: 0 10px 0 var(--s-4); }
   .wire-badge span { display: none; }
