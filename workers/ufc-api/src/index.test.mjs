@@ -955,12 +955,12 @@ test("wire dedupes one event-level result development across main card, prelims 
     fighter_ids: [],
     event_id: E_NEXT,
     bout_id: null,
-    taxonomy: { labels: ["result"] },
+    taxonomy: { labels: ["result"], matched: ["result:results"] },
     topic_signature: null,
     source: SRC_ESPN,
   };
   const prelims = { ...base, id: "a0000011", title: "Prelims Results | UFC 332: Silva vs Wang", published_at: "2026-10-03T20:00:00Z" };
-  const scorecards = { ...base, id: "a0000012", title: "Official Scorecards | UFC 332: Silva vs Wang", published_at: "2026-10-03T20:00:00Z" };
+  const scorecards = { ...base, id: "a0000012", title: "Official Scorecards | UFC 332: Silva vs Wang", published_at: "2026-10-03T20:00:00Z", taxonomy: { labels: ["result"], matched: ["result:scorecards"] } };
   const main = { ...base, id: "a0000013", title: "Main Card Results | UFC 332: Silva vs Wang", published_at: "2026-10-04T00:00:00Z" };
   const out = __test.dedupeWireItems([main, scorecards, prelims]);
   assert.equal(out.length, 1);
