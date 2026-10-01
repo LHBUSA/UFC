@@ -1681,12 +1681,12 @@ function dedupeWireItems(items) {
     const prev = byKey.get(key);
     if (!prev) { byKey.set(key, item); continue; }
 
-    /* Keep the most recently published representative for a live rail. For
-     * event-level result pages (main card / prelims / scorecards), one event
-     * occupies one slot instead of three variants of the same development. */
-    const a = String(item.published_at || "");
-    const b = String(prev.published_at || "");
-    if (a > b) byKey.set(key, item);
+    /* Preserve the existing canonical-copy rule: keep the earliest published
+     * representative. Event-level result pages (main card / prelims /
+     * scorecards) still collapse to one event slot instead of three variants. */
+    const a = String(item.published_at || "9999");
+    const b = String(prev.published_at || "9999");
+    if (a < b) byKey.set(key, item);
   }
   return [...byKey.values()].sort((x, y) => String(y.published_at || "").localeCompare(String(x.published_at || "")));
 }
