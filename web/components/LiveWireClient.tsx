@@ -62,14 +62,10 @@ export function LiveWireRail({ initial, api }: { initial: Wire; api: string }) {
   const label = f.live ? "UFC Live Wire" : "Latest UFC";
   const duration = Math.max(60, items.length * 9);
 
-  /* Marquee duplication is intentional (CASE A): the belt renders the same
-   * 20 items twice so the loop is seamless. Row "a" is the single semantic
-   * copy; row "b" is a visual clone with aria-hidden and tabIndex -1, so
-   * assistive tech and the tab order see each story once. Items are fetched
-   * once (server render + one client poll), never twice per render, and no
-   * element ids are used inside the belt, so no duplicate ids exist. */
-  const row = (keyPrefix: string, ariaHidden = false) => (
-    <ul className="wire-track" aria-hidden={ariaHidden || undefined} style={{ animationDuration: `${duration}s` }}>
+  /* Render each editorial item exactly once. The old seamless-marquee clone
+   * rendered a second visual copy of every story and read as duplication. */
+  const row = () => (
+    <ul className="wire-track" style={{ animationDuration: `${duration}s` }}>
       {items.map((it) => {
         const urgent = it.taxonomy && URGENT.has(it.taxonomy);
         /* Our own coverage is marked, not disguised as another wire item: a
@@ -84,9 +80,9 @@ export function LiveWireRail({ initial, api }: { initial: Wire; api: string }) {
           </>
         );
         return (
-          <li key={`${keyPrefix}-${it.id}`} className={own ? "wire-own" : undefined}>
-            {it.internal_url ? <Link href={it.internal_url} tabIndex={ariaHidden ? -1 : 0}>{inner}</Link>
-              : it.source_url ? <a href={it.source_url} rel="noopener nofollow" target="_blank" tabIndex={ariaHidden ? -1 : 0}>{inner}</a>
+          <li key={it.id} className={own ? "wire-own" : undefined}>
+            {it.internal_url ? <Link href={it.internal_url} tabIndex={0}>{inner}</Link>
+              : it.source_url ? <a href={it.source_url} rel="noopener nofollow" target="_blank" tabIndex={0}>{inner}</a>
               : <span>{inner}</span>}
           </li>
         );
@@ -103,8 +99,7 @@ export function LiveWireRail({ initial, api }: { initial: Wire; api: string }) {
       </div>
       <div className="wire-view">
         <div className="wire-belt">
-          {row("a")}
-          {row("b", true)}
+          {row()}
         </div>
       </div>
       <Link href="/news" className="wire-more">Newsroom →</Link>
