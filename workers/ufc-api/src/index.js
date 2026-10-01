@@ -1671,12 +1671,22 @@ function normalizeTitle(title) {
 function dedupeWireItems(items) {
   const byKey = new Map();
   for (const item of items) {
-    const labels = item?.taxonomy && typeof item.taxonomy === "object" && Array.isArray(item.taxonomy.labels)
-      ? item.taxonomy.labels.filter(Boolean)
-      : [];
-    const eventResultKey = item.event_id && labels.includes("result") && !item.bout_id
-      ? `event-result:${item.event_id}`
-      : null;
+    const taxonomy = item?.taxonomy && typeof item.taxonomy === "object" ? item.taxonomy : {};
+    const labels = Array.isArray(taxonomy.labels) ? taxonomy.labels.filter(Boolean) : [];
+    const matched = Array.isArray(taxonomy.matched) ? taxonomy.matched.filter(Boolean) : [];
+    const fighterIds = Array.isArray(item.fighter_ids) ? item.fighter_ids.filter(Boolean) : [];
+
+    /* Collapse only the generic event-results hub family. Do not group every
+     * event-level item labelled "result": weigh-in results, fighter-specific
+     * stories and other event context are separate developments. The live UFC
+     * feeds mark the duplicate hub variants as result:results / result:scorecards. */
+    const isEventResultsHub =
+      Boolean(item.event_id) &&
+      !item.bout_id &&
+      fighterIds.length === 0 &&
+      labels.includes("result") &&
+      matched.some((m) => m === "result:results" || m === "result:scorecards");
+    const eventResultKey = isEventResultsHub ? `event-result-hub:${item.event_id}` : null;
     const key = item.topic_signature || eventResultKey || normalizeTitle(item.title) || `id:${item.id}`;
     const prev = byKey.get(key);
     if (!prev) { byKey.set(key, item); continue; }
