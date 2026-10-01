@@ -671,7 +671,40 @@ export async function getWireFor(eventId: string | null, fighterIds: string[], l
   if (eventId) ors.push(`event_id.eq.${eventId}`);
   for (const id of fighterIds.slice(0, 6)) ors.push(`fighter_ids.cs.{${id}}`);
   if (!ors.length) return [];
-  return (await rest<NewsItem[]>(`ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,source:ufc_news_sources(name)${PUBLIC_WIRE_ELIGIBILITY}&or=(${ors.join(",")})&order=published_at.desc.nullslast&limit=${limit}`, [], { revalidate: 300 })).data;
+
+  /* Fetch extra candidates, then collapse same-development headlines locally.
+   * The previous sidebar query rendered the first six rows verbatim, so two
+   * outlets covering one booking/replacement could occupy two slots even when
+   * enrichment had already assigned the same topic_signature. */
+  const rows = (await rest<NewsItem[]>(
+    `ufc_news_items?select=id,url,title,published_at,summary,taxonomy,fighter_ids,event_id,bout_id,topic_signature,source:ufc_news_sources(name)${PUBLIC_WIRE_ELIGIBILITY}&or=(${ors.join(",")})&order=published_at.desc.nullslast&limit=${Math.max(limit * 4, 24)}`,
+    [], { revalidate: 60 },
+  )).data;
+
+  const seenSignatures = new Set<string>();
+  const seenTokens: Array<Set<string>> = [];
+  const tokens = (s: string) => new Set(
+    String(s || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter((w) => w.length > 3),
+  );
+
+  const out: NewsItem[] = [];
+  for (const row of rows) {
+    if (row.topic_signature && seenSignatures.has(row.topic_signature)) continue;
+
+    const tk = tokens(row.title);
+    const duplicate = seenTokens.some((prev) => {
+      let shared = 0;
+      for (const word of tk) if (prev.has(word)) shared += 1;
+      return shared >= 3;
+    });
+    if (duplicate) continue;
+
+    if (row.topic_signature) seenSignatures.add(row.topic_signature);
+    seenTokens.push(tk);
+    out.push(row);
+    if (out.length >= limit) break;
+  }
+  return out;
 }
 
 /* ---- counts for the home strip --------------------------------------- */
