@@ -134,6 +134,21 @@ export type Article = {
   event_id: string | null; bout_id: string | null; fighter_ids: string[]; published_at: string | null; updated_at: string; created_at?: string;
   fact_block?: Record<string, unknown> | null;
 };
+export type ReportedCardBout = {
+  id: string;
+  event_id: string;
+  source_family: string;
+  source_url: string;
+  matchup_key: string;
+  fighter_a_name: string;
+  fighter_b_name: string;
+  weight_class_raw: string | null;
+  bout_order: number | null;
+  first_seen_at: string;
+  last_seen_at: string;
+  active: boolean;
+};
+
 export type NewsItem = {
   id: string; url: string | null; title: string; published_at: string | null; summary: string | null;
   taxonomy: { labels?: string[]; matched?: string[]; confidence?: number } | null; fighter_ids: string[]; event_id: string | null; bout_id: string | null;
@@ -312,6 +327,21 @@ export async function getBoutCounts(eventIds: string[]): Promise<Map<string, num
   const rows = (await rest<Array<{ event_id: string }>>(`${BOUTS_EFFECTIVE}?select=event_id&event_id=in.(${eventIds.join(",")})&is_active=is.true&limit=5000`, [])).data;
   for (const r of rows) m.set(r.event_id, (m.get(r.event_id) || 0) + 1);
   return m;
+}
+
+export async function getReportedCardBouts(eventIds: string[]): Promise<Map<string, ReportedCardBout[]>> {
+  const out = new Map<string, ReportedCardBout[]>();
+  if (!eventIds.length) return out;
+  const rows = (await rest<ReportedCardBout[]>(
+    `ufc_reported_card_bouts?select=id,event_id,source_family,source_url,matchup_key,fighter_a_name,fighter_b_name,weight_class_raw,bout_order,first_seen_at,last_seen_at,active&event_id=in.(${eventIds.join(",")})&active=is.true&order=event_id.asc,bout_order.desc.nullslast`,
+    [],
+    { revalidate: 60 },
+  )).data;
+  for (const row of rows) {
+    if (!out.has(row.event_id)) out.set(row.event_id, []);
+    out.get(row.event_id)!.push(row);
+  }
+  return out;
 }
 /* Main events (highest bout_order still ON the card) for a list of events, one request. */
 export async function getMainEvents(eventIds: string[]): Promise<Map<string, Bout>> {

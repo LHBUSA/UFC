@@ -8,7 +8,7 @@ import { getDwcsGraph } from "@/lib/dwcsGraph";
 import { getRankingIndex } from "@/lib/rankings";
 import { isRanked } from "@/lib/rankingContext";
 import { VideoRail } from "@/components/VideoRail";
-import { getVideosForEvent, sortVideosTimeline } from "@/lib/db";
+import { getReportedCardBouts, getVideosForEvent, sortVideosTimeline } from "@/lib/db";
 import { eventSlug } from "@/lib/slug";
 import { eventStatusLabel, fmtDate, fmtDateTime, locationLine, METHOD_SHORT, winnerOf } from "@/lib/format";
 import { SITE } from "@/lib/site";
@@ -45,7 +45,10 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
   const seasonNo = Number.isInteger(requested) && requested > 0 ? requested : latestLoaded;
   const selected = showBrazil ? null : seasons.find((s) => s.season === seasonNo) || null;
   const events = showBrazil ? brazil!.events : selected?.events || [];
-  const { counts, mains } = await getContenderEventContext(events);
+  const [{ counts, mains }, reported] = await Promise.all([
+    getContenderEventContext(events),
+    getReportedCardBouts(events.map((e) => e.id)),
+  ]);
   const expected = expectedContenderSeasons();
   const loaded = new Set(seasons.map((s) => s.season));
   const loadedEvents = seasons.reduce((sum, season) => sum + season.events.length, 0);
@@ -127,6 +130,8 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
         <div className="dwcs-grid">
           {events.map((event) => {
             const main = mains.get(event.id);
+            const reportedRows = reported.get(event.id) || [];
+            const reportedMain = reportedRows[0] || null;
             const winner = main ? winnerOf(main) : null;
             const loser = main && winner ? (winner.id === main.fighter_a.id ? main.fighter_b : main.fighter_a) : null;
             const boutCount = counts.get(event.id) || 0;
@@ -139,12 +144,16 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
                 <div>
                   <h3>{event.name.replace(/^Dana White(?:'s|’s) Contender Series[: ,–-]*/i, "") || event.name}</h3>
                   <div className="dwcs-week-meta">
-                    {main ? (winner && loser ? <><b>{winner.name}</b> def. {loser.name}{main.result ? ` · ${METHOD_SHORT[main.result.method] || main.result.method}` : ""}</> : <><b>{main.fighter_a.name}</b> vs <b>{main.fighter_b.name}</b></>) : "Card lineup pending"}
-                    {boutCount ? ` · ${boutCount} bouts` : ""}
+                    {main
+                      ? (winner && loser ? <><b>{winner.name}</b> def. {loser.name}{main.result ? ` · ${METHOD_SHORT[main.result.method] || main.result.method}` : ""}</> : <><b>{main.fighter_a.name}</b> vs <b>{main.fighter_b.name}</b></>)
+                      : reportedMain
+                        ? <><b>{reportedMain.fighter_a_name}</b> vs <b>{reportedMain.fighter_b_name}</b></>
+                        : event.card_status === "announced" ? "Card announced · lineup sync pending" : "Card lineup pending"}
+                    {boutCount ? ` · ${boutCount} bouts` : reportedRows.length ? ` · ${reportedRows.length} reported bouts` : ""}
                     {locationLine(event) ? ` · ${locationLine(event)}` : ""}
                   </div>
                 </div>
-                <div className="dwcs-week-status"><span className={`tag${event.card_status === "complete" ? " pos" : " gold"}`}>{eventStatusLabel(event)}</span></div>
+                <div className="dwcs-week-status"><span className={`tag${event.card_status === "complete" ? " pos" : " gold"}`}>{eventStatusLabel(event)}</span>{!main && reportedRows.length ? <span className="tag">Reported</span> : null}</div>
               </Link>
             );
           })}
@@ -162,7 +171,7 @@ export default async function ContenderSeriesPage({ searchParams }: { searchPara
       )}
 
       <section className="dwcs-source">
-        <b>Source &amp; freshness.</b> Data · <a href="https://propsports.proptechusa.ai" target="_blank" rel="noopener">PropSports</a>. Its UFC league feed is the primary schedule, bout, result, fight-total, judges&apos; card and fighter-identity source in the production ingest; a separate round-stat dataset is used where a fight can be linked and verified. Contender Series Brazil (2018) is listed as its own series, not as weeks of Season 2. Current cards are read directly from the canonical PropBetEdge UFC tables; no season or week is hard-coded into this page. {missing.length ? `Historical seasons still missing from production: ${missing.map((s) => `S${s}`).join(", ")}.` : "All expected numbered seasons are loaded."}
+        <b>Source &amp; freshness.</b> Data · <a href="https://propsports.proptechusa.ai" target="_blank" rel="noopener">PropSports</a>. Its UFC league feed is the primary schedule, bout, result, fight-total, judges&apos; card and fighter-identity source in the production ingest; a separate round-stat dataset is used where a fight can be linked and verified. Contender Series Brazil (2018) is listed as its own series, not as weeks of Season 2. Current cards prefer canonical PropBetEdge UFC bout rows. When the primary feed exposes only an incomplete placeholder, a separately labeled sourced reported-card snapshot may fill the public schedule until canonical fighter identities arrive; the canonical card replaces that fallback automatically. No season or week is hard-coded into this page. {missing.length ? `Historical seasons still missing from production: ${missing.map((s) => `S${s}`).join(", ")}.` : "All expected numbered seasons are loaded."}
       </section>
 
       <JsonLd data={{

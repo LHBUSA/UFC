@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getFightDnaReady, getEarliestEventDate, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
+import { getFightDnaReady, getEarliestEventDate, getEventBouts, getUpcomingEvents, getRecentEvents, getArticles, getCounts, getImagesForFighters, getMainEvents, getRankings, getFightersByIds, getBoutCounts, getReportedCardBouts, getFightWeekVideos, getImageFraming, isContenderSeries, getTicker } from "@/lib/db";
 import { CardSegments, Empty, EventCard, MatchupCard, ProPlans, SectionHead, JsonLd, Avatar, Octagon } from "@/components/ui";
 import { NewsStoryCard } from "@/components/NewsStoryCard";
 import { StoryRelated } from "@/components/StoryRelated";
@@ -106,7 +106,7 @@ export default async function Home() {
         ),
       ]).then(([providerLive, markets]) => providerLive ? (markets.get(mainEvent.id) ?? null) : null).catch(() => null)
     : Promise.resolve(null);
-  const [imgs, briefs, media, champs, contenders, dwcsCounts, freshness, videos, mainMarket] = await Promise.all([
+  const [imgs, briefs, media, champs, contenders, dwcsCounts, dwcsReported, freshness, videos, mainMarket] = await Promise.all([
     getImagesForFighters([
       ...bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
       ...[...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
@@ -117,6 +117,7 @@ export default async function Home() {
     getFightersByIds(champIds),
     getFightersByIds(contenderIds),
     getBoutCounts([dwcsNext?.id, dwcsLast?.id].filter(Boolean) as string[]),
+    getReportedCardBouts([dwcsNext?.id, dwcsLast?.id].filter(Boolean) as string[]),
     getIngestFreshness().catch(() => null),
     getFightWeekVideos(next?.id || null, 5).catch(() => []),
     mainMarketPromise,
@@ -336,7 +337,7 @@ export default async function Home() {
             {wire.length ? <ul className="wire">{wire.map((n) => <li key={n.id} className={n.external ? undefined : "wire-own"}>{n.external ? <a href={n.href} rel="noopener nofollow" target="_blank">{n.title}{n.label ? <span className="lab">{n.label}</span> : null}</a> : <Link href={n.href}>{n.title}{n.label ? <span className="lab">{n.label}</span> : null}</Link>}<span className="src">{n.external ? n.source : <strong>PropBetEdge</strong>} &middot; {relTime(n.at)}</span></li>)}</ul> : <Empty title="Wire is quiet">External headlines are ingested continuously and attributed to their source; PropBetEdge analysis supersedes them as it publishes.</Empty>}
           </div>
         </div>
-        <div className="wrap"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={dwcsCounts} freshness={freshness?.finished_at || freshness?.started_at || null} /></div>
+        <div className="wrap"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={dwcsCounts} reported={dwcsReported} freshness={freshness?.finished_at || freshness?.started_at || null} /></div>
       </section>
 
       <section className="sec">

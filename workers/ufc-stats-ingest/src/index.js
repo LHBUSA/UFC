@@ -61,6 +61,7 @@ import { roundArchiveGaps, roundArchiveReviewItems, roundLaneStatus, gapAlertDec
 import { OFFICIAL_METHOD, officialFightUrl, officialEventUrl, ufcComEventUrl, fightIdsFromUfcComPage, parseOfficialEvent, parseOfficialFight,
   officialReadiness, sameOfficialEvent, mapOfficialFighters, validateOfficialFight, officialRoundRows, ROUND_COLUMNS, knownNames } from './ufcOfficial.mjs';
 import { RECORD_FIELDS, decideRecordRefresh, planRecordRefresh, fighterOutcome, fmtRecord, storedRecord } from './fighterRecord.mjs';
+import { fightmagDwcsUrl, matchupKey, parseFightmagDwcsCard } from './reportedCard.mjs';
 
 /* Fighter career records (fighterRecord.mjs). ESPN's career record is the
  * source; our results only say WHEN to look and how far the source may move.
@@ -126,7 +127,7 @@ const JUDGED_METHODS = ['DEC_U', 'DEC_S', 'DEC_M', 'DRAW'];
 const SCORECARD_RECONCILE_MAX = 40;
 
 const SERVICE = 'ufc-stats-ingest';
-const VERSION = 'v0.9.5';
+const VERSION = 'v0.9.6';
 
 const health = { last_cron_run: null, last_result: null, last_error_class: null };
 const nowIso = () => new Date().toISOString();
@@ -2285,6 +2286,104 @@ async function linkUfcstatsFighter(env, fetcher, ctx, run, ufcstatsId, name, fro
 /* The ordinary ESPN pass over a 7-day window: same identity validation, same idempotent upserts, same append-only
  * card observation. Its own run row (mode card-watch) and no "ok" Discord line, because it runs 48 times a day; the
  * only message it can send is the contradiction guard's, deduplicated in R2. checkOnly skips ESPN (guard only). */
+async function syncReportedDwcsCards(env, run, { now = Date.now() } = {}) {
+  const today = new Date(now).toISOString().slice(0, 10);
+  const until = new Date(now + CARD_WATCH.aheadDays * 86400e3).toISOString().slice(0, 10);
+  const events = await selectAll(
+    env,
+    'ufc_events',
+    `select=id,name,event_date,event_series&event_series=eq.contender_series&event_date=gte.${today}&event_date=lte.${until}&order=event_date.asc`,
+  );
+  const out = [];
+
+  for (const ev of events) {
+    const canonical = await selectAll(env, 'ufc_bouts_effective', `select=id&event_id=eq.${ev.id}&is_active=is.true&is_settled=is.false`);
+    if (canonical.length > 0) {
+      out.push({ event_id: ev.id, event_name: ev.name, action: 'canonical_present', canonical_bouts: canonical.length });
+      continue;
+    }
+
+    const sourceUrl = fightmagDwcsUrl(ev.name);
+    if (!sourceUrl) {
+      out.push({ event_id: ev.id, event_name: ev.name, action: 'unsupported_name' });
+      continue;
+    }
+
+    let res;
+    try {
+      res = await fetch(sourceUrl, {
+        headers: { 'user-agent': 'PropBetEdge-UFC/1.0 (+https://ufc.propbetedge.ai)', accept: 'text/html' },
+        cf: { cacheTtl: 0 },
+      });
+    } catch (e) {
+      out.push({ event_id: ev.id, event_name: ev.name, action: 'source_unavailable', error: String(e?.message || e).slice(0, 120) });
+      continue;
+    }
+    if (!res.ok) {
+      out.push({ event_id: ev.id, event_name: ev.name, action: 'source_http', status: res.status });
+      continue;
+    }
+
+    const html = await res.text();
+    const rows = parseFightmagDwcsCard(html, ev.name);
+    if (!rows.length) {
+      out.push({ event_id: ev.id, event_name: ev.name, action: 'parse_hold', source_url: sourceUrl });
+      continue;
+    }
+
+    const existing = await selectAll(
+      env,
+      'ufc_reported_card_bouts',
+      `select=id,matchup_key,first_seen_at,active&event_id=eq.${ev.id}&source_family=eq.fightmag`,
+    );
+    const byKey = new Map(existing.map((r) => [r.matchup_key, r]));
+    const seen = new Set();
+    const at = nowIso();
+
+    for (let i = 0; i < rows.length; i += 1) {
+      const r = rows[i];
+      const key = matchupKey(r.fighter_a_name, r.fighter_b_name);
+      seen.add(key);
+      const prior = byKey.get(key);
+      if (prior) {
+        await patch(env, 'ufc_reported_card_bouts', `id=eq.${prior.id}`, {
+          source_url: sourceUrl,
+          fighter_a_name: r.fighter_a_name,
+          fighter_b_name: r.fighter_b_name,
+          weight_class_raw: r.weight_class_raw,
+          bout_order: rows.length - i,
+          last_seen_at: at,
+          active: true,
+        });
+      } else {
+        await insert(env, 'ufc_reported_card_bouts', {
+          event_id: ev.id,
+          source_family: 'fightmag',
+          source_url: sourceUrl,
+          matchup_key: key,
+          fighter_a_name: r.fighter_a_name,
+          fighter_b_name: r.fighter_b_name,
+          weight_class_raw: r.weight_class_raw,
+          bout_order: rows.length - i,
+          first_seen_at: at,
+          last_seen_at: at,
+          active: true,
+        }, { returning: 'minimal' });
+      }
+    }
+
+    for (const prior of existing) {
+      if (prior.active && !seen.has(prior.matchup_key)) {
+        await patch(env, 'ufc_reported_card_bouts', `id=eq.${prior.id}`, { active: false, last_seen_at: at });
+      }
+    }
+    out.push({ event_id: ev.id, event_name: ev.name, action: 'reported_synced', reported_bouts: rows.length, source_url: sourceUrl });
+  }
+
+  run.notes.dwcs_reported_card_sync = out;
+  return out;
+}
+
 async function runCardWatch(env, { invoked = 'cron', checkOnly = false } = {}) {
   const now = Date.now();
   const dates = cardWatchDates(now);
@@ -2297,6 +2396,7 @@ async function runCardWatch(env, { invoked = 'cron', checkOnly = false } = {}) {
       runId = created?.[0]?.id || null;
       const ctx = await loadContext(env);
       await espnPass(env, new Espn(), ctx, run, { dates, scope: 'card-watch' });
+      await syncReportedDwcsCards(env, run, { now });
     }
   } catch (e) {
     status = 'failed';

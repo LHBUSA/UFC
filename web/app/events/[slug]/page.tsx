@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getVideosForEvent, EVENT_VIDEO_INVENTORY, getImageFraming, sortVideosTimeline, getRankings } from "@/lib/db";
+import { getEventBouts, getImagesForFighters, getArticlesForEvent, getUpcomingEvents, getRecentEvents, getReportedCardBouts, getVideosForEvent, EVENT_VIDEO_INVENTORY, getImageFraming, sortVideosTimeline, getRankings } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { resolveEvent } from "@/lib/resolve";
 import { CardSegments, Empty, JsonLd, MatchupCard, Breadcrumbs, Avatar, EventRow } from "@/components/ui";
@@ -87,7 +87,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
    * are never fetched for a free render. */
   const access = await getUfcAccess();
   const returnPath = `/events/${eventSlug(e)}`;
-  const [bouts, articles, videosRaw, cardChanges] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id, EVENT_VIDEO_INVENTORY).catch(() => []), getEventCardChanges(e.id).catch(() => [])]);
+  const [bouts, articles, videosRaw, cardChanges, reportedMap] = await Promise.all([getEventBouts(e.id), getArticlesForEvent(e.id), getVideosForEvent(e.id, EVENT_VIDEO_INVENTORY).catch(() => []), getEventCardChanges(e.id).catch(() => []), getReportedCardBouts([e.id])]);
+  const reportedRows = reportedMap.get(e.id) || [];
   const [weighInSummary, weighIns, broadcast] = await Promise.all([
     getWeighInSummary(e.id).catch(() => null),
     getWeighIns(e.id).catch(() => []),
@@ -194,8 +195,20 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         </>
       ) : historical ? (
         <div className="mt-6"><Empty title="Historical card not yet loaded" cta={{ href: "/history#archive", label: "Archive coverage" }}>This event exists in the canonical schedule, but its bouts and results have not been backfilled yet. PropBetEdge fills the archive year by year from archived PropSports captures and shows this state instead of inventing a card. The official record is at <a href={UFC_OFFICIAL.events} target="_blank" rel="noopener">UFC.com events</a>.</Empty></div>
+      ) : reportedRows.length ? (
+        <section className="segment">
+          <h3>Reported card <small>{reportedRows.length} sourced matchups · canonical identities pending</small></h3>
+          <div className="stack">
+            {reportedRows.map((r) => (
+              <a key={r.id} href={r.source_url} target="_blank" rel="noopener nofollow" className="card" style={{ padding: 14 }}>
+                <b>{r.fighter_a_name}</b> vs <b>{r.fighter_b_name}</b>{r.weight_class_raw ? <span className="dim"> · {r.weight_class_raw}</span> : null}
+              </a>
+            ))}
+          </div>
+          <p className="dim sm mt-3">This reported lineup is refreshed automatically while the primary card feed has not published usable fighter identities. Canonical ESPN bout rows replace it automatically as soon as they are available.</p>
+        </section>
       ) : (
-        <div className="mt-6"><Empty title="Card not published yet" cta={{ href: "/events", label: "Other cards" }}>This event is on the schedule but no bouts have been announced. The card appears as soon as it is published, with fighter records and matchup pages.</Empty></div>
+        <div className="mt-6"><Empty title={e.card_status === "announced" ? "Card announced · lineup sync pending" : "Card not published yet"} cta={{ href: "/events", label: "Other cards" }}>The event is on the schedule, but the primary feed has not published usable bout identities yet. PropBetEdge keeps checking automatically and does not invent fighter records or matchup pages.</Empty></div>
       )}
 
       <EventWeighInPanel summary={weighInSummary} eventName={e.name} missed={weighIns.filter((w) => w.result === "missed")} />

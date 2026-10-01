@@ -111,7 +111,7 @@ export default async function QaPreview() {
       <section id="qa-video-rail" className="mb-7"><VideoRail videos={videos.slice(0, 3)} title="Alpha Silva · official video" eyebrow="Official channels · attached by fighter identity" max={3} /></section>
       <section id="qa-plan-video" className="mb-7" style={{ maxWidth: 760 }}><OfficialVideoModule plan={planFixture} /></section>
       <section id="qa-champions" className="mb-7"><ChampionsShowcase rankings={rankings} fighters={new Map(champs.map((f) => [f.id, f]))} imgs={new Map()} /></section>
-      <section id="qa-dwcs" className="mb-7"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={new Map([["dw-1", 5], ["dw-0", 5]])} freshness={new Date().toISOString()} /></section>
+      <section id="qa-dwcs" className="mb-7"><ContenderStrip next={dwcsNext} last={dwcsLast} mains={mains} counts={new Map([["dw-1", 5], ["dw-0", 5]])} reported={new Map()} freshness={new Date().toISOString()} /></section>
       <div id="qa-training-full" className="mb-7"><TrainingCorner training={trainingFull} fighterName="Alpha Silva" /><NewCampNote note={trainingFull.new_camp_since_last_bout} fighterName="Alpha Silva" /></div>
       <div id="qa-training-espn-only" className="mb-7"><TrainingCorner training={trainingEspnOnly} fighterName="Bravo Kane" /></div>
       <div id="qa-training-reported" className="mb-7"><TrainingCorner training={trainingReported} fighterName="Charlie Ortega" /></div>
