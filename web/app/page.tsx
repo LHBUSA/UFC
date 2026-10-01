@@ -66,7 +66,7 @@ const PROOF_ICONS: Record<ProofCell["key"], React.ReactNode> = {
 export default async function Home() {
   const [next, upcomingRaw, recent, articlesRes, counts, rankings, wire, allUpcoming, recentAll] = await Promise.all([
     getCurrentOrNextUfcEvent(), getUpcomingEvents(7), getRecentEvents(3), getArticles(NEWSROOM_FRONT_POOL), getCounts(), getRankings(), getTicker(8),
-    getUpcomingEvents(30, { includeContenderSeries: true }), getRecentEvents(20),
+    getUpcomingEvents(30, { includeContenderSeries: true }), getRecentEvents(20, { includeContenderSeries: true }),
   ]);
   /* Newest stories, chronological: the ItemList schema below lists these unchanged. */
   const articles = articlesRes.rows.slice(0, HOME_DESK_SLOTS);
