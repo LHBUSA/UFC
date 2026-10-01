@@ -948,6 +948,33 @@ test("normalizeTitle strips punctuation/stopwords; dedupe keeps the earliest cop
   assert.equal(__test.wireTaxonomy(null), null);
 });
 
+test("wire dedupes one event-level result development across main card, prelims and scorecards", () => {
+  const base = {
+    url: "https://ufc.example/result",
+    summary: null,
+    fighter_ids: [],
+    event_id: E_NEXT,
+    bout_id: null,
+    taxonomy: { labels: ["result"] },
+    topic_signature: null,
+    source: SRC_ESPN,
+  };
+  const prelims = { ...base, id: "a0000011", title: "Prelims Results | UFC 332: Silva vs Wang", published_at: "2026-10-03T20:00:00Z" };
+  const scorecards = { ...base, id: "a0000012", title: "Official Scorecards | UFC 332: Silva vs Wang", published_at: "2026-10-03T20:00:00Z" };
+  const main = { ...base, id: "a0000013", title: "Main Card Results | UFC 332: Silva vs Wang", published_at: "2026-10-04T00:00:00Z" };
+  const out = __test.dedupeWireItems([main, scorecards, prelims]);
+  assert.equal(out.length, 1);
+  assert.equal(out[0].event_id, E_NEXT);
+  assert.equal(out[0].taxonomy.labels[0], "result");
+});
+
+test("wire dedupes matching topic signatures even when headlines differ", () => {
+  const a = wireItem("a0000014", "Marcus McGhee gets a new UFC 332 opponent", 130, { topic_signature: "ufc:replacement:mcghee" });
+  const b = wireItem("a0000015", "Late replacement changes McGhee's UFC 332 matchup", 125, { topic_signature: "ufc:replacement:mcghee" });
+  const out = __test.dedupeWireItems([a, b]);
+  assert.equal(out.length, 1);
+});
+
 test("wire maps internal_url: article (bout / event+fighter / sources ref), bout, event, fighter, none", async () => {
   installMock({ tables: wireTables });
   const out = await __test.wire(env, new URL("https://x/v1/ufc/wire?limit=20"), NOW);

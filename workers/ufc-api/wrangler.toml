@@ -10,7 +10,7 @@ custom_domain = true
 
 [vars]
 SUPABASE_URL = "https://tkmlnhmylqnttmnsnief.supabase.co"
-API_VERSION = "2026-09-14.1"
+API_VERSION = "2026-10-01.1"
 REQUIRE_API_KEY = "false"
 # Premium Fight DNA / intelligence routes require INTERNAL_API_KEY (or a KV key)
 # when true. Flip only after the commercial gateway has UPSTREAM_API_KEY and the
