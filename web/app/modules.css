@@ -264,3 +264,55 @@
   .evidence-grid { grid-template-columns: 1fr; }
   .evidence-column + .evidence-column { border-left: 0; border-top: 1px solid var(--pbe-line-faint); }
 }
+
+
+/* 94-point polish: dense editorial evidence should read as phone-native,
+   not as a desktop table squeezed into 360px. */
+@media (max-width: 520px) {
+  .cmp-table { display: block; width: 100%; }
+  .cmp-table thead { display: none; }
+  .cmp-table tbody { display: grid; gap: 6px; }
+  .cmp-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(92px, .9fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    border: 1px solid var(--pbe-line-faint);
+    border-radius: var(--r-sm);
+    background: rgba(13,11,8,.5);
+  }
+  .cmp-table th, .cmp-table td { border: 0; padding: 0; min-width: 0; }
+  .cmp-table tbody td { width: auto; font-size: 14px; overflow-wrap: anywhere; }
+  .cmp-table tbody th {
+    font-size: var(--ufc-fs-micro);
+    line-height: 1.25;
+    color: var(--ufc-text-meta);
+    overflow-wrap: anywhere;
+  }
+  .cmp-table tbody th em { font-size: 10px; letter-spacing: .08em; }
+  .cmp-table tbody td:first-child { text-align: left; }
+  .cmp-table tbody td:last-child { text-align: right; }
+  .cmp-table .cmp-mid { width: auto; }
+
+  .splits { grid-template-columns: minmax(0, 1fr); gap: var(--s-4); }
+  .split .k { align-items: flex-start; flex-wrap: wrap; line-height: 1.45; }
+  .split .k em { margin-left: auto; white-space: nowrap; }
+  .split-key { gap: 7px 12px; line-height: 1.45; letter-spacing: .09em; }
+  .split-bar { height: 30px; }
+  .split-bar span { font-size: 10px; }
+
+  .chart-row { grid-template-columns: minmax(92px, 1fr) minmax(80px, 1.4fr) auto; gap: 8px; }
+  .chart-row-label { min-width: 0; overflow-wrap: anywhere; }
+  .chart-val { min-width: 48px; }
+}
+
+/* Source notes are intentionally secondary, but never ghost text. */
+.module-src,
+.evidence-foot,
+.method-row p,
+.method-lede {
+  color: var(--ufc-text-secondary);
+}
+.module-src { font-weight: 500; }
+.evidence-foot { color: var(--ufc-text-meta); }
