@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { imageObject, ownedImage } from "@/lib/imageMetadata";
 import { Inter, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import "./modules.css";
@@ -103,7 +104,7 @@ const ORG = {
       name: "PropBetEdge",
       legalName: SITE.publisher,
       url: SITE.parent,
-      logo: { "@type": "ImageObject", url: SITE.logo.full600, width: 1075, height: 600 },
+      logo: imageObject(ownedImage({ url: SITE.logo.full600, width: 1076, height: 600, caption: "PropBetEdge" })),
       sameAs: [SITE.xUrl],
       contactPoint: { "@type": "ContactPoint", contactType: "editorial and customer support", email: SITE.contact },
     },
@@ -113,7 +114,7 @@ const ORG = {
       name: SITE.desk,
       url: SITE.url,
       parentOrganization: { "@id": `${SITE.parent}/#org` },
-      logo: { "@type": "ImageObject", url: `${SITE.url}${SITE.brand.logoWide}`, width: 600, height: 160 },
+      logo: imageObject(ownedImage({ url: `${SITE.url}${SITE.brand.logoWide}`, width: 600, height: 160, caption: SITE.desk })),
       ethicsPolicy: `${SITE.url}/about`,
       correctionsPolicy: `${SITE.url}/about#corrections`,
     },

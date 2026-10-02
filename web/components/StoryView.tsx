@@ -16,6 +16,8 @@ import { getMatchupDna } from "@/lib/dna";
 import { DnaEvidence } from "@/components/dna";
 import { Mark } from "@/components/Brand";
 import { headers } from "next/headers";
+import { imageObject, ownedImage, portraitImage, compositeImage, isKnown } from "@/lib/imageMetadata";
+import { OG_SIZE } from "@/lib/og";
 import { HousePromo } from "@/components/HousePromo";
 import { PreferredSource } from "@/components/PreferredSource";
 import { classifyStory, selectPromo, weightsFor } from "@/lib/housePromo";
@@ -308,7 +310,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
         url: articleUrl,
         headline: a.headline,
         description: a.dek || excerpt(a.body_md),
-        image: hero ? [hero.portrait, hero.card, `${articleUrl}/opengraph-image`] : [`${articleUrl}/opengraph-image`],
+        image: storyImages(hero, articleUrl, heroName || a.headline, a.published_at),
         thumbnailUrl: `${articleUrl}/opengraph-image`,
         datePublished: a.published_at || undefined,
         dateModified: a.updated_at,
@@ -325,7 +327,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
           "@id": `${SITE.url}/#desk`,
           name: SITE.desk,
           url: SITE.url,
-          logo: { "@type": "ImageObject", url: `${SITE.url}${SITE.brand.logoWide}`, width: 600, height: 160 },
+          logo: imageObject(ownedImage({ url: `${SITE.url}${SITE.brand.logoWide}`, width: 600, height: 160, caption: SITE.desk })),
         },
         mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
         isPartOf: { "@id": `${SITE.url}/#site` },
@@ -339,4 +341,20 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
       }} />
     </article>
   );
+}
+
+/* NewsArticle images. A catalog hero (Commons / public domain, author and
+ * license recorded) is credited to its photographer, and the share card built
+ * on it credits the same photo. Anything else (no hero: the card composites
+ * fighter faces that may be ESPN display-only headshots; a hero without a
+ * recorded author) stays a bare URL with no rights claim. lib/imageMetadata.ts */
+function storyImages(hero: Parameters<typeof portraitImage>[0], articleUrl: string, caption: string, published: string | null) {
+  const card = `${articleUrl}/opengraph-image`;
+  const photo = portraitImage(hero, { caption });
+  if (!hero || !isKnown(photo)) return hero ? [hero.portrait, hero.card, card] : [card];
+  return [
+    imageObject(photo),
+    imageObject(portraitImage(hero, { url: hero.card, caption })),
+    imageObject(compositeImage({ url: card, ...OG_SIZE, caption, year: published, parts: [photo] })),
+  ];
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { imageObject, licensedImage } from "@/lib/imageMetadata";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs, JsonLd } from "@/components/ui";
@@ -136,7 +137,7 @@ export default async function VoiceProfilePage({ params }: { params: Promise<{ k
           name: voice.name,
           jobTitle: voice.role,
           description: voice.seoDescription,
-          image: voice.image ? `${SITE.url}${voice.image.src}` : undefined,
+          image: voice.image ? imageObject(licensedImage({ url: `${SITE.url}${voice.image.src}`, width: voice.image.width, height: voice.image.height, caption: voice.image.alt, author: voice.image.author, license: voice.image.license, license_url: voice.image.license_url, source_page: voice.image.source_url })) : undefined,
           knowsAbout: voice.topics,
           sameAs: voice.official.map((l) => l.href),
           subjectOf: [{ "@type": "WebPage", url, name: `${voice.name} profile on PropBetEdge UFC` }],

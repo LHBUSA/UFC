@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { imageObject, portraitImage, isKnown } from "@/lib/imageMetadata";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import { getDwcsGraph, getOutcomeClaims } from "@/lib/dwcsGraph";
@@ -328,7 +329,8 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
 
       <JsonLd data={{
         "@context": "https://schema.org", "@type": "Person", "@id": `${SITE.url}/fighters/${fighterSlug(f)}#person`, name: f.name, alternateName: f.nickname || undefined, url: `${SITE.url}/fighters/${fighterSlug(f)}`,
-        image: img ? img.portrait : `${SITE.url}/fighters/${fighterSlug(f)}/opengraph-image`, birthDate: dob ? undefined : f.dob || undefined,
+        // A credited catalog portrait is a full ImageObject; the ESPN display-only fallback stays a bare URL (no rights claim).
+        image: img ? (isKnown(portraitImage(img, { caption: f.name })) ? imageObject(portraitImage(img, { caption: f.name })) : img.portrait) : `${SITE.url}/fighters/${fighterSlug(f)}/opengraph-image`, birthDate: dob ? undefined : f.dob || undefined,
         height: f.height_in != null ? { "@type": "QuantitativeValue", value: f.height_in, unitCode: "INH" } : undefined,
         weight: f.weight_lbs != null ? { "@type": "QuantitativeValue", value: f.weight_lbs, unitCode: "LBR" } : undefined,
         jobTitle: "Mixed martial artist", memberOf: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship" },
