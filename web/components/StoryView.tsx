@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { type Article, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor, getVideosForArticle, getVideosForBout, getVideosForEvent, getVideoStates } from "@/lib/db";
+import { type Article, getImageById, getFightersByIds, getImagesForFighters, getEventById, getArticles, getBoutById, getWireFor, getVideosForArticle, getVideosForBout, getVideosForEvent, getVideoStates, getRelatedHeadlines, getLatestHeadlines } from "@/lib/db";
+import { freshWire, railFollowStories, railIntelLinks } from "@/lib/storyRail";
 import { VideoRail, videoJsonLd } from "@/components/VideoRail";
 import { storyImageIds, storyFaces, storySubject, sameFighterName, loadStoryImages } from "@/lib/storyImages";
 import { renderablePlanVideos, railInitialSelection, isViewable, type PlanVideo } from "@/lib/videoPolicy";
@@ -52,12 +53,14 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
    * Fight DNA, market) are decided here, before their data is read. */
   const access = await getUfcAccess();
   const returnPath = `/news/${a.slug}`;
-  const [hero, fighters, event, bout, moreRes] = await Promise.all([
+  const [hero, fighters, event, bout, moreRes, relatedHeads, latestHeads] = await Promise.all([
     a.hero_image_ref ? getImageById(a.hero_image_ref) : null,
     getFightersByIds(a.fighter_ids || []),
     a.event_id ? getEventById(a.event_id) : null,
     a.bout_id ? getBoutById(a.bout_id) : null,
     getArticles(4),
+    getRelatedHeadlines({ boutId: a.bout_id, eventId: a.event_id, fighterIds: a.fighter_ids || [] }).catch(() => []),
+    getLatestHeadlines().catch(() => []),
   ]);
   const fb = (a.fact_block || {}) as FactBlock & { content_plan?: ContentPlan; primary?: { name?: string; fighter_id?: string }; opponent?: { name?: string; fighter_id?: string } };
 
@@ -90,10 +93,16 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
    * linked bout, the legacy matchup pair -- in one image request (issue #19:
    * the opponent used to be drawn from a map that never requested them). */
   const imageIds = storyImageIds(a.fighter_ids, bout, mm ? [mm.a.fighter_id, mm.b.fighter_id] : []);
-  const [imgs, wire, vidArticle, vidBout, vidEvent, liveVideoState] = await Promise.all([loadStoryImages(imageIds, getImagesForFighters), getWireFor(a.event_id, a.fighter_ids || []), getVideosForArticle(a.id).catch(() => []), a.bout_id ? getVideosForBout(a.bout_id).catch(() => []) : Promise.resolve([]), a.event_id ? getVideosForEvent(a.event_id, 3).catch(() => []) : Promise.resolve([]), planVideoCopies?.length ? getVideoStates(planVideoCopies.map((v) => String(v.video_id || ""))).catch(() => new Map()) : Promise.resolve(new Map())]);
+  const [imgs, wireAll, vidArticle, vidBout, vidEvent, liveVideoState] = await Promise.all([loadStoryImages(imageIds, getImagesForFighters), getWireFor(a.event_id, a.fighter_ids || []), getVideosForArticle(a.id).catch(() => []), a.bout_id ? getVideosForBout(a.bout_id).catch(() => []) : Promise.resolve([]), a.event_id ? getVideosForEvent(a.event_id, 3).catch(() => []) : Promise.resolve([]), planVideoCopies?.length ? getVideoStates(planVideoCopies.map((v) => String(v.video_id || ""))).catch(() => new Map()) : Promise.resolve(new Map())]);
   const seen = new Set<string>();
   const videos = [...vidArticle, ...vidBout, ...vidEvent].filter((v) => (seen.has(v.id) ? false : (seen.add(v.id), true))).slice(0, 4);
   const more = moreRes.rows.filter((x) => x.id !== a.id).slice(0, 3);
+  /* The rail after its lead cards: same-story coverage, then the desk's newest
+   * distinct developments, never a story "More from the desk" already shows. */
+  const now = Date.now();
+  const wire = freshWire(wireAll, now);
+  const follow = railFollowStories(a, relatedHeads, latestHeads, more.map((x) => x.id));
+  const intel = railIntelLinks({ storyType: a.story_type, eventDate: event?.event_date ?? null, hasBout: Boolean(bout), now });
   const moreMedia = await storyMedia(more);
   const faces = storyFaces(bout, fighters);
   /* The subject card and the hero photo are about the story's PRIMARY
@@ -254,7 +263,8 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
           <HousePromo selection={promo} slug={a.slug} track={!preview} />
           <PreferredSource surface="article" />
         </div>
-        <aside className="stack" style={{ gap: 24 }}>
+        <aside className="story-rail">
+          <div className="story-rail-lead">
           {bout && event && (
             <div className="card hi">
               <div className="eyebrow mb-3">The bout</div>
@@ -293,6 +303,35 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
               <div className="gold sm mt-3" style={{ fontWeight: 600 }}>Full card →</div>
             </Link>
           )}
+          </div>
+          {/* Follows the reader down a long article on desktop (sticky in
+            * article-rail.css); inline after the lead cards everywhere else. */}
+          <div className="story-rail-follow">
+            {(follow.related.length > 0 || follow.latest.length > 0) && (
+              <nav className="card rail-stories" aria-label="More coverage">
+                {follow.related.length > 0 && (
+                  <>
+                    <div className="eyebrow mb-3">More on this story</div>
+                    <ul>{follow.related.map((x) => <RailStoryItem key={x.id} x={x} />)}</ul>
+                  </>
+                )}
+                {follow.latest.length > 0 && (
+                  <>
+                    <div className={`eyebrow mb-3${follow.related.length ? " mt-4" : ""}`}>Latest from the desk</div>
+                    <ul>{follow.latest.map((x) => <RailStoryItem key={x.id} x={x} />)}</ul>
+                  </>
+                )}
+              </nav>
+            )}
+            <nav className="card rail-intel" aria-label="Related intelligence">
+              <div className="eyebrow mb-3">Related intelligence</div>
+              <ul>
+                {intel.map((l) => (
+                  <li key={l.href}><Link href={l.href}><b>{l.label}</b><span>{l.note}</span></Link></li>
+                ))}
+              </ul>
+            </nav>
+          </div>
         </aside>
       </div>
 
@@ -357,4 +396,15 @@ function storyImages(hero: Parameters<typeof portraitImage>[0], articleUrl: stri
     imageObject(portraitImage(hero, { url: hero.card, caption })),
     imageObject(compositeImage({ url: card, ...OG_SIZE, caption, year: published, parts: [photo] })),
   ];
+}
+
+function RailStoryItem({ x }: { x: { slug: string; headline: string; story_type: string; published_at: string | null } }) {
+  return (
+    <li>
+      <Link href={`/news/${x.slug}`}>
+        <span className="k">{STORY_TYPE_LABEL[x.story_type] || x.story_type}{x.published_at ? <> · <time dateTime={x.published_at}>{relTime(x.published_at)}</time></> : null}</span>
+        <b>{x.headline}</b>
+      </Link>
+    </li>
+  );
 }

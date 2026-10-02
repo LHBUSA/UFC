@@ -1,0 +1,62 @@
+/* Article page: right rail + Bettor's Edge legibility.
+ *
+ * The rail is two stacks. The lead (bout / fighters, live wire, event) scrolls
+ * away as before. The follow stack (more coverage, related intelligence) sticks
+ * below the header + live-wire band on desktop. Its containing block is the
+ * rail itself, stretched to the article column, so it stops where the column
+ * ends: before "More from the desk", always above the footer. Sticky never
+ * changes layout, so it cannot shift anything (CLS 0). */
+
+:root {
+  /* Muted text on a lifted background (the Bettor's Edge gold wash, the
+   * matchup module's photo). --pbe-faint is 4.47:1 on the wash, under WCAG
+   * AA's 4.5; this keeps the muted read at 5.4:1 without reaching --pbe-dim. */
+  --pbe-faint-on-wash: #a09b90;
+  --story-rail-top: calc(var(--hdr-h) + 38px + 24px);
+}
+
+.story-rail, .story-rail-lead, .story-rail-follow { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+
+/* Sticky only where the whole follow stack fits under the header band: a
+ * stuck block taller than the viewport would hide its own last links. Short
+ * desktop viewports (720-899px) drop the link notes to fit (rule at the end
+ * of this file, after the base rules it overrides); below 720px the rail
+ * simply scrolls. */
+@media (min-width: 1001px) and (min-height: 720px) {
+  .story-rail { align-self: stretch; }
+  .story-rail-follow { position: sticky; top: var(--story-rail-top); }
+}
+
+/* Tablet: one column, so the rail follows the article. Two cards per row
+ * read as sections instead of a 700px-wide stack of sidebar cards. */
+@media (min-width: 640px) and (max-width: 1000px) {
+  .story-rail { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 20px; }
+  .story-rail-lead, .story-rail-follow { display: contents; }
+}
+
+.rail-stories ul, .rail-intel ul { list-style: none; margin: 0; padding: 0; }
+.rail-stories li + li, .rail-intel li + li { border-top: 1px solid var(--pbe-line-faint); }
+.rail-stories a, .rail-intel a { display: block; padding: 10px 0; }
+.rail-stories li:first-child a, .rail-intel li:first-child a { padding-top: 0; }
+.rail-stories li:last-child a, .rail-intel li:last-child a { padding-bottom: 0; }
+.rail-stories .k { display: block; font: 600 var(--fs-micro)/1.4 var(--pbe-font-data); letter-spacing: var(--ls-micro); text-transform: uppercase; color: var(--pbe-faint); }
+.rail-stories b { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 3px; font: 600 14px/1.35 var(--pbe-font-ui); color: var(--pbe-paper); }
+.rail-intel b { display: block; font: 600 14px/1.3 var(--pbe-font-ui); color: var(--pbe-paper); }
+.rail-intel b::after { content: " \2192"; color: var(--pbe-gold); }
+.rail-intel span { display: block; margin-top: 2px; font-size: var(--fs-sm); line-height: 1.4; color: var(--pbe-dim); }
+.rail-stories a:hover b, .rail-stories a:focus-visible b, .rail-intel a:hover b, .rail-intel a:focus-visible b { color: var(--pbe-gold-bright); }
+
+/* Bettor's Edge: the gold wash lifts the background behind its muted lines.
+ * Matchup module: its labels sit on the fence photo, whose light patches
+ * measured 3.7:1 against --pbe-faint at micro size (rendered pixels, p95). */
+.bedge-label small, .bedge .faint,
+.mm .tape-rows .tr .k, .mm-side .r, .mm .faint, .mm .eyebrow.dim { color: var(--pbe-faint-on-wash); }
+/* Division rank badge on the same photo: gold measured 4.37:1, bright gold 5.6:1.
+ * Champion (filled) and pound-for-pound (muted) badges keep their own colours. */
+.mm .rkb:not(.rkb-c):not(.rkb-p) { color: var(--pbe-gold-bright); }
+
+/* Short desktop viewports: see the sticky rule above. */
+@media (min-width: 1001px) and (min-height: 720px) and (max-height: 899px) {
+  .rail-intel span { display: none; }
+  .rail-stories a, .rail-intel a { padding: 8px 0; }
+}

@@ -658,6 +658,21 @@ export async function getArticlesForFighter(fighterId: string, limit = 8): Promi
 export async function getArticlesForBout(boutId: string, limit = 6): Promise<Article[]> {
   return (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&bout_id=eq.${boutId}&order=published_at.desc&limit=${limit}`, [])).data;
 }
+/* Article rail: headlines only. The rail never needs a body or fact block, and
+ * every article page reads these, so the rows stay small. */
+const HEADLINE_COLS = "id,slug,headline,story_type,event_id,bout_id,fighter_ids,published_at";
+export type ArticleHeadline = Pick<Article, "id" | "slug" | "headline" | "story_type" | "event_id" | "bout_id" | "fighter_ids" | "published_at">;
+export async function getRelatedHeadlines(ref: { boutId: string | null; eventId: string | null; fighterIds: string[] }, limit = 12): Promise<ArticleHeadline[]> {
+  const ors: string[] = [];
+  if (ref.boutId) ors.push(`bout_id.eq.${ref.boutId}`);
+  if (ref.eventId) ors.push(`event_id.eq.${ref.eventId}`);
+  for (const id of ref.fighterIds.slice(0, 6)) ors.push(`fighter_ids.cs.{${id}}`);
+  if (!ors.length) return [];
+  return (await rest<ArticleHeadline[]>(`ufc_articles?select=${HEADLINE_COLS}&status=eq.published&or=(${ors.join(",")})&order=published_at.desc&limit=${limit}`, [])).data;
+}
+export async function getLatestHeadlines(limit = 12): Promise<ArticleHeadline[]> {
+  return (await rest<ArticleHeadline[]>(`ufc_articles?select=${HEADLINE_COLS}&status=eq.published&order=published_at.desc&limit=${limit}`, [])).data;
+}
 export async function getArticleTypeCounts(): Promise<Map<string, number>> {
   const rows = (await rest<Array<{ story_type: string }>>(`ufc_articles?select=story_type&status=eq.published&limit=5000`, [])).data;
   const m = new Map<string, number>();
