@@ -59,7 +59,8 @@ test("UFC card renders both fighters, the Kalshi labels and the draw / no-contes
   assert.ok(html.includes(UFC_KALSHI_NOTE), "UFC note beside the card");
   assert.equal(UFC_KALSHI_NOTE, "A draw or no contest pays 50¢ per contract.");
   /* the note follows the card, never replaces it */
-  assert.ok(html.indexOf(UFC_KALSHI_NOTE) > html.indexOf("Kalshi market"));
+  assert.ok(html.indexOf(UFC_KALSHI_NOTE) > html.indexOf("Market Pulse"));
+  assert.match(html, /no sportsbook line required/);
 });
 
 test("every Kalshi link opens the verified market with rel sponsored", () => {
@@ -169,8 +170,8 @@ test("no Kalshi API host in web code", () => {
 
 /* ── vendored files unchanged ── */
 const VENDORED: Record<string, string> = {
-  "kalshi-market-ui.js": "6f1c1244403f078da96182c7658e0f3da3e3777ccffa80b834257245a2aa2d81",
-  "kalshi-market-ui.css": "43cbdcc9313a82618c38bd3998e020943e0db2031b95ed34ef566e91883901fd",
+  "kalshi-market-ui.js": "0f03224b086e11967329e2a4666ef5327e335fbb32ae251a31a2a543b30e1952",
+  "kalshi-market-ui.css": "572d18127bf6ce357e50b4320e0d98d83b07aa3d6bfb1e1c04c43bee4f009f98",
   "kalshi-market-client.js": "653cb0fc2673f909552453052560bfd6194e0e4d045c51b1eb73483957d4c049",
   "README.md": "a80e4ac5d8733bde8afc0c13c281242babff8b1acd083974741f677b7af5a480",
 };

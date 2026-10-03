@@ -168,7 +168,8 @@ export default function MethodologyPage() {
             <a href="https://kalshi.com" target="_blank" rel="noopener noreferrer sponsored">Kalshi</a>, a
             prediction market. These are <strong>traded contract prices</strong>: they are not sportsbook odds and they
             are not a PropBetEdge model or prediction. They are shown to every reader, and every price links to that
-            bout&rsquo;s market on Kalshi.
+            bout&rsquo;s market on Kalshi. On the page they appear as <strong>Market Pulse</strong>: live
+            prediction-market pricing, with no sportsbook line required.
           </p>
           <p>
             Each YES contract pays $1 if that fighter wins. <strong>Mid-market</strong> is the midpoint of the best YES
