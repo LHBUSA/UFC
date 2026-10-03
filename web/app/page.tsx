@@ -31,6 +31,8 @@ import { getRankingMap } from "@/lib/rankings";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { buildProofRail, type ProofCell } from "@/lib/proofRail";
 import { formatAmerican, getMarketsFor, marketProviderLive } from "@/lib/market";
+import { getKalshiBoard, slimBoard, ufcQuote, type KalshiEntry } from "@/lib/kalshi";
+import { KalshiBoard, KalshiChip } from "@/components/KalshiMarket";
 
 export const revalidate = 300;
 
@@ -111,7 +113,12 @@ export default async function Home() {
         ),
       ]).then(([providerLive, markets]) => providerLive ? (markets.get(mainEvent.id) ?? null) : null).catch(() => null)
     : Promise.resolve(null);
-  const [imgs, briefs, media, champs, contenders, dwcsCounts, dwcsReported, freshness, videos, mainMarket] = await Promise.all([
+  /* Kalshi prediction-market board: PUBLIC (every reader, never gated on Pro),
+   * ONE read for the whole page, bounded wait. The hero, the card rows and the
+   * headline matchups all take their bout from this one read; the browser
+   * refresh shares one board request too (<KalshiBoard>). */
+  const kalshiRead: Promise<Record<string, KalshiEntry>> = live.length ? getKalshiBoard() : Promise.resolve({});
+  const [imgs, briefs, media, champs, contenders, dwcsCounts, dwcsReported, freshness, videos, mainMarket, kalshiAll] = await Promise.all([
     getImagesForFighters([
       ...bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
       ...[...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
@@ -126,7 +133,16 @@ export default async function Home() {
     getIngestFreshness().catch(() => null),
     getFightWeekVideos(next?.id || null, 5).catch(() => []),
     mainMarketPromise,
+    kalshiRead,
   ]);
+  const kalshi = slimBoard(Object.fromEntries(live.filter((b) => kalshiAll[b.id]).map((b) => [b.id, kalshiAll[b.id]])));
+  /* Sportsbook ML shown in the hero? Without it, the Kalshi chip names the market favourite. */
+  const heroBook = mainMarket?.a?.consensus != null || mainMarket?.b?.consensus != null;
+  /* Hero chip only for a current usable quote (open, displayable, Mid-market,
+   * not stale) or a closed / settled market's stored result; a quote that goes
+   * stale after first paint says so in place ("Quote not current"), never live. */
+  const heroQuote = mainEvent ? ufcQuote(kalshi[mainEvent.id]) : null;
+  const heroKalshi = Boolean(mainEvent && heroQuote && (heroQuote.kind !== "open" || (heroQuote.freshness !== "stale" && !mainEvent.result)));
   const [dnaReady, earliestEventDate] = await Promise.all([
     next && live.length ? getFightDnaReady(live.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]), next.event_date || new Date().toISOString().slice(0, 10)) : Promise.resolve(new Set<string>()),
     getEarliestEventDate().catch(() => null),
@@ -141,7 +157,7 @@ export default async function Home() {
   const contenderById = new Map(contenders.map((f) => [f.id, f]));
 
   return (
-    <>
+    <KalshiBoard initial={kalshi}>
       {/* ONE deliberate arena treatment, server-rendered.
           There is no switcher, no rotation, no timer and no post-hydration
           swap: the image is in the first byte of HTML and never changes. The
@@ -241,6 +257,7 @@ export default async function Home() {
                               ML {formatAmerican(mainMarket.a.consensus)}
                             </span>
                           )}
+                          {heroKalshi && <KalshiChip boutId={mainEvent.id} initial={kalshi[mainEvent.id] ?? null} names={{ a: mainEvent.fighter_a.name, b: mainEvent.fighter_b.name }} variant="hero" side="a" favLabel={!heroBook} result={Boolean(mainEvent.result)} placement="hero" />}
                         </div>
                       </div>
                       <div className="b">
@@ -255,6 +272,7 @@ export default async function Home() {
                               ML {formatAmerican(mainMarket.b.consensus)}
                             </span>
                           )}
+                          {heroKalshi && <KalshiChip boutId={mainEvent.id} initial={kalshi[mainEvent.id] ?? null} names={{ a: mainEvent.fighter_a.name, b: mainEvent.fighter_b.name }} variant="hero" side="b" favLabel={!heroBook} result={Boolean(mainEvent.result)} placement="hero" />}
                         </div>
                       </div>
                     </div>
@@ -302,7 +320,7 @@ export default async function Home() {
       <section className="sec">
         <div className="wrap">
           <SectionHead eyebrow={next ? `${fmtDate(next.event_date)} · ${locationLine(next) || "Venue TBA"}` : "Upcoming"} title={next ? next.name : "Upcoming card"} href={next ? `/events/${eventSlug(next)}` : "/events"} cta="Full card & matchups" />
-          {bouts.length ? <CardSegments bouts={bouts} e={next!} imgs={imgs} ranks={ranks} /> : <Empty title="No bouts announced yet" cta={{ href: "/events", label: "See the schedule" }}>Bouts appear here the moment the card is published. Nothing is shown that has not been announced.</Empty>}
+          {bouts.length ? <CardSegments bouts={bouts} e={next!} imgs={imgs} ranks={ranks} kalshi={kalshi} /> : <Empty title="No bouts announced yet" cta={{ href: "/events", label: "See the schedule" }}>Bouts appear here the moment the card is published. Nothing is shown that has not been announced.</Empty>}
         </div>
       </section>
 
@@ -312,7 +330,7 @@ export default async function Home() {
 
       {headline.length > 0 && (
         <section className="sec">
-          <div className="wrap"><SectionHead eyebrow="Tale of the tape" title="Headline matchups" href={`/events/${eventSlug(next!)}`} cta="All matchups" /><div className="grid-3">{headline.map((b) => <MatchupCard key={b.id} b={b} e={next!} imgs={imgs} ranks={ranks} access={access} />)}</div></div>
+          <div className="wrap"><SectionHead eyebrow="Tale of the tape" title="Headline matchups" href={`/events/${eventSlug(next!)}`} cta="All matchups" /><div className="grid-3">{headline.map((b) => <MatchupCard key={b.id} b={b} e={next!} imgs={imgs} ranks={ranks} access={access} kalshi={kalshi[b.id] ?? null} />)}</div></div>
         </section>
       )}
 
@@ -367,6 +385,6 @@ export default async function Home() {
 
       <JsonLd data={{ "@context": "https://schema.org", "@type": "WebPage", "@id": `${SITE.url}/#home`, url: SITE.url, name: `${SITE.name} — Live UFC Fight Intelligence`, description: SITE.description, isPartOf: { "@id": `${SITE.url}/#site` }, primaryImageOfPage: `${SITE.url}/opengraph-image`, ...(next ? { mainEntity: { "@type": "SportsEvent", name: next.name, startDate: next.event_date, url: `${SITE.url}/events/${eventSlug(next)}`, sport: "Mixed Martial Arts" } } : {}) }} />
       {articles.length > 0 && <JsonLd data={{ "@context": "https://schema.org", "@type": "ItemList", name: "Latest UFC stories", itemListElement: articles.map((a, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "NewsArticle", url: `${SITE.url}/news/${a.slug}`, headline: a.headline, datePublished: a.published_at || undefined, dateModified: a.updated_at } })) }} />}
-    </>
+    </KalshiBoard>
   );
 }

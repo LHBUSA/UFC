@@ -12,6 +12,7 @@ import { PbePerformanceTracker } from "@/components/PbePerformanceTracker";
 import { RecentGradedPicks } from "@/components/PbePastPicks";
 import { getImagesForFighters, getFightersByIds, getEventById, type Event } from "@/lib/db";
 import { lockedText, type AlgoBoutView } from "@/lib/algoView";
+import { avmByBout, getAlgoVsMarket } from "@/lib/kalshi";
 import { fmtDate, locationLine } from "@/lib/format";
 
 /* PBE PICKS: the official PropBetEdge model selections (UFC Pro PBE Algo card).
@@ -56,6 +57,10 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
     ? await Promise.all([getImagesForFighters(fighterIds), getFightersByIds([...new Set(fighterIds)]), Promise.all(cards.map((c) => getEventById(c.event_id)))])
     : [new Map(), [], [] as Array<Event | null>];
   const fighters = new Map<string, AlgoFighterContext>(fighterRows.map((f) => [f.id, f]));
+  /* Algo vs Market (frozen at the PBE lock, propsports-markets): one read, Pro branch
+   * only, keyed by bout. A pending UFC comparison is LOCKED with no selection and
+   * renders nothing; the PBE vs KALSHI chip appears only for a graded comparison. */
+  const avm = access.pro && cards.length ? avmByBout(await getAlgoVsMarket()) : {};
   const eventById = new Map(events.filter((e): e is Event => Boolean(e)).map((e) => [e.id, e]));
 
   const lead = cards[0];
@@ -155,7 +160,7 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
                   return (
                     <div key={seg || "card"} className="pp-segment">
                       <h3 className="pp-segment-head">{label}</h3>
-                      <div className="pp-list">{bouts.map((b) => <AlgoPick key={b.bout_id} b={b} imgs={imgs} fighters={fighters} />)}</div>
+                      <div className="pp-list">{bouts.map((b) => <AlgoPick key={b.bout_id} b={b} imgs={imgs} fighters={fighters} avm={avm[b.bout_id] ?? null} />)}</div>
                     </div>
                   );
                 })}

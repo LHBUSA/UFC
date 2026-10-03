@@ -34,7 +34,8 @@ import { CardIntelligence } from "@/components/CardIntelligence";
 import { WhereTheyWent } from "@/components/Dwcs";
 import { contenderIdentity } from "@/lib/contenderIdentity";
 import { eventResultsDescription } from "@/lib/seo";
-import { getKalshiBoard } from "@/lib/kalshi";
+import { getKalshiBoard, slimBoard, ufcQuote } from "@/lib/kalshi";
+import { KalshiBoard, KalshiChip } from "@/components/KalshiMarket";
 
 export const revalidate = 300;
 
@@ -134,7 +135,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
    * whole card, bounded wait. The board keeps events completed in the last
    * 7 days, so a finished card read within that window gets each bout's
    * market close line on its result row. */
-  const kalshiBoard = !live.length || (done && (d == null || d < -8)) ? {} : await getKalshiBoard();
+  const kalshiRaw = !live.length || (done && (d == null || d < -8)) ? {} : await getKalshiBoard();
+  /* Only this card's bouts, slimmed to what the chips read; <KalshiBoard> keeps
+   * them fresh with one shared board request per refresh. */
+  const kalshiBoard = slimBoard(Object.fromEntries(live.filter((b) => kalshiRaw[b.id]).map((b) => [b.id, kalshiRaw[b.id]])));
+  const mainQuote = main ? ufcQuote(kalshiBoard[main.id]) : null;
+  const posterKalshi = Boolean(main && mainQuote && !(mainQuote.kind === "open" && main.result));
   const [briefs, rankings, ingest] = await Promise.all([!done && live.length > 0 ? buildDeskBriefs(e, live, 1, { dna: access.pro }).catch(() => []) : Promise.resolve([]), getRankings().catch(() => null), getIngestFreshness().catch(() => null)]);
   const nearby = done || historical ? await getRecentEvents(4) : await getUpcomingEvents(4);
   const isCurrent = !done && nearby[0]?.id === e.id;
@@ -148,6 +154,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   ]);
 
   return (
+    <KalshiBoard initial={kalshiBoard}>
     <div className="wrap page">
       <Breadcrumbs items={dwcs ? (() => {
         const id = contenderIdentity(e.name, e.event_date);
@@ -174,6 +181,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               <Link href={`/fighters/${fighterSlug(main.fighter_a)}`} className="a"><div className={`n${winnerOf(main)?.id === main.fighter_a.id ? " w" : ""}`}>{main.fighter_a.name}</div><div className="r">{fmtRecord(main.fighter_a)}</div></Link>
               <Link href={`/fighters/${fighterSlug(main.fighter_b)}`} className="b"><div className={`n${winnerOf(main)?.id === main.fighter_b.id ? " w" : ""}`}>{main.fighter_b.name}</div><div className="r">{fmtRecord(main.fighter_b)}</div></Link>
             </div>
+            {/* Main event: public Kalshi line under the name plate, linked to the market. */}
+            {posterKalshi && <div className="ufc-kc-row ufc-kc-poster"><KalshiChip boutId={main.id} initial={kalshiBoard[main.id] ?? null} names={{ a: main.fighter_a.name, b: main.fighter_b.name }} variant="named" result={Boolean(main.result)} link placement="event-poster" /></div>}
           </>
         ) : null}
         <div className="poster-foot">
@@ -198,7 +207,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {!access.pro && !done && <ProPreview feature="market" access={access} returnPath={returnPath} compact />}
           {done && <CardIntelligence bouts={live} e={e} totals={cardTotals} />}
           {dwcs && dwcsGraph && <WhereTheyWent alumni={dwcsGraph.alumni} imgs={imgs} ranks={ranks} eventId={e.id} />}
-          {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} ranks={ranks} access={access} />)}</div></section>}
+          {headline.length > 0 && <section className="segment"><h3>{done ? "Main event & co-main" : "Headline matchups"} <small>tale of the tape</small></h3><div className="grid-2">{headline.map((b) => <MatchupCard key={b.id} b={b} e={e} imgs={imgs} ranks={ranks} access={access} kalshi={kalshiBoard[b.id] ?? null} />)}</div></section>}
         </>
       ) : historical ? (
         <div className="mt-6"><Empty title="Historical card not yet loaded" cta={{ href: "/history#archive", label: "Archive coverage" }}>This event exists in the canonical schedule, but its bouts and results have not been backfilled yet. PropBetEdge fills the archive year by year from archived PropSports captures and shows this state instead of inventing a card. The official record is at <a href={UFC_OFFICIAL.events} target="_blank" rel="noopener">UFC.com events</a>.</Empty></div>
@@ -248,5 +257,6 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           have not verified. */}
       <JsonLd data={{ "@context": "https://schema.org", "@type": "SportsEvent", "@id": `${SITE.url}/events/${eventSlug(e)}#event`, name: e.name, startDate: broadcast?.main_card_start_utc || e.event_date, endDate: broadcast?.main_card_start_utc ? undefined : e.event_date, sport: "Mixed Martial Arts", description: `${e.name}: ${live.length ? `${live.length} bouts` : "card"}${main ? `, main event ${main.fighter_a.name} vs ${main.fighter_b.name}` : ""}.`, eventStatus: "https://schema.org/EventScheduled", eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode", image: `${SITE.url}/events/${eventSlug(e)}/opengraph-image`, location: e.venue || e.city ? { "@type": "Place", name: e.venue || e.city, address: { "@type": "PostalAddress", addressLocality: e.city, addressRegion: e.region, addressCountry: e.country } } : undefined, organizer: { "@type": "SportsOrganization", name: "Ultimate Fighting Championship", url: UFC_OFFICIAL.home }, url: `${SITE.url}/events/${eventSlug(e)}`, subjectOf: videos.length ? videoJsonLd(curatedEventVideos(videos, done ? "post" : "pre")) : undefined, subEvent: live.map((b) => ({ "@type": "SportsEvent", name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, startDate: broadcast?.main_card_start_utc || e.event_date, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, e)}`, sport: "Mixed Martial Arts", competitor: [{ "@type": "Person", name: b.fighter_a.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_a)}` }, { "@type": "Person", name: b.fighter_b.name, url: `${SITE.url}/fighters/${fighterSlug(b.fighter_b)}` }] })) }} />
     </div>
+    </KalshiBoard>
   );
 }

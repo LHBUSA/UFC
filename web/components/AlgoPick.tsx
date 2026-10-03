@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { PortraitSet } from "@/lib/db";
 import { fighterSlug } from "@/lib/slug";
+import { ufcAvmChip, type AvmComparison } from "@/lib/kalshi";
 import { fmtRecord } from "@/lib/format";
 import {
   FEATURES_TOTAL, REASON_COPY, algoStatus, pickOriented, bandEvidence, confidenceCopy, deltaText, drivers, lockedText, pctText, marketView, ageText, agoText, oddsText,
@@ -84,8 +85,10 @@ function Corner({ f, img, record, picked, called, odds }: { f: { id: string; nam
     : <span className={cls} aria-label={label}>{inner}</span>;
 }
 
-export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters }: {
+export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters, avm = null }: {
   b: AlgoBoutView; detail?: boolean; showEvent?: boolean;
+  /** This bout's frozen Algo-vs-Market comparison (propsports-markets), if the page read one. */
+  avm?: AvmComparison | null;
   /** getImagesForFighters() result for this card, if the page read it. */
   imgs?: Map<string, PortraitSet>;
   /** Authoritative fighter rows (record) for this card, if the page read them. */
@@ -123,6 +126,11 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
   const features = p ? Object.values(p.feature_availability || {}).filter(Boolean).length : b.features_available;
   const pickIsA = b.pick_fighter_id === b.fighter_a.id;
   const probA = called ? (pickIsA ? (prob as number) : 1 - (prob as number)) : null;
+  /* PBE vs KALSHI: only a frozen, graded-public comparison of THIS official call
+   * (same side, same locked probability). LOCKED / pending comparisons reveal
+   * nothing, and the chip is a separate layer from the sportsbook cells above. */
+  const avmChip = called && locked ? ufcAvmChip(avm) : null;
+  const avmMatches = Boolean(avmChip && avm && ((avmChip.selection === "a") === pickIsA) && avm.algo_probability != null && Math.abs(avm.algo_probability - p!.pick_probability) < 1e-6);
   const segment = b.card_position === "main" ? "Main card" : b.card_position === "prelim" ? "Prelims" : b.card_position === "early" ? "Early prelims" : "Card";
 
   const state = b.grade
@@ -192,6 +200,14 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters 
               <span className="pp-market-flag"><b>No current market</b>no two-sided price is on file for this bout.</span>
             )}
           </div>
+
+          {avmMatches && avmChip ? (
+            <div className="ufc-kc-row ufc-kc-row--start">
+              <span className="ufc-avm-chip" data-avm-chip={b.bout_id} title="Both numbers frozen at the PBE lock (Algo vs Market). Kalshi: prediction-market Mid-market, not sportsbook odds.">
+                <b>PBE {avmChip.pbePct.toFixed(1)}%</b><span className="k">KALSHI {avmChip.kalshiPct.toFixed(1)}%</span><span className="d">DIVERGENCE {avmChip.divergencePts > 0 ? "+" : avmChip.divergencePts < 0 ? "−" : "±"}{Math.abs(avmChip.divergencePts).toFixed(1)} pts</span>
+              </span>
+            </div>
+          ) : null}
 
           <dl className="pp-secondary">
             <div><dt>Data quality</dt><dd>{features ?? "\u2014"}/{FEATURES_TOTAL} features</dd></div>

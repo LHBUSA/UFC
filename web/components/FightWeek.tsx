@@ -15,6 +15,8 @@ import { SITE } from "@/lib/site";
 import { ProPreview } from "@/components/ProPreview";
 import { AllAccessMini } from "@/components/Membership";
 import { eventSnapshot, watchForNote } from "@/lib/fightWeekSnapshot";
+import { ufcQuote, type KalshiEntry, type UfcMove } from "@/lib/kalshi";
+import { KalshiBoard, KalshiChip } from "@/components/KalshiMarket";
 
 /* Fight Week — Pregame Desk as a product surface, presented as a premium
  * editorial intelligence brief.
@@ -30,6 +32,17 @@ import { eventSnapshot, watchForNote } from "@/lib/fightWeekSnapshot";
  * Nothing here is called "The Edge". */
 
 type Portraits = Map<string, PortraitSet>;
+
+/* Public Kalshi prediction-market layer for the card (one board read + one
+ * market-tape read per page, made by the route): the price line sits beside the
+ * matchup identity; movement is the tape's stored "since first observed" delta. */
+export type FightWeekKalshi = { board: Record<string, KalshiEntry>; moves: Record<string, UfcMove> };
+function KxLine({ bout, kx, start = false }: { bout: Bout; kx?: FightWeekKalshi | null; start?: boolean }) {
+  const entry = kx?.board[bout.id] ?? null;
+  const q = ufcQuote(entry);
+  if (!q || bout.status === "cancelled" || (q.kind === "open" && bout.result)) return null;
+  return <div className={`ufc-kc-row fw-kc${start ? " ufc-kc-row--start" : ""}`}><KalshiChip boutId={bout.id} initial={entry} names={{ a: bout.fighter_a.name, b: bout.fighter_b.name }} variant="named" result={Boolean(bout.result)} move={kx?.moves[bout.id] ?? null} link placement="fight-week" /></div>;
+}
 const lastName = (f: { name: string }) => f.name.split(" ").slice(-1)[0] || f.name;
 
 function leanLabel(f: Factor, brief: DeskBrief): string | null {
@@ -87,7 +100,7 @@ function KeyComparison({ brief, event }: { brief: DeskBrief; event: Event }) {
 }
 
 /* ---- main event surface ------------------------------------------------ */
-export function MainEventDesk({ packet, brief }: { packet: FightWeekPacket; brief: DeskBrief }) {
+export function MainEventDesk({ packet, brief, kx }: { packet: FightWeekPacket; brief: DeskBrief; kx?: FightWeekKalshi | null }) {
   const { event, imgs, framing } = packet;
   const { bout, a, b } = brief;
   const factors = thingsThatMatter(brief, 3);
@@ -100,6 +113,7 @@ export function MainEventDesk({ packet, brief }: { packet: FightWeekPacket; brie
         <div>
           <div className="fw-kicker">{bout.is_title ? "Title fight" : "Main event"} · {full ? "Verified packet" : "Limited packet"}</div>
           <h2 id="fw-main-title">{bout.fighter_a.name} vs {bout.fighter_b.name}</h2>
+          <KxLine bout={bout} kx={kx} start />
         </div>
         <div className="fw-stakes">{brief.stakes.slice(0, 4).map((s) => <span key={s}>{s}</span>)}</div>
       </div>
@@ -189,7 +203,7 @@ function Identity({ bout, brief, imgs }: { bout: Bout; brief?: DeskBrief | null;
   );
 }
 
-export function MatchupIntel({ bout, brief, event, imgs, roundCoverage }: { bout: Bout; brief?: DeskBrief | null; event: Event; imgs: Portraits; roundCoverage?: { rounds: number; bothCorners: boolean } | null }) {
+export function MatchupIntel({ bout, brief, event, imgs, roundCoverage, kx }: { bout: Bout; brief?: DeskBrief | null; event: Event; imgs: Portraits; roundCoverage?: { rounds: number; bothCorners: boolean } | null; kx?: FightWeekKalshi | null }) {
   const watch = !brief || brief.tier === "watch";
   const read = brief ? compactRead(brief) : null;
   const signals = brief && read ? compactSignals(brief, read.used, 2) : [];
@@ -201,6 +215,7 @@ export function MatchupIntel({ bout, brief, event, imgs, roundCoverage }: { bout
         <small>{cardPositionLabel(bout.card_position)} · <i className={`pk${watch ? " lim" : ""}`} aria-hidden="true" />{brief ? (watch ? "Limited packet" : "Full packet") : "Card only"}</small>
       </div>
       <Identity bout={bout} brief={brief} imgs={imgs} />
+      <KxLine bout={bout} kx={kx} />
       <div className="fw-card-read">
         <div className="fw-h">{read ? (read.watch ? "What to watch" : "Matchup read") : "Packet"}</div>
         <p>{read?.read || "Intelligence packet not available for this pairing yet. Records and the matchup page are live."}</p>
@@ -230,7 +245,8 @@ export function MatchupIntel({ bout, brief, event, imgs, roundCoverage }: { bout
 /* ---- flagship scan tile ------------------------------------------------
  * Fight Week is a card overview first. Deep reads stay on the matchup page;
  * this surface gives identity, records and one evidence-led signal. */
-function FightWeekBoutTile({ bout, brief, event, imgs, compact = false }: {
+function FightWeekBoutTile({ bout, brief, event, imgs, compact = false, kx }: {
+  kx?: FightWeekKalshi | null;
   bout: Bout;
   brief?: DeskBrief | null;
   event: Event;
@@ -257,6 +273,7 @@ function FightWeekBoutTile({ bout, brief, event, imgs, compact = false }: {
           <span><strong>{bout.fighter_b.name}</strong><small>{fmtRecord(bout.fighter_b)}{brief?.b.rank ? ` · ${brief.b.rank}` : ""}</small></span>
         </Link>
       </div>
+      <KxLine bout={bout} kx={kx} start />
       <div className="fw-bout-tile-signal">{signal}</div>
       <Link href={`/fights/${matchupSlug(bout.fighter_a, bout.fighter_b, event)}`} className="fw-bout-tile-cta">
         Read matchup <span aria-hidden="true">→</span>
@@ -312,7 +329,7 @@ export function FightNavigator({ live }: { live: Bout[] }) {
 }
 
 /* ---- page composition -------------------------------------------------- */
-export function FightWeekPage({ packet, archive, locked = null }: { packet: FightWeekPacket; archive: boolean; locked?: { signedIn: boolean; returnPath: string } | null }) {
+export function FightWeekPage({ packet, archive, locked = null, kx = null }: { packet: FightWeekPacket; archive: boolean; locked?: { signedIn: boolean; returnPath: string } | null; kx?: FightWeekKalshi | null }) {
   const { event, live, briefById, imgs, videos, days, done, updated, slug } = packet;
   const { main, mainCard, prelims, unpositioned } = cardSections(live);
   const mainBrief = main ? briefById.get(main.id) || null : null;
@@ -320,7 +337,7 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
   const countdown = done ? "Final" : days == null ? "Date TBA" : days === 0 ? "Fight night" : days === 1 ? "Tomorrow" : days < 0 ? "Awaiting results" : `${days} days out`;
   const crumbs = archive ? [{ name: "Fight Week", href: "/fight-week" }, { name: event.name }] : [{ name: "Fight Week" }];
   const url = archive ? `${SITE.url}/pregame/${slug}` : `${SITE.url}/fight-week`;
-  const grid = (list: Bout[]) => <div className="fw-grid">{list.map((b) => <MatchupIntel key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} roundCoverage={packet.roundCoverage?.get(b.id) || null} />)}</div>;
+  const grid = (list: Bout[]) => <div className="fw-grid">{list.map((b) => <MatchupIntel key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} roundCoverage={packet.roundCoverage?.get(b.id) || null} kx={kx} />)}</div>;
 
   const leadVideo = videos[0] || null;
   /* The desk's own note for this card when one is on file; otherwise the read
@@ -330,6 +347,7 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
   const snapshot = eventSnapshot({ event, stored: packet.broadcast, bouts: live.length, updated, done });
 
   return (
+    <KalshiBoard initial={kx?.board ?? {}}>
     <div className="wrap fw-page fw-flagship">
       {archive && <Breadcrumbs items={crumbs} />}
 
@@ -363,7 +381,7 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
 
       {locked && <ProPreview feature="fight_week" access={{ signedIn: locked.signedIn }} returnPath={locked.returnPath} />}
 
-      {main && (mainBrief ? <div className="fw-sec fw-main-wrap"><MainEventDesk packet={packet} brief={mainBrief} /></div> : (
+      {main && (mainBrief ? <div className="fw-sec fw-main-wrap"><MainEventDesk packet={packet} brief={mainBrief} kx={kx} /></div> : (
         <section id="main-event" className="fw-sec"><div className="fw-sec-head"><div><div className="eyebrow">Main event</div><h2>{main.fighter_a.name} vs {main.fighter_b.name}</h2></div></div>{grid([main])}</section>
       ))}
 
@@ -375,14 +393,14 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
                 <div><div className="eyebrow">Main card</div><h2>Main card</h2></div>
                 <small>{plural(mainCard.length + (main ? 1 : 0), "bout")} · scan the card</small>
               </div>
-              <div className="fw-bout-grid">{mainCard.map((b) => <FightWeekBoutTile key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} />)}</div>
+              <div className="fw-bout-grid">{mainCard.map((b) => <FightWeekBoutTile key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} kx={kx} />)}</div>
             </section>
           )}
 
           {unpositioned.length > 0 && (
             <section id="announced" className="fw-sec fw-card-section">
               <div className="fw-sec-head flagship"><div><div className="eyebrow">Announced bouts</div><h2>Card position pending</h2></div><small>{plural(unpositioned.length, "matchup")}</small></div>
-              <div className="fw-bout-grid">{unpositioned.map((b) => <FightWeekBoutTile key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} compact />)}</div>
+              <div className="fw-bout-grid">{unpositioned.map((b) => <FightWeekBoutTile key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} compact kx={kx} />)}</div>
             </section>
           )}
 
@@ -392,7 +410,7 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
                 <div><div className="eyebrow">Prelims</div><h2>Prelims</h2></div>
                 <small>{plural(prelims.length, "bout")} · quick intelligence</small>
               </div>
-              <div className="fw-bout-grid prelims">{prelims.map((b) => <FightWeekBoutTile key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} compact />)}</div>
+              <div className="fw-bout-grid prelims">{prelims.map((b) => <FightWeekBoutTile key={b.id} bout={b} brief={briefById.get(b.id)} event={event} imgs={imgs} compact kx={kx} />)}</div>
             </section>
           )}
         </main>
@@ -473,6 +491,7 @@ export function FightWeekPage({ packet, archive, locked = null }: { packet: Figh
       <JsonLd data={{ "@context": "https://schema.org", "@type": "ItemList", "@id": `${url}#matchups`, name: `${event.name} matchup intelligence`, numberOfItems: live.length, itemListOrder: "https://schema.org/ItemListOrderAscending", itemListElement: live.map((b, i) => ({ "@type": "ListItem", position: i + 1, name: `${b.fighter_a.name} vs ${b.fighter_b.name}`, url: `${SITE.url}/fights/${matchupSlug(b.fighter_a, b.fighter_b, event)}` })) }} />
       <JsonLd data={{ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: SITE.url }, { "@type": "ListItem", position: 2, name: "Fight Week", item: `${SITE.url}/fight-week` }, ...(archive ? [{ "@type": "ListItem", position: 3, name: event.name, item: url }] : [])] }} />
     </div>
+    </KalshiBoard>
   );
 }
 

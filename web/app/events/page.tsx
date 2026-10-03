@@ -9,6 +9,8 @@ import { eventSlug } from "@/lib/slug";
 import { daysUntil, eventBrand, eventHeadline, eventStatusLabel, fmtDate, fmtDateTime, locationLine, weightClassLabel, winnerOf, METHOD_SHORT } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import { UFC_OFFICIAL } from "@/lib/heritage";
+import { getKalshiBoard, slimBoard, ufcQuote, type KalshiEntry } from "@/lib/kalshi";
+import { KalshiBoard, KalshiChip } from "@/components/KalshiMarket";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
@@ -19,7 +21,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", site: SITE.twitter, title: "UFC Schedule & Results", images: [`${SITE.url}/opengraph-image`] },
 };
 
-function ScheduleRow({ e, main, imgs, bouts }: { e: Event; main?: Bout | null; imgs: Map<string, PortraitSet>; bouts?: number }) {
+function ScheduleRow({ e, main, imgs, bouts, kalshi }: { e: Event; main?: Bout | null; imgs: Map<string, PortraitSet>; bouts?: number; kalshi?: KalshiEntry | null }) {
   const d = daysUntil(e.event_date);
   const w = main ? winnerOf(main) : null;
   return (
@@ -30,13 +32,19 @@ function ScheduleRow({ e, main, imgs, bouts }: { e: Event; main?: Bout | null; i
         {main ? (
           <>
             <Avatar f={main.fighter_a} img={imgs.get(main.fighter_a.id)} size={34} /><Avatar f={main.fighter_b} img={imgs.get(main.fighter_b.id)} size={34} />
-            <span className="txt">{w ? <><b>{w.name}</b> def. {w.id === main.fighter_a.id ? main.fighter_b.name : main.fighter_a.name}{main.result ? ` · ${METHOD_SHORT[main.result.method] || main.result.method}${main.result.round ? ` R${main.result.round}` : ""}` : ""}</> : <><b>{main.fighter_a.name}</b> vs <b>{main.fighter_b.name}</b></>}<small>{weightClassLabel(main.weight_class, main.is_womens)}{main.is_title ? " title" : ""} main event{bouts ? ` · ${bouts} bouts` : ""}</small></span>
+            <span className="txt">{w ? <><b>{w.name}</b> def. {w.id === main.fighter_a.id ? main.fighter_b.name : main.fighter_a.name}{main.result ? ` · ${METHOD_SHORT[main.result.method] || main.result.method}${main.result.round ? ` R${main.result.round}` : ""}` : ""}</> : <><b>{main.fighter_a.name}</b> vs <b>{main.fighter_b.name}</b></>}<small>{weightClassLabel(main.weight_class, main.is_womens)}{main.is_title ? " title" : ""} main event{bouts ? ` · ${bouts} bouts` : ""}</small>{kalshiRowShows(kalshi, Boolean(main.result)) ? <span className="ufc-kc-row ufc-kc-row--start"><KalshiChip boutId={main.id} initial={kalshi ?? null} names={{ a: main.fighter_a.name, b: main.fighter_b.name }} variant="pair" result={Boolean(main.result)} placement="schedule-row" /></span> : null}</span>
           </>
         ) : <span className="txt faint">{bouts ? `${bouts} bouts announced` : "Card announcement pending"}</span>}
       </div>
       <div className="sched-status"><span className={`tag${d != null && d >= 0 && d <= 6 && e.card_status !== "complete" ? " gold" : e.card_status === "complete" ? " pos" : ""}`}>{eventStatusLabel(e)}</span>{d != null && d > 0 && e.card_status !== "complete" && <small>in {d} day{d === 1 ? "" : "s"}</small>}</div>
     </Link>
   );
+}
+
+/* Public Kalshi line on a schedule row: only when the main event has something honest to show. */
+function kalshiRowShows(entry: KalshiEntry | null | undefined, result: boolean): boolean {
+  const q = ufcQuote(entry);
+  return Boolean(q && !(q.kind === "open" && result));
 }
 
 export default async function EventsPage({ searchParams }: { searchParams: Promise<{ year?: string }> }) {
@@ -51,7 +59,15 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   const dwcs = upcoming.filter((e) => isDanaWhiteContenderSeries(e.name));
   const ids = [...ufcUpcoming, ...dwcs, ...past.slice(0, 80)].map((e) => e.id);
   const [mains, counts] = await Promise.all([getMainEvents(ids), getBoutCounts(ids)]);
-  const imgs = await getImagesForFighters([...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id]));
+  /* Kalshi prediction-market board: PUBLIC, ONE read for the page, matched to each
+   * card's main event (the board holds upcoming bouts and those completed in the
+   * last 7 days, so a fresh result row gets its closed / settled line). */
+  const [imgs, kalshiRaw] = await Promise.all([
+    getImagesForFighters([...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id])),
+    getKalshiBoard(),
+  ]);
+  const kalshi = slimBoard(Object.fromEntries([...mains.values()].filter((b) => kalshiRaw[b.id]).map((b) => [b.id, kalshiRaw[b.id]])));
+  const kx = (e: Event) => { const m = mains.get(e.id); return m ? kalshi[m.id] ?? null : null; };
   const next = ufcUpcoming[0] || null;
   const ufc1Ready = Boolean(coverage.ufc1Event && coverage.ufc1Bouts > 0);
   const yc = yearCoverage.find((y) => y.year === year);
@@ -61,6 +77,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   const syncAt = freshness?.finished_at || freshness?.started_at || null;
 
   return (
+    <KalshiBoard initial={kalshi}>
     <div className="wrap page">
       <PageHead crumbs={[{ name: "Schedule" }]} eyebrow="Live UFC calendar · results archive" title="UFC schedule & results" lede="Every announced UFC card month by month with date, location, status and the featured fight; Contender Series on its own track; and a year-by-year results archive that measures its own historical coverage instead of pretending old cards are complete." />
 
@@ -75,7 +92,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
         <section className="mb-6">
           <SectionHead eyebrow="Next UFC card" title="Fight week starts here" href={`/events/${eventSlug(next)}`} cta="Open live card" />
           <div className="grid-2">
-            <EventCard e={next} main={mains.get(next.id)} imgs={imgs} bouts={counts.get(next.id)} />
+            <EventCard e={next} main={mains.get(next.id)} imgs={imgs} bouts={counts.get(next.id)} kalshi={kx(next)} />
             <div className="card hi" style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: 28 }}>
               <div className="eyebrow">Before the first horn</div>
               <h2 className="serif" style={{ fontSize: 30, lineHeight: 1.05, margin: "7px 0 12px" }}>Card, matchup pages and the Pregame Desk in one place.</h2>
@@ -90,7 +107,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
       {ufcUpcoming.length ? [...months.entries()].map(([k, list]) => (
         <div className="sched-month" key={k}>
           <h3>{k === "TBA" ? "Date to be announced" : new Date(`${k}-01T12:00:00Z`).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" })} <small>{list.length} card{list.length === 1 ? "" : "s"}</small></h3>
-          <div className="sched-list">{list.map((e) => <ScheduleRow key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} bouts={counts.get(e.id)} />)}</div>
+          <div className="sched-list">{list.map((e) => <ScheduleRow key={e.id} e={e} main={mains.get(e.id)} imgs={imgs} bouts={counts.get(e.id)} kalshi={kx(e)} />)}</div>
         </div>
       )) : <Empty title="No upcoming UFC events loaded">The schedule is refreshed from the production source feed. Announced UFC cards appear here with the full lineup as it becomes available.</Empty>}
 
@@ -124,12 +141,13 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
         <SectionHead eyebrow={yc ? `${yc.events} event${yc.events === 1 ? "" : "s"} indexed · ${yc.withBouts} with bouts loaded · ${yc.bouts} bouts` : "Year-by-year results"} title={`${year} UFC results`} />
         <div className="years mb-5" role="navigation" aria-label="Archive by year">{years.map((y) => <Link key={y.year} href={`/events?year=${y.year}`} aria-current={y.year === year ? "true" : undefined} title={`${y.count} indexed event records`}>{y.year}</Link>)}</div>
         {yc && yc.withBouts < yc.events && <p className="dim sm mb-4">{yc.events - yc.withBouts} of the {yc.events} indexed {year} events are still event shells without bout rows. They are listed so the archive is honest about what exists; each opens with a "card not yet loaded" state until the historical backfill reaches it.</p>}
-        {past.length ? <div className="elist">{past.map((e) => <EventRow key={e.id} e={e} main={mains.get(e.id)} bouts={counts.get(e.id)} />)}</div> : <Empty title={`No completed UFC event records in ${year} yet`}>Results appear as the historical and current ingest layers fill this year.</Empty>}
+        {past.length ? <div className="elist">{past.map((e) => <EventRow key={e.id} e={e} main={mains.get(e.id)} bouts={counts.get(e.id)} kalshi={kx(e)} />)}</div> : <Empty title={`No completed UFC event records in ${year} yet`}>Results appear as the historical and current ingest layers fill this year.</Empty>}
       </div>
 
       <OfficialDestinations keys={["home", "athletes", "fightpass", "store"]} title="Official UFC events, athletes and viewing" />
 
       <JsonLd data={{ "@context": "https://schema.org", "@type": "CollectionPage", name: "UFC schedule and results", url: `${SITE.url}/events`, dateModified: coverage.lastChecked, isPartOf: { "@id": `${SITE.url}/#site` }, mainEntity: { "@type": "ItemList", itemListElement: ufcUpcoming.slice(0, 20).map((e, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "SportsEvent", name: e.name, startDate: e.event_date, url: `${SITE.url}/events/${eventSlug(e)}`, sport: "Mixed Martial Arts", location: locationLine(e) ? { "@type": "Place", name: locationLine(e) } : undefined } })) } }} />
     </div>
+    </KalshiBoard>
   );
 }

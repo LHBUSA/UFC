@@ -28,3 +28,68 @@
   .bout .ufc-kx-line { justify-content: flex-start; padding-left: 58px; }
   .bout .ufc-kx-line .kx-line { justify-content: flex-start; text-align: left; }
 }
+
+/* ── Compact prediction-market chips (presentation pass 2026-10-03) ──────────
+   One cool-blue chip family for every compact Kalshi placement: hero name plate,
+   bout and schedule rows, matchup cards, Fight Week. It reads apart from the gold
+   sportsbook ML chip (.hero-moneyline, Pro market) and the stronger gold PBE
+   intelligence treatment (.ufc-avm-chip). No venue logo, no branding: a label,
+   the Mid-market and its freshness. Price updates rewrite text in place. */
+:root {
+  --ufc-kc-ink: #7fb8ff;
+  --ufc-kc-line: rgba(127, 184, 255, .34);
+  --ufc-kc-bg: rgba(127, 184, 255, .08);
+  --ufc-kc-up: #3ddc97;
+  --ufc-kc-down: #ff6b6b;
+}
+.ufc-kc { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 7px; max-width: 100%; min-width: 0; padding: 3px 9px; border: 1px solid var(--ufc-kc-line); border-radius: 999px; background: var(--ufc-kc-bg); color: var(--pbe-paper); font: 600 11px/1.4 var(--pbe-font-data); letter-spacing: .02em; text-decoration: none; text-shadow: none; }
+.ufc-kc__b { font-weight: 800; letter-spacing: .12em; color: var(--ufc-kc-ink); white-space: nowrap; }
+.ufc-kc__px { font-weight: 800; font-variant-numeric: tabular-nums; color: var(--pbe-paper); white-space: nowrap; }
+.ufc-kc__px i { font-style: normal; color: var(--pbe-dim); }
+.ufc-kc__side { white-space: nowrap; min-width: 0; }
+.ufc-kc__who { font-weight: 600; color: var(--pbe-paper-2); }
+.ufc-kc__sep { font-style: normal; color: var(--pbe-dim); }
+.ufc-kc__fr { font-weight: 500; color: var(--pbe-dim); }
+.ufc-kc__tag { font-weight: 800; letter-spacing: .1em; color: var(--ufc-kc-ink); white-space: nowrap; }
+.ufc-kc__mv { margin-left: 4px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ufc-kc__mv.up { color: var(--ufc-kc-up); }
+.ufc-kc__mv.down { color: var(--ufc-kc-down); }
+.ufc-kc .kx__pulse { width: 6px; height: 6px; }
+.ufc-kc.is-stale .ufc-kc__px { color: var(--pbe-dim); }
+.ufc-kc.is-closed { border-color: var(--pbe-line); background: transparent; }
+.ufc-kc.is-closed .ufc-kc__b { color: var(--pbe-dim); }
+a.ufc-kc:hover { border-color: var(--ufc-kc-ink); }
+a.ufc-kc:focus-visible { outline: 2px solid var(--ufc-kc-ink); outline-offset: 2px; }
+
+/* Homepage hero: under each fighter's record / ML chip, same pill geometry as the
+   gold ML chip so the two layers line up and read as different layers. */
+.hero .hero-feature .ufc-kc--hero { display: flex; width: fit-content; margin-top: 4px; padding: 4px 7px; gap: 0 6px; background: rgba(13, 11, 8, .74); font: 800 10px/1 var(--pbe-font-data); letter-spacing: .045em; text-transform: uppercase; white-space: nowrap; }
+.hero .hero-feature .poster-names .b .ufc-kc--hero { margin-left: auto; }
+
+/* Bout rows: the pair chip sits centred on the row's own full-width line (above). */
+.bout .ufc-kx-line .ufc-kc { justify-content: center; }
+@media (max-width: 680px) { .bout .ufc-kx-line .ufc-kc { justify-content: flex-start; } }
+
+/* Matchup cards, schedule rows, event cards, Fight Week: a quiet line of its own. */
+.ufc-kc-row { display: flex; justify-content: center; margin-top: var(--s-3); min-width: 0; }
+.ufc-kc-row--start { justify-content: flex-start; margin-top: 6px; }
+
+/* PBE Algo vs Kalshi (frozen comparison): the stronger gold intelligence layer. */
+.ufc-avm-chip { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; max-width: 100%; padding: 4px 10px; border: 1px solid var(--pbe-gold); border-radius: 999px; background: var(--pbe-gold-wash); color: var(--pbe-paper); font: 700 11px/1.4 var(--pbe-font-data); letter-spacing: .03em; }
+.ufc-avm-chip b { color: var(--pbe-gold-bright); font-weight: 800; letter-spacing: .1em; }
+.ufc-avm-chip .k { color: var(--ufc-kc-ink); font-weight: 800; letter-spacing: .1em; }
+.ufc-avm-chip .d { color: var(--pbe-gold-bright); }
+/* Event poster: under the name plate, inside the poster's own gutters. */
+.poster .ufc-kc-poster { position: relative; z-index: 2; margin: calc(-1 * var(--s-2)) 0 0; padding: 0 var(--s-5) var(--s-4); }
+/* A chip that wraps to two lines reads as a tag, not a capsule. */
+.ufc-kc--named, .ufc-kc--pair, .ufc-kc.is-closed { border-radius: 12px; }
+/* Phones: the named chip is a fixed two-column grid (label | one row per fighter,
+   then movement / freshness rows), so a text refresh or a font swap can never
+   change how it wraps (no layout shift). */
+@media (max-width: 560px) {
+  .ufc-kc--named { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 2px 8px; }
+  .ufc-kc--named > * { grid-column: 2; }
+  .ufc-kc--named > .ufc-kc__b { grid-column: 1; grid-row: 1; }
+  .ufc-kc--named > .ufc-kc__sep, .ufc-kc--named > .kx__pulse { display: none; }
+  .ufc-kc--named .ufc-kc__side { overflow: hidden; text-overflow: ellipsis; }
+}

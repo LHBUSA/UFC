@@ -2,8 +2,8 @@ import Link from "next/link";
 import { MarketInline } from "@/components/Market";
 import type { BoutMarket, MarketState } from "@/lib/market";
 import { marketStateFor } from "@/lib/market";
-import { KalshiBoutLine } from "@/components/KalshiMarket";
-import type { KalshiEntry } from "@/lib/kalshi";
+import { KalshiBoutLine, KalshiChip } from "@/components/KalshiMarket";
+import { ufcQuote, type KalshiEntry, type UfcMove } from "@/lib/kalshi";
 import type { Article, Bout, Event, Fighter, PortraitSet } from "@/lib/db";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, daysUntil, eventBrand, eventHeadline, eventStatusLabel, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, initials, locationLine, METHOD_LABEL, METHOD_SHORT, weightClassLabel, age, stanceLabel, cityLine, winnerOf } from "@/lib/format";
@@ -122,8 +122,16 @@ export function Credit({ img, prefix = "Photo" }: { img?: PortraitSet | null; pr
   );
 }
 
+/* A compact Kalshi chip has something honest to show for this bout (server first
+ * paint decides whether its row exists; refreshes only rewrite it). A finished
+ * bout never shows open prices. */
+function kalshiShows(entry: KalshiEntry | null | undefined, result: boolean): boolean {
+  const q = ufcQuote(entry);
+  return Boolean(q && !(q.kind === "open" && result));
+}
+
 /* ---- events ------------------------------------------------------------ */
-export function EventCard({ e, main, imgs, bouts }: { e: Event; main?: Bout | null; imgs?: Portraits; bouts?: number }) {
+export function EventCard({ e, main, imgs, bouts, kalshi }: { e: Event; main?: Bout | null; imgs?: Portraits; bouts?: number; kalshi?: KalshiEntry | null }) {
   const d = daysUntil(e.event_date);
   const w = main ? winnerOf(main) : null;
   return (
@@ -149,6 +157,8 @@ export function EventCard({ e, main, imgs, bouts }: { e: Event; main?: Bout | nu
               : <><b>{main.fighter_a.name}</b> vs <b>{main.fighter_b.name}</b> · {weightClassLabel(main.weight_class, main.is_womens)}{main.is_title ? " title" : ""}</>}
           </div>
         ) : <div className="me faint">{bouts ? `${bouts} bouts announced` : "Card announcement pending"}</div>}
+        {/* Public Kalshi line for the featured fight (inside this link: no nested anchor). */}
+        {main && kalshiShows(kalshi, Boolean(main.result)) ? <div className="ufc-kc-row ufc-kc-row--start"><KalshiChip boutId={main.id} initial={kalshi ?? null} names={{ a: main.fighter_a.name, b: main.fighter_b.name }} variant="pair" result={Boolean(main.result)} placement="event-card" /></div> : null}
         <div className="meta">
           <span>{fmtDate(e.event_date)}</span>
           <span className="truncate">{cityLine(e) || "Venue TBA"}</span>
@@ -157,7 +167,7 @@ export function EventCard({ e, main, imgs, bouts }: { e: Event; main?: Bout | nu
     </Link>
   );
 }
-export function EventRow({ e, main, bouts }: { e: Event; main?: Bout | null; bouts?: number }) {
+export function EventRow({ e, main, bouts, kalshi }: { e: Event; main?: Bout | null; bouts?: number; kalshi?: KalshiEntry | null }) {
   const w = main ? winnerOf(main) : null;
   return (
     <Link href={`/events/${eventSlug(e)}`} className="erow">
@@ -165,6 +175,7 @@ export function EventRow({ e, main, bouts }: { e: Event; main?: Bout | null; bou
       <div>
         <div className="t">{e.name}</div>
         <div className="l">{main ? (w ? `${w.name} def. ${w.id === main.fighter_a.id ? main.fighter_b.name : main.fighter_a.name}` : `${main.fighter_a.name} vs ${main.fighter_b.name}`) : locationLine(e) || "Venue TBA"}{bouts ? ` · ${bouts} bouts` : ""}</div>
+        {main && kalshiShows(kalshi, Boolean(main.result)) ? <div className="ufc-kc-row ufc-kc-row--start"><KalshiChip boutId={main.id} initial={kalshi ?? null} names={{ a: main.fighter_a.name, b: main.fighter_b.name }} variant="pair" result={Boolean(main.result)} placement="schedule-row" /></div> : null}
       </div>
       <div className="s"><span className="tag">{eventStatusLabel(e)}</span></div>
     </Link>
@@ -216,7 +227,7 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState
           its own full-width row so long fighter names never squeeze the corners.
           Rendered only when the server board already had an entry for this bout.
           On a result row it is the market's close line only (marketCloseLine). */}
-      {kalshi && !off ? <KalshiBoutLine boutId={b.id} initial={kalshi} result={Boolean(r)} /> : null}
+      {kalshi && !off ? <KalshiBoutLine boutId={b.id} initial={kalshi} result={Boolean(r)} names={{ a: b.fighter_a.name, b: b.fighter_b.name }} /> : null}
     </Link>
   );
 }
@@ -296,7 +307,7 @@ export function TaleOfTheTape({ a, b, at }: { a: Fighter; b: Fighter; at?: strin
   );
 }
 /* `access` is the page's verified decision; without it the card shows no Pro slot at all. */
-export function MatchupCard({ b, e, imgs, ranks, access }: { b: Bout; e: Event; imgs?: Portraits; ranks?: Ranks; access?: Pick<UfcAccess, "pro" | "signedIn"> }) {
+export function MatchupCard({ b, e, imgs, ranks, access, kalshi, move }: { b: Bout; e: Event; imgs?: Portraits; ranks?: Ranks; access?: Pick<UfcAccess, "pro" | "signedIn">; kalshi?: KalshiEntry | null; move?: UfcMove | null }) {
   const r = b.result;
   const w = winnerOf(b);
   const div = { key: b.weight_class, isWomens: b.is_womens };
@@ -321,6 +332,9 @@ export function MatchupCard({ b, e, imgs, ranks, access }: { b: Bout; e: Event; 
           <div className="rec">{fmtRecord(b.fighter_b)}</div>
         </Link>
       </div>
+      {/* Public Kalshi prediction-market line, directly under the matchup identity;
+          linked to the market on Kalshi. Not the Pro sportsbook market. */}
+      {b.status !== "cancelled" && kalshiShows(kalshi, Boolean(r)) ? <div className="ufc-kc-row"><KalshiChip boutId={b.id} initial={kalshi ?? null} names={{ a: b.fighter_a.name, b: b.fighter_b.name }} variant="named" result={Boolean(r)} move={move} link placement="matchup-card" /></div> : null}
       <TaleOfTheTape a={b.fighter_a} b={b.fighter_b} at={e.event_date} />
       {r ? (
         <div className="well mt-4">

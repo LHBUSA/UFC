@@ -8,7 +8,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { getAlgoVsMarket, getAlgoVsMarketEvent, ufcAvmEventHtml, ufcAvmRecordHtml, getKalshiBoard, getKalshiEvent, kalshiPollMs, kalshiPollState, ufcKalshiCardHtml, ufcKalshiLineHtml, ufcMarketPhase, UFC_KALSHI_NOTE, KALSHI_MARKETS_BASE, KALSHI_CLOSED_POLL_MS } from "./kalshi.ts";
+import { getAlgoVsMarket, getAlgoVsMarketEvent, ufcAvmEventHtml, ufcAvmRecordHtml, getKalshiBoard, getKalshiEvent, kalshiPollMs, kalshiPollState, ufcKalshiCardHtml, ufcKalshiLineHtml, ufcMarketPhase, UFC_KALSHI_NOTE, KALSHI_MARKETS_BASE, KALSHI_CLOSED_POLL_MS, avmByBout, getKalshiMoves, kalshiCents, kalshiMoveCents, sideMove, slimEntry, tapeMoves, ufcAvmChip, ufcFreshnessText, ufcQuote } from "./kalshi.ts";
 import type { KalshiEntry } from "./kalshi.ts";
 
 const WEB = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -241,7 +241,7 @@ test("fight page: the market module is mounted for completed bouts too", () => {
   const fetchLine = src.split("\n").find((l) => l.includes("getKalshiEvent(b.id)"))!;
   assert.doesNotMatch(fetchLine, /b\.result|kalshiAge/, "completed bouts are read");
   const ui = read("components/ui.tsx");
-  assert.match(ui, /<KalshiBoutLine boutId=\{b\.id\} initial=\{kalshi\} result=\{Boolean\(r\)\} \/>/);
+  assert.match(ui, /<KalshiBoutLine boutId=\{b\.id\} initial=\{kalshi\} result=\{Boolean\(r\)\} names=\{\{ a: b\.fighter_a\.name, b: b\.fighter_b\.name \}\} \/>/);
   assert.doesNotMatch(ui.split("\n").find((l) => l.includes("<KalshiBoutLine"))!, /!r\b/);
 });
 
@@ -418,4 +418,149 @@ test("AVM placements: /algo/record after the performance tracker, fight page dir
   const kx = fight.indexOf("<KalshiMarketCard "), avm = fight.indexOf("<AlgoVsMarketFight ");
   assert.ok(kx > 0 && avm > kx && avm - kx < 200, "directly after the Market Pulse card");
   assert.doesNotMatch(read("components/AlgoVsMarket.tsx"), /use client|fetch\(/);
+});
+
+/* ── PRESENTATION PASS (compact chips, 2026-10-03) ──
+ * REAL board + tape captured 2026-10-03 ~20:45Z (UFC 332): Silva v Wang open/live, Vettori v Naurdiev
+ * open with stored movement, McGee v Nolan SETTLED (Nolan YES). */
+const UFC332 = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "fixtures", "kalshi-ufc-332-real.json"), "utf8"));
+const realEntry = (id: string) => structuredClone(UFC332.board.events.find((e: any) => e.event.canonical_event_id === id)) as KalshiEntry;
+const SILVA = "5e5d2711-f905-4b69-b8d4-aa17a96ef7ac";
+const VETTORI = "335db527-1a7e-4a10-8bcf-a9f7c956a60c";
+const MCGEE = "41559b42-0a88-492d-ad14-27dc67dc03b6";
+
+test("compact quote: real open market = the Market Pulse Mid-market, one decimal, favourite = higher Mid", () => {
+  const e = realEntry(SILVA);
+  const q = ufcQuote(e, { a: "Natalia Silva", b: "Wang Cong" });
+  assert.equal(q?.kind, "open");
+  if (q?.kind !== "open") return;
+  assert.equal(kalshiCents(q.a.bp), "64.5¢");
+  assert.equal(kalshiCents(q.b.bp), "35.5¢");
+  assert.equal(q.fav, "a");
+  assert.equal(q.marketUrl, "https://kalshi.com/markets/kxufcfight/ufc-fight/kxufcfight-26oct03silcon");
+  /* every compact price equals the full card's headline for that side */
+  const card = ufcKalshiCardHtml(e);
+  for (const s of [q.a, q.b]) assert.match(card, new RegExp(`kx__px mono">${kalshiCents(s.bp).replace(".", "\\.")}<`));
+  assert.match(ufcFreshnessText(q), /^Updated /);
+});
+
+test("compact quote: exact tie names no favourite; stale is 'Quote not current' (never live); delayed says delayed", () => {
+  const e = realEntry(SILVA) as any;
+  e.kalshi.outcomes[0].mid_bp = 5000; e.kalshi.outcomes[1].mid_bp = 5000;
+  assert.equal((ufcQuote(e) as any).fav, null);
+  const st = realEntry(SILVA) as any; st.kalshi.freshness = "stale";
+  const qs = ufcQuote(st) as any;
+  assert.equal(ufcFreshnessText(qs), "Quote not current");
+  const dl = realEntry(SILVA) as any; dl.kalshi.freshness = "delayed"; dl.kalshi.age_seconds = 240;
+  assert.equal(ufcFreshnessText(ufcQuote(dl) as any), "Delayed · updated 4 min ago");
+});
+
+test("compact quote: no Mid-market on a side, a non-displayable book or no entry -> nothing", () => {
+  const wide = realEntry(SILVA) as any; wide.kalshi.outcomes[1].mid_bp = null;
+  assert.equal(ufcQuote(wide), null);
+  const nd = realEntry(SILVA) as any; nd.kalshi.outcomes[0].displayable = false;
+  assert.equal(ufcQuote(nd), null);
+  assert.equal(ufcQuote(null), null);
+});
+
+test("compact quote: real SETTLED McGee v Nolan shows only stored evidence (first observed, final trade, venue YES), no before-start price", () => {
+  const q = ufcQuote(realEntry(MCGEE), { a: "Court McGee", b: "Eric Nolan" });
+  assert.equal(q?.kind, "settled");
+  if (q?.kind !== "settled") return;
+  assert.equal(q.winner, "b");
+  assert.deepEqual(q.b, { role: "b", name: "Eric Nolan", firstBp: 6750, finalBp: 9900, result: "yes" });
+  assert.deepEqual(q.a, { role: "a", name: "Court McGee", firstBp: 3250, finalBp: 100, result: "no" });
+  assert.ok(!("beforeBp" in q.b), "UFC has no trusted start: no before-start price is carried");
+  /* a CLOSED (not yet settled) market never claims a result */
+  const closed = realEntry(MCGEE) as any; closed.market.lifecycle = "CLOSED"; closed.market.close.lifecycle = "CLOSED";
+  const qc = ufcQuote(closed) as any;
+  assert.equal(qc.kind, "closed");
+  assert.equal(qc.winner, null);
+  assert.equal(qc.b.result, null);
+});
+
+test("movement: only the tape's stored delta_first_bp, and only for the same observation shown", () => {
+  const moves = tapeMoves(UFC332.tape);
+  assert.deepEqual(moves[VETTORI], { a: { priceBp: 2350, deltaBp: -2100 }, b: { priceBp: 7600, deltaBp: 1950 } });
+  const q = ufcQuote(realEntry(VETTORI)) as any;
+  assert.equal(sideMove(moves[VETTORI], q.a), -2100);
+  assert.equal(sideMove(moves[VETTORI], q.b), 1950);
+  assert.equal(kalshiMoveCents(-2100), "21.0");
+  /* a newer board price than the tape's -> no delta (never mixes observations) */
+  assert.equal(sideMove(moves[VETTORI], { ...q.a, bp: 2450 }), null);
+  /* unchanged -> no arrow */
+  const silva = ufcQuote(realEntry(SILVA)) as any;
+  assert.equal(sideMove(moves[SILVA], silva.a), null);
+  assert.deepEqual(tapeMoves(null), {});
+});
+
+test("server reads: tape read uses our markets Worker; getKalshiForBouts narrows + slims; failures are empty", async () => {
+  const seen: string[] = [];
+  const fetchImpl = (async (url: string) => { seen.push(url); return new Response(JSON.stringify(url.includes("market-tape") ? UFC332.tape : UFC332.board)); }) as never;
+  const mv = await getKalshiMoves({ fetchImpl });
+  assert.ok(mv[VETTORI]);
+  assert.deepEqual(seen, [`${KALSHI_MARKETS_BASE}/v1/market-tape?sport=ufc`]);
+  assert.deepEqual(await getKalshiMoves({ fetchImpl: (async () => { throw new Error("down"); }) as never }), {});
+  const slim = slimEntry(realEntry(SILVA));
+  assert.deepEqual(ufcQuote(slim), ufcQuote(realEntry(SILVA)), "slimmed entry renders the same chip");
+  assert.equal(kalshiPollState(slim), kalshiPollState(realEntry(SILVA)));
+  assert.deepEqual(ufcQuote(slimEntry(realEntry(MCGEE))), ufcQuote(realEntry(MCGEE)));
+  assert.ok(JSON.stringify(slim).length < JSON.stringify(realEntry(SILVA)).length / 2);
+});
+
+test("PBE vs KALSHI chip: only a graded comparison with the frozen probability and the same side's frozen Mid", () => {
+  const agree = structuredClone(SHORT) as any;
+  const c = ufcAvmChip(agree);
+  assert.deepEqual(c, { pbePct: 71.4, kalshiPct: 80.5, divergencePts: -9.1, selection: "away" });
+  assert.equal(ufcAvmChip({ ...agree, status: "LOCKED" }), null, "LOCKED reveals nothing");
+  assert.equal(ufcAvmChip({ ...agree, status: "NO_HISTORICAL_MARKET_SNAPSHOT" }), null);
+  assert.equal(ufcAvmChip({ ...agree, algo_probability: null }), null);
+  assert.equal(ufcAvmChip(null), null);
+  assert.deepEqual(avmByBout(AVM_UFC_REAL as never), {}, "real UFC response: no comparison, no chip");
+  assert.equal(Object.keys(avmByBout(AVM_SOCCER_REAL as never)).length, 1);
+});
+
+/* ── placements: public, one board read per page, chips everywhere a matchup shows ── */
+test("presentation placements: hero, card rows, matchup cards, schedule, event poster, Fight Week, Algo", () => {
+  const home = read("app/page.tsx");
+  assert.equal((home.match(/getKalshiBoard\(/g) || []).length, 1, "homepage: one board read");
+  assert.doesNotMatch(home.split("\n").find((l) => l.includes("getKalshiBoard("))!, /access|\.pro/);
+  assert.match(home, /<KalshiBoard initial=\{kalshi\}>/);
+  assert.equal((home.match(/variant="hero" side="[ab]"/g) || []).length, 2, "hero: one chip per fighter");
+  assert.match(home, /favLabel=\{!heroBook\}/);
+  assert.match(home, /<CardSegments [^>]*kalshi=\{kalshi\}/);
+  assert.match(home, /<MatchupCard [^>]*kalshi=\{kalshi\[b\.id\] \?\? null\}/);
+  const ev = read("app/events/[slug]/page.tsx");
+  assert.equal((ev.match(/getKalshiBoard\(/g) || []).length, 1);
+  assert.match(ev, /<KalshiBoard initial=\{kalshiBoard\}>/);
+  assert.match(ev, /placement="event-poster"/);
+  const sched = read("app/events/page.tsx");
+  assert.equal((sched.match(/getKalshiBoard\(/g) || []).length, 1);
+  assert.match(sched, /<KalshiBoard initial=\{kalshi\}>/);
+  for (const r of ["app/fight-week/page.tsx", "app/pregame/[slug]/page.tsx"]) assert.match(read(r), /getKalshiForBouts\(packet\.live\.map\(\(b\) => b\.id\), \{ moves: true \}\)/);
+  const fw = read("components/FightWeek.tsx");
+  assert.match(fw, /<KalshiBoard initial=\{kx\?\.board \?\? \{\}\}>/);
+  assert.equal((fw.match(/<KxLine /g) || []).length, 3, "main event, matchup card, scan tile");
+  const ui = read("components/ui.tsx");
+  assert.match(ui, /placement="matchup-card"/);
+  assert.match(ui, /placement="schedule-row"/);
+  assert.match(ui, /placement="event-card"/);
+  /* Algo: Pro branch only, after the pinned picks read */
+  const card = read("app/algo/card/page.tsx");
+  assert.match(card, /const avm = access\.pro && cards\.length \? avmByBout\(await getAlgoVsMarket\(\)\) : \{\};/);
+  assert.match(read("components/AlgoPick.tsx"), /const avmChip = called && locked \? ufcAvmChip\(avm\) : null;/);
+  /* the browser refresh is one shared board loop; no other market client */
+  const comp = read("components/KalshiMarket.tsx");
+  assert.equal((comp.match(/await client\(\)\.loadBoard\(\)/g) || []).length, 1, "one board loop");
+  assert.doesNotMatch(comp, /fetch\(/);
+  /* never "odds" on a Kalshi chip */
+  assert.doesNotMatch(comp.slice(comp.indexOf("COMPACT CHIP")), /"[^"]*\bodds\b(?! and not)[^"]*"/i);
+});
+
+test("chip CSS: cool-blue tokens, distinct from the gold ML chip and the gold PBE chip", () => {
+  const css = read("app/kalshi-ufc.css");
+  assert.match(css, /--ufc-kc-ink: #7fb8ff;/);
+  assert.match(css, /\.ufc-kc \{[^}]*border: 1px solid var\(--ufc-kc-line\)/);
+  assert.match(css, /\.ufc-avm-chip \{[^}]*border: 1px solid var\(--pbe-gold\)/);
+  assert.doesNotMatch(css, /kalshi\.com|url\(/i, "no venue branding or logo images");
 });

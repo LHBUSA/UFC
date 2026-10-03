@@ -6,6 +6,7 @@ import { eventSlug } from "@/lib/slug";
 import { fmtDate } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import { getUfcAccess } from "@/lib/access";
+import { getKalshiForBouts } from "@/lib/kalshi";
 
 /* /fight-week — the Pregame Desk hub. Auto-rolls to the current or next
  * canonical UFC card from the schedule; nothing about the event is
@@ -42,5 +43,7 @@ export default async function FightWeekHub() {
     const upcoming = (await getUpcomingEvents(5)).filter((x) => x.id !== e.id);
     return <FightWeekEmpty next={e} upcoming={upcoming} />;
   }
-  return <FightWeekPage packet={packet} archive={false} locked={access.pro ? null : { signedIn: access.signedIn, returnPath: "/fight-week" }} />;
+  /* Public Kalshi layer: one board read + one market-tape read for the card. */
+  const kx = await getKalshiForBouts(packet.live.map((b) => b.id), { moves: true });
+  return <FightWeekPage packet={packet} archive={false} locked={access.pro ? null : { signedIn: access.signedIn, returnPath: "/fight-week" }} kx={kx} />;
 }

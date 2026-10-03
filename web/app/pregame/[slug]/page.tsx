@@ -10,6 +10,7 @@ import { daysUntil, fmtDate, locationLine } from "@/lib/format";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { SITE } from "@/lib/site";
 import { getUfcAccess } from "@/lib/access";
+import { getKalshiForBouts } from "@/lib/kalshi";
 
 /* /pregame/[event-slug] — the permanent Pregame Desk page for one event.
  * Before the card it mirrors the Fight Week hub; after the card it stays as
@@ -60,5 +61,7 @@ export default async function PregamePage({ params }: { params: Promise<{ slug: 
       </div>
     );
   }
-  return <FightWeekPage packet={packet} archive locked={access.pro ? null : { signedIn: access.signedIn, returnPath: `/pregame/${eventSlug(e)}` }} />;
+  /* Public Kalshi layer: one board read + one market-tape read for the card. */
+  const kx = await getKalshiForBouts(packet.live.map((b) => b.id), { moves: true });
+  return <FightWeekPage packet={packet} archive locked={access.pro ? null : { signedIn: access.signedIn, returnPath: `/pregame/${eventSlug(e)}` }} kx={kx} />;
 }
