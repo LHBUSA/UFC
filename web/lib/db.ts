@@ -2,6 +2,7 @@ import { rankVideos, videoLanguage, type LiveVideoState } from "@/lib/videoPolic
 import { markCardTruth, type CardChange, type CardObservation, type CardStatusEvent } from "@/lib/cardTruth";
 import { prefersEspnDisplay, preferredDisplayFighterIds } from "@/lib/displayPortraitPolicy";
 import { espnVerifiedPortrait } from "@/lib/espnPortraitGate";
+import { brandArticle } from "@/lib/sourceBrand";
 import { pickStoredPortraits } from "@/lib/portraitSelection";
 import { ufcSiteDate } from "@/lib/siteClock";
 import { trainingPayload, TRAINING_STINT_COLS, TRAINING_CHANGE_COLS, type CurrentRow, type StintRow, type ChangeRow, type TrainingPayload } from "@/lib/training";
@@ -277,7 +278,7 @@ export async function getEventBouts(eventId: string, revalidate?: number, strict
  * page, its OG image, the weigh-in desk. The stored row is never written; `stored_status` keeps what it says.
  * A fully fought card is history and is left alone (no extra reads). Failures degrade to the stored status. */
 export async function getCardObservations(eventId: string, limit = 12, revalidate = 120): Promise<CardObservation[]> {
-  return (await rest<CardObservation[]>(`ufc_event_card_observations?select=observed_at,source,competition_ids,placeholder_ids,complete&event_id=eq.${eventId}&source=eq.espn&order=observed_at.desc&limit=${limit}`, [], { revalidate })).data;
+  return (await rest<CardObservation[]>(`ufc_event_card_observations?select=observed_at,source,competition_ids,placeholder_ids,complete&event_id=eq.${eventId}&source=eq.espn&order=observed_at.desc&limit=${limit}`, [], { revalidate })).data; // source-brand:allow (internal PostgREST filter, never rendered)
 }
 export async function getCardStatusEvents(eventId: string, revalidate = 120): Promise<CardStatusEvent[]> {
   return (await rest<CardStatusEvent[]>(`ufc_fighter_status_feed?select=id,fighter_id,fighter_name,status_type,state,event_id,bout_id,replacement_fighter_name,source_url,source_name,source_kind,source_published_at,confidence,occurred_at&event_id=eq.${eventId}&order=occurred_at.desc.nullslast&limit=200`, [], { revalidate })).data;
@@ -630,11 +631,11 @@ const ARTICLE_COLS = "id,slug,headline,dek,body_md,story_type,status,hero_image_
 export async function getArticles(limit = 20, storyType?: string, offset = 0): Promise<{ rows: Article[]; count: number | null }> {
   const t = storyType ? `&story_type=eq.${storyType}` : "";
   const r = await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published${t}&order=published_at.desc&limit=${limit}&offset=${offset}`, [], { count: true });
-  return { rows: r.data, count: r.count };
+  return { rows: r.data.map(brandArticle), count: r.count };
 }
 export async function getArticleBySlug(slug: string, strict = false): Promise<Article | null> {
   const rows = (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&slug=eq.${encodeURIComponent(slug)}&limit=1`, [], { strict })).data;
-  return rows[0] || null;
+  return rows[0] ? brandArticle(rows[0]) : null;
 }
 /**
  * Any status, including held. ONLY the token-gated desk preview may call this.
@@ -646,17 +647,17 @@ export async function getArticleBySlug(slug: string, strict = false): Promise<Ar
  */
 export async function getArticleBySlugAnyStatus(slug: string): Promise<Article | null> {
   const rows = (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&slug=eq.${encodeURIComponent(slug)}&limit=1`, [], { revalidate: 0 })).data;
-  return rows[0] || null;
+  return rows[0] ? brandArticle(rows[0]) : null;
 }
 
 export async function getArticlesForEvent(eventId: string, limit = 12): Promise<Article[]> {
-  return (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&event_id=eq.${eventId}&order=published_at.desc&limit=${limit}`, [])).data;
+  return (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&event_id=eq.${eventId}&order=published_at.desc&limit=${limit}`, [])).data.map(brandArticle);
 }
 export async function getArticlesForFighter(fighterId: string, limit = 8): Promise<Article[]> {
-  return (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&fighter_ids=cs.{${fighterId}}&order=published_at.desc&limit=${limit}`, [])).data;
+  return (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&fighter_ids=cs.{${fighterId}}&order=published_at.desc&limit=${limit}`, [])).data.map(brandArticle);
 }
 export async function getArticlesForBout(boutId: string, limit = 6): Promise<Article[]> {
-  return (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&bout_id=eq.${boutId}&order=published_at.desc&limit=${limit}`, [])).data;
+  return (await rest<Article[]>(`ufc_articles?select=${ARTICLE_COLS}&status=eq.published&bout_id=eq.${boutId}&order=published_at.desc&limit=${limit}`, [])).data.map(brandArticle);
 }
 /* Article rail: headlines only. The rail never needs a body or fact block, and
  * every article page reads these, so the rows stay small. */
@@ -668,10 +669,10 @@ export async function getRelatedHeadlines(ref: { boutId: string | null; eventId:
   if (ref.eventId) ors.push(`event_id.eq.${ref.eventId}`);
   for (const id of ref.fighterIds.slice(0, 6)) ors.push(`fighter_ids.cs.{${id}}`);
   if (!ors.length) return [];
-  return (await rest<ArticleHeadline[]>(`ufc_articles?select=${HEADLINE_COLS}&status=eq.published&or=(${ors.join(",")})&order=published_at.desc&limit=${limit}`, [])).data;
+  return (await rest<ArticleHeadline[]>(`ufc_articles?select=${HEADLINE_COLS}&status=eq.published&or=(${ors.join(",")})&order=published_at.desc&limit=${limit}`, [])).data.map(brandArticle);
 }
 export async function getLatestHeadlines(limit = 12): Promise<ArticleHeadline[]> {
-  return (await rest<ArticleHeadline[]>(`ufc_articles?select=${HEADLINE_COLS}&status=eq.published&order=published_at.desc&limit=${limit}`, [])).data;
+  return (await rest<ArticleHeadline[]>(`ufc_articles?select=${HEADLINE_COLS}&status=eq.published&order=published_at.desc&limit=${limit}`, [])).data.map(brandArticle);
 }
 export async function getArticleTypeCounts(): Promise<Map<string, number>> {
   const rows = (await rest<Array<{ story_type: string }>>(`ufc_articles?select=story_type&status=eq.published&limit=5000`, [])).data;

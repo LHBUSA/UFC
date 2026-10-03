@@ -240,7 +240,7 @@ export const SAMPLE_EXPLAINER = {
 } as const;
 
 export const SOURCE_VS_DERIVED = {
-  source: ["Event date and venue", "Bout result, method and round", "Significant strikes landed and attempted", "Takedowns landed and attempted", "Control time, knockdowns, submission attempts", "Per-round UFC Stats rows"],
+  source: ["Event date and venue", "Bout result, method and round", "Significant strikes landed and attempted", "Takedowns landed and attempted", "Control time, knockdowns, submission attempts", "Per-round statistic rows"],
   derived: ["Stance-specific records and finish rates", "Significant-strike differential by opponent stance", "Head / body / leg target shares", "Distance / clinch / ground position shares", "Pace retention round to round", "Finish-round distributions and median finish time", "Per-15-minute normalized takedown, knockdown and submission rates", "Control time per takedown and control share", "Matchup comparisons and supported observations"],
 } as const;
 

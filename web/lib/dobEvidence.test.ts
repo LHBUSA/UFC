@@ -10,7 +10,7 @@ test("sources that agree are not a dispute", () => {
 
 test("De Castro and Pajuelo: both values are kept, neither is chosen", () => {
   const dc = dobDispute([{ source: "espn", dob: "1987-12-19" }, { source: "ufcstats", dob: "1986-12-19" }]);
-  assert.deepEqual(dc, { values: [{ dob: "1986-12-19", sources: ["UFC Stats"] }, { dob: "1987-12-19", sources: ["ESPN"] }] });
+  assert.deepEqual(dc, { values: [{ dob: "1986-12-19", sources: ["PropSports round record"] }, { dob: "1987-12-19", sources: ["PropSports record"] }] });
   const lp = dobDispute([{ source: "espn", dob: "1994-12-12" }, { source: "ufcstats", dob: "1994-12-18" }]);
   assert.equal(lp?.values.length, 2);
 });

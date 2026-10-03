@@ -316,3 +316,12 @@ The same contract can later be mounted behind a PropSports API hostname and exte
 - MCP tools backed by these endpoints
 
 Image licensing is independent of factual data licensing. Only image references with appropriate redistribution rights should be returned to third-party API customers.
+
+## Source brand and deprecated provider-named fields (2026-10-03)
+
+Responses attribute data to PropSports (`meta.source: "PropSports"`). Provider-named identifiers and values —
+`ufcstats_id`, `espn_athlete_id`, `espn_event_id`, `espn_competition_id`, the `result_source` value set and
+image `source_family` — are **deprecated, compatibility-only** fields. They keep working (including as lookup
+keys) and are listed in `meta.deprecated_fields`; `id` is the PropSports canonical identifier. They will be
+removed only in a future versioned contract. Article text fields (`headline`, `dek`, `body_md`) name PropSports
+rather than the collection lane; stored rows are unchanged.

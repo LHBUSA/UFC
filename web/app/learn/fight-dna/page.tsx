@@ -52,7 +52,7 @@ export default function LearnFightDna() {
       <section className="learn-sec" id="what">
         <div className="eyebrow">01</div>
         <h2>What Fight DNA is</h2>
-        <p><strong>Fight DNA is PropBetEdge&apos;s proprietary analytics layer above the normalized UFC record.</strong> The inputs are ordinary source facts: an event date, a bout result, strikes landed and attempted, takedowns, control time, per-round rows from UFC Stats. The product is what PropBetEdge builds from them: a versioned, reproducible, as-of feature system that turns a fighter&apos;s event-dated history into fighter-specific and matchup-specific intelligence.</p>
+        <p><strong>Fight DNA is PropBetEdge&apos;s proprietary analytics layer above the normalized UFC record.</strong> The inputs are ordinary source facts: an event date, a bout result, strikes landed and attempted, takedowns, control time, per-round statistic rows. The product is what PropBetEdge builds from them: a versioned, reproducible, as-of feature system that turns a fighter&apos;s event-dated history into fighter-specific and matchup-specific intelligence.</p>
         <p>Every Fight DNA metric keeps its definition, sample size, provenance, as-of date, confidence tier, coverage state and definition version. That packet of context is part of the product, not a footnote.</p>
         <div className="learn-ex"><b>In one line</b><p>Not simply republished source statistics. Derived by PropBetEdge from the normalized fight record, and shown with receipts.</p></div>
       </section>
@@ -61,7 +61,7 @@ export default function LearnFightDna() {
         <div className="eyebrow">02</div>
         <h2>What it is not</h2>
         <ul>
-          <li>Not an official UFC statistic, and not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN or any sportsbook.</li>
+          <li>Not an official UFC statistic, and not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN or any sportsbook.</li>{/* source-brand:allow (legal non-affiliation disclaimer) */}
           <li>Not a prediction. Fight DNA describes what the record shows; it does not claim a fighter will reproduce a number in the next fight.</li>
           <li>Not a grade. There are no letter scores, gauges, percentiles or &ldquo;elite&rdquo; labels, because no benchmark in the system would justify them.</li>
           <li>Not a career snapshot copied from a source profile. Career-to-date figures on a fighter row are display fields; Fight DNA is rebuilt from event-dated bout and round rows.</li>
@@ -122,7 +122,7 @@ export default function LearnFightDna() {
         <h2>Striking DNA</h2>
         <p>{FAMILY.striking.subtitle}</p>
         <h3 id="significant-strikes">Significant strikes</h3>
-        <p>UFC Stats separates <strong>significant strikes</strong> (strikes at distance, plus power strikes in the clinch and on the ground) from total strikes, which include short ground-and-pound and clinch taps. Fight DNA&apos;s striking family is built on significant strikes because that is the category the source records consistently per round.</p>
+        <p>The UFC&apos;s official fight statistics separate <strong>significant strikes</strong> (strikes at distance, plus power strikes in the clinch and on the ground) from total strikes, which include short ground-and-pound and clinch taps. Fight DNA&apos;s striking family is built on significant strikes because that is the category the source records consistently per round.</p>
         <h3 id="pace-vs-accuracy">Pace vs accuracy</h3>
         <p><strong>Sig. landed / min</strong> is pace: how many significant strikes landed for every observed minute. <strong>Sig. accuracy</strong> is efficiency: the share of attempts that landed. They move in different directions. A fighter who throws constantly can land a lot at a modest accuracy; a counter-striker can post high accuracy at low volume. Read them together.</p>
         <div className="learn-ex"><b>Example</b><p>7.63 significant strikes landed per minute across 23 observed minutes, at 68% accuracy. That is a description of output and efficiency in the observed sample, with no claim about how it compares to other fighters.</p></div>
@@ -187,7 +187,7 @@ export default function LearnFightDna() {
         <div className="eyebrow">15</div>
         <h2>PBE Derived explained</h2>
         <p><Origin explain /> {PBE_DERIVED_EXPLAINER.body}</p>
-        <p>Wherever the badge appears, the definition, sample, confidence and as-of date sit behind the explainer. <strong>SOURCE</strong> marks a raw fact republished from ESPN or UFC Stats. LICENSED and MODEL labels are reserved for data that does not yet ship publicly.</p>
+        <p>Wherever the badge appears, the definition, sample, confidence and as-of date sit behind the explainer. <strong>SOURCE</strong> marks an observed fact from the PropSports record. LICENSED and MODEL labels are reserved for data that does not yet ship publicly.</p>
       </section>
 
       <section className="learn-sec" id="source-vs-derived">
@@ -250,7 +250,7 @@ export default function LearnFightDna() {
         eyebrow="Build with Fight DNA"
         heading="Access the same UFC intelligence layer through the PropTechUSA UFC Intelligence API."
       />
-      <p className="learn-disclaimer">PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN or any sportsbook. Fight DNA is not an official UFC statistic. Nothing on this page is betting advice or a prediction of fight outcomes.</p>
+      <p className="learn-disclaimer">PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN or any sportsbook. Fight DNA is not an official UFC statistic. Nothing on this page is betting advice or a prediction of fight outcomes.</p>{/* source-brand:allow (legal non-affiliation disclaimer) */}
 
       <JsonLd data={{ "@context": "https://schema.org", "@type": "TechArticle", "@id": `${SITE.url}/learn/fight-dna#article`, headline: "How to Read Fight DNA", name: TITLE, description: DESCRIPTION, url: `${SITE.url}/learn/fight-dna`, author: { "@type": "Organization", name: "PropBetEdge", url: SITE.parent }, publisher: { "@type": "Organization", name: SITE.publisher, url: SITE.parent }, about: { "@type": "Thing", name: "PropBetEdge Fight DNA", description: "Proprietary UFC fighter intelligence derived from normalized fight records." }, isPartOf: { "@id": `${SITE.url}/#site` } }} />
       <JsonLd data={{ "@context": "https://schema.org", "@type": "DefinedTermSet", "@id": `${SITE.url}/learn/fight-dna#glossary`, name: "PropBetEdge Fight DNA glossary", hasDefinedTerm: terms.map((t) => ({ "@type": "DefinedTerm", "@id": `${SITE.url}/learn/fight-dna#metric-${t.key}`, name: t.fullName, termCode: t.key, description: t.plainEnglish })) }} />

@@ -130,9 +130,9 @@ export const VOICES: Voice[] = [
       "His wrestling pedigree lets him read clinch and takedown battles that most viewers only see as a result.",
       "He moved straight from active championship competition into broadcasting, so his analysis reflects the current sport rather than a previous era.",
     ],
-    knownFor: ["Simultaneous UFC heavyweight and light heavyweight champion", "Olympic freestyle wrestler (2004, 2008)", "UFC commentary and fight breakdowns", "ESPN MMA analysis", "UFC Hall of Fame Modern Wing (2022)"],
+    knownFor: ["Simultaneous UFC heavyweight and light heavyweight champion", "Olympic freestyle wrestler (2004, 2008)", "UFC commentary and fight breakdowns", "ESPN MMA analysis", "UFC Hall of Fame Modern Wing (2022)"], // source-brand:allow (broadcaster in a commentator biography)
     signature: "Championship experience translated in real time",
-    highlights: ["Former UFC heavyweight champion", "Former UFC light heavyweight champion", "Two-time U.S. Olympic wrestler", "UFC Hall of Fame inductee (2022)", "UFC commentator and ESPN analyst"],
+    highlights: ["Former UFC heavyweight champion", "Former UFC light heavyweight champion", "Two-time U.S. Olympic wrestler", "UFC Hall of Fame inductee (2022)", "UFC commentator and ESPN analyst"], // source-brand:allow (broadcaster in a commentator biography)
     topics: ["fight breakdowns", "wrestling", "cage craft", "championship experience", "UFC analysis", "matchup tactics", "five-round pacing"],
     timeline: [
       { year: "2004 · 2008", text: "Represents the United States in Olympic freestyle wrestling." },
@@ -143,7 +143,7 @@ export const VOICES: Voice[] = [
     ],
     recommended: [
       { label: "Daniel Cormier on YouTube", href: "https://www.youtube.com/@dc_mma", note: "Official channel: fight breakdowns and reaction videos" },
-      { label: "ESPN MMA", href: "https://www.espn.com/mma/", note: "Where much of his broadcast analysis appears" },
+      { label: "ESPN MMA", href: "https://www.espn.com/mma/", note: "Where much of his broadcast analysis appears" }, // source-brand:allow (broadcaster link in a commentator biography)
     ],
     official: [
       { label: "Daniel Cormier on YouTube", href: "https://www.youtube.com/@dc_mma" },
@@ -178,7 +178,7 @@ export const VOICES: Voice[] = [
       "Dana White has been the president of the Ultimate Fighting Championship since January 2001, when Zuffa, LLC — Lorenzo and Frank Fertitta, with White as a minority partner and president — bought a promotion that had lost its television distribution and most of its regulatory standing. He became UFC CEO under TKO Group Holdings in 2023. No executive is more closely identified with the sport's move from banned spectacle to mainstream global business.",
       "His route into the role was through the fighters. A Boston-area boxing-gym background led to managing Tito Ortiz and Chuck Liddell in the late 1990s, which is how he learned the previous owners were looking to sell and connected them to the Fertittas. The management background shaped the promotional style that followed: personalities first, rivalries sold hard, and a willingness to argue publicly with athletes, media and regulators.",
       "The first Zuffa years were a rebuild. State-by-state sanctioning, a return to pay-per-view and cable, and heavy losses until The Ultimate Fighter reached Spike TV in 2005. The Griffin–Bonnar finale that April is the moment the promotion itself credits with turning the business around; the reality-television pipeline it created is still the way many fighters reach the roster.",
-      "From there the calendar and the map expanded: FOX in 2011, the first women's fight in 2013 with Ronda Rousey, UFC Fight Pass the same year, the 2016 sale to WME-IMG for roughly four billion dollars with White staying in charge, the ESPN era from 2019, and the UFC Apex and 'Fight Island' schedule that kept the sport running through 2020 when most sports stopped.",
+      "From there the calendar and the map expanded: FOX in 2011, the first women's fight in 2013 with Ronda Rousey, UFC Fight Pass the same year, the 2016 sale to WME-IMG for roughly four billion dollars with White staying in charge, the ESPN era from 2019, and the UFC Apex and 'Fight Island' schedule that kept the sport running through 2020 when most sports stopped.", // source-brand:allow (broadcast-partner history in an editorial timeline)
       "Dana White's Contender Series, launched in 2017, is the reason he appears in the PropBetEdge product directly. The series is the clearest window into the UFC's talent pipeline: prospects arrive with regional records, compete under direct organizational scrutiny and can leave the night with a contract. PropBetEdge tracks the program season by season because its history deserves more than a few cards buried in the general schedule.",
       "For readers, White is also an unusually direct source of primary promotional information. Card announcements, title-fight plans, replacement bouts, contract decisions and business changes are often discussed by him publicly before the rest of the ecosystem has reacted. That makes source discipline important: PropBetEdge preserves exactly what was said, when and where, rather than turning promotional commentary into a stronger factual claim than the source supports.",
       "PropBetEdge features White as an editorial subject and recommended official source only. He and the UFC are not PropBetEdge contributors, partners or endorsers.",

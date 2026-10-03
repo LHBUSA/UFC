@@ -246,12 +246,12 @@ export async function buildDeskBriefs(event: Event, bouts: Bout[], limit = 3, op
     if (bout.scheduled_rounds === 5 && !bout.is_title) stakes.push("Five rounds");
     const evidence = [
       `Records and physicals: PropBetEdge fighter rows.`,
-      hasCareer(bout.fighter_a) || hasCareer(bout.fighter_b) ? `Career striking/grappling rates: UFC Stats career averages stored per fighter.` : `UFC Stats career averages not on file for both fighters.`,
+      hasCareer(bout.fighter_a) || hasCareer(bout.fighter_b) ? `Career striking/grappling rates: PropSports career averages stored per fighter.` : `Career averages not on file for both fighters.`,
       `Form and finish profile: ${A.archive.fights + B.archive.fights} archived bouts with results.`,
       snap ? `Rankings: official UFC snapshot ${snap.snapshot_date}.` : `Rankings snapshot unavailable.`,
       dna ? `Fight DNA matchup comparison loaded (${dna.insights.length} insights).` : index === 0 && opts.dna !== true ? `Fight DNA matchup comparison is a UFC Pro read.` : index === 0 ? `Fight DNA matchup comparison not available for this pairing.` : `Fight DNA consulted for the marquee fight only.`,
     ];
-    const coverage = thin ? "Limited packet: one fighter has no UFC Stats averages and fewer than two archived results. Showing what to watch, not a full desk read." : "Full packet: career rates, archived results, rankings snapshot" + (dna ? " and Fight DNA" : "") + ".";
+    const coverage = thin ? "Limited packet: one fighter has no career averages and fewer than two archived results. Showing what to watch, not a full desk read." : "Full packet: career rates, archived results, rankings snapshot" + (dna ? " and Fight DNA" : "") + ".";
     return {
       bout, tier, stakes, a: A, b: B, evidence, coverage,
       mainTake: mainTake(A, B, bout),

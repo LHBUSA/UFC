@@ -87,7 +87,7 @@ export async function espnVerifiedPortrait(
 
     return {
       ...(fallback ?? ({} as PortraitSet)),
-      id: `espn:${athleteId}`,
+      id: `espn:${athleteId}`, // source-brand:allow (internal image id)
       portrait: href,
       card: href,
       thumb: href,
@@ -97,11 +97,11 @@ export async function espnVerifiedPortrait(
       kind: "display_fallback",
       source_family: "espn",
       license: null,
-      author: "ESPN",
+      author: "ESPN", // source-brand:allow (image credit metadata)
       rights_label: "display_only",
       stored_first_party: false,
       source_url: `https://www.espn.com/mma/fighter/_/id/${athleteId}`,
-      attribution_text: "ESPN · identity-verified display portrait",
+      attribution_text: "ESPN · identity-verified display portrait", // source-brand:allow (image credit metadata)
       fighter_id: fighter.id,
     };
   } catch {

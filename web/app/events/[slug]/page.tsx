@@ -205,7 +205,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               </a>
             ))}
           </div>
-          <p className="dim sm mt-3">This reported lineup is refreshed automatically while the primary card feed has not published usable fighter identities. Canonical ESPN bout rows replace it automatically as soon as they are available.</p>
+          <p className="dim sm mt-3">This reported lineup is refreshed automatically while the primary card feed has not published usable fighter identities. Canonical PropSports bout rows replace it automatically as soon as they are available.</p>
         </section>
       ) : (
         <div className="mt-6"><Empty title={e.card_status === "announced" ? "Card announced · lineup sync pending" : "Card not published yet"} cta={{ href: "/events", label: "Other cards" }}>The event is on the schedule, but the primary feed has not published usable bout identities yet. PropBetEdge keeps checking automatically and does not invent fighter records or matchup pages.</Empty></div>

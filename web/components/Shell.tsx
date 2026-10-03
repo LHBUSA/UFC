@@ -132,7 +132,7 @@ export function Footer() {
             : <a key={s.key} href={s.href}><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></a>)}
         </nav>
         <p className="disclaimer">
-          PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, Paramount, or any sportsbook. Links labeled Official UFC go directly to UFC-owned destinations so readers can verify the official record, watch licensed programming and shop official merchandise.
+          PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, Paramount, or any sportsbook. Links labeled Official UFC go directly to UFC-owned destinations so readers can verify the official record, watch licensed programming and shop official merchandise.{/* source-brand:allow (legal non-affiliation disclaimer) */}
           Rights-cleared fighter media carries source/license provenance. Nothing on this site is betting advice. Model output is labelled MODEL; provider data is labelled LIVE; anything unavailable is labelled as such. Please gamble responsibly. 21+ where applicable.
         </p>
         <div className="ftr-rail">

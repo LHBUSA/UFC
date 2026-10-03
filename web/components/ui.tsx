@@ -110,7 +110,7 @@ export function Credit({ img, prefix = "Photo" }: { img?: PortraitSet | null; pr
    * author/licence guard below, which would otherwise suppress the credit
    * entirely and leave a displayed image unattributed. */
   if (img.kind === "display_fallback" || img.source_family === "espn") {
-    return <div className="credit">{prefix}: {img.source_url ? <a href={img.source_url} rel="noopener nofollow" target="_blank">ESPN</a> : "ESPN"} · identity-verified display portrait</div>;
+    return <div className="credit">{prefix}: {img.source_url ? <a href={img.source_url} rel="noopener nofollow" target="_blank">ESPN</a> : "ESPN"} · identity-verified display portrait</div>; // source-brand:allow (image credit: owner-approved display headshot)
   }
   if (!img.author && !img.license) return null;
   return (

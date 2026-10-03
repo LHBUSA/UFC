@@ -73,7 +73,7 @@ async function verifyEspnPortrait(fighter: Fighter, image: PortraitSet): Promise
       card: href,
       thumb: href,
       source_url: `https://www.espn.com/mma/fighter/_/id/${athleteId}`,
-      attribution_text: "ESPN · identity-verified display fallback",
+      attribution_text: "ESPN · identity-verified display fallback", // source-brand:allow (image credit metadata)
     };
   } catch {
     return image;

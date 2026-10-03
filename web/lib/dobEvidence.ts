@@ -8,7 +8,7 @@
 
 export type SourceDob = { source: string; dob: string };
 
-const SOURCE_LABEL: Record<string, string> = { espn: "ESPN", ufcstats: "UFC Stats", wikidata: "Wikidata", wikipedia_en: "Wikipedia" };
+const SOURCE_LABEL: Record<string, string> = { espn: "PropSports record", ufcstats: "PropSports round record", wikidata: "Open identity record", wikipedia_en: "Wikipedia" };
 
 export type DobDispute = { values: Array<{ dob: string; sources: string[] }> } | null;
 

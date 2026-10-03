@@ -3,6 +3,7 @@
 import { pickStoredPortraits } from "../../../web/lib/portraitSelection.ts";
 import { prefersEspnDisplay } from "../../../web/lib/displayPortraitPolicy.ts";
 import { espnVerifiedPortrait } from "../../../web/lib/espnPortraitGate.ts";
+import { brandArticlesDeep } from "../../../web/lib/sourceBrand.ts";
 /* Training & Corner (migration 032): the same assembly the fighter page renders. */
 import { trainingPayload, TRAINING_STINT_COLS, TRAINING_CHANGE_COLS } from "../../../web/lib/training.ts";
 
@@ -175,14 +176,28 @@ function baseHeaders(env, requestId, cacheSeconds = 60) {
   };
 }
 
+// Source-brand sweep 2026-10-03: provider-named ids/values are LEGACY_PUBLIC_CONTRACT (documented in
+// docs/openapi.ufc-v1.yaml and consumed by the commercial UFC API). Kept working, deprecated, removed only in a
+// future versioned contract. `id` is the PropSports canonical identifier.
+const LEGACY_ID_FIELDS = Object.freeze({
+  ufcstats_id: "deprecated: compatibility only; use id",
+  espn_athlete_id: "deprecated: compatibility only; use id",
+  espn_event_id: "deprecated: compatibility only; use id",
+  espn_competition_id: "deprecated: compatibility only; use id",
+  result_source: "deprecated value set (espn/ufcstats); compatibility only",
+  source_family: "image provenance family; compatibility only",
+});
 function ok(env, requestId, data, meta = {}, cacheSeconds = 60, status = 200, headerOverrides = null) {
   return new Response(JSON.stringify({
     ok: true,
-    data,
+    data: brandArticlesDeep(data),
     meta: {
       api: "PropSports UFC",
       version: env.API_VERSION || "v1",
       request_id: requestId,
+      source: "PropSports",
+      // Legacy provider-named identifiers stay for compatibility; use `id` (PropSports canonical) instead.
+      deprecated_fields: LEGACY_ID_FIELDS,
       ...meta,
     },
   }), { status, headers: { ...baseHeaders(env, requestId, cacheSeconds), ...(headerOverrides || {}) } });
@@ -982,12 +997,12 @@ function computeFighterStats(fighter, roundRows, boutsById, imageMap) {
   return {
     provenance: {
       source: "ufcstats_round_stats",
-      method: "Totals are sums of per-round UFC Stats rows for this fighter. Rates use elapsed fight time from the recorded result (final round + clock), or rounds x 5:00 when no result exists.",
+      method: "Totals are sums of per-round PropSports round-stat rows for this fighter. Rates use elapsed fight time from the recorded result (final round + clock), or rounds x 5:00 when no result exists.",
       bouts_with_stats: career.bouts_with_stats,
       rounds: career.rounds,
       fight_time_sec: secs,
       fight_time_basis: career.fight_time_basis,
-      coverage_note: "Only bouts with UFC Stats round rows are included; coverage may be partial and these are not as-of model features.",
+      coverage_note: "Only bouts with round-stat rows are included; coverage may be partial and these are not as-of model features.",
     },
     career_totals: careerTotals,
     career_rates: {
@@ -2169,7 +2184,7 @@ async function fighterDnaFamily(env, fighterId, url, family) {
     data.origin = available ? "licensed" : DNA_ORIGIN;
     if (!available) {
       data.status = "licensed_data_not_available";
-      data.note = "Position / control-time families require a licensed source (ufc_bout_position_stats). Nothing is synthesized from UFC Stats control time.";
+      data.note = "Position / control-time families require a licensed source (ufc_bout_position_stats). Nothing is synthesized from round-stat control time.";
     }
   } else if (!available) {
     data.status = "insufficient_coverage";

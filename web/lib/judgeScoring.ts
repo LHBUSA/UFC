@@ -135,7 +135,7 @@ export const SPELLING_VARIANT_EVIDENCE: readonly VariantEvidence[] = [
     crossMatchedEvents: [
       "UFC on Fox 18 · 2016-01-30 — archive spelling: Maimunah Querido",
       "UFC 288 · 2023-05-06 — archive spelling: Maimunah Querido",
-      "UFC on ESPN 54 · 2024-03-30 — archive spelling: Mamunah Querido",
+      "UFC on ESPN 54 · 2024-03-30 — archive spelling: Mamunah Querido", // source-brand:allow (event name (broadcast brand in the official event title))
       "UFC 302 · 2024-06-01 — archive spelling: Maimunah Querido",
       "UFC 316 · 2025-06-07 — archive spelling: Maimunah Querido",
     ],
@@ -167,7 +167,7 @@ export const SPELLING_VARIANT_EVIDENCE: readonly VariantEvidence[] = [
     sourceName: "Nevada Athletic Commission and California State Athletic Commission official licensing records",
     sourceUrl: "https://www.ufc.com/rankings",
     method:
-      "Two commissions license the same MMA official under the two spellings — Nevada files him as \"Mike Bell\", California as \"Michael Bell\" — and ABC training records carry the long form \"David Michael Bell\". The archive then rules out the alternative that these are two officials: the two spellings have NEVER appeared on the same bout, never on the same date, and never at the same event. \"Michael Bell\" enters the archive only on 2026-09-12, the date a second source (ESPN officials) began supplying judge names, while the last card filed under \"Mike Bell\" is 2026-08-15. The split follows the source boundary exactly, not a person boundary.",
+      "Two commissions license the same MMA official under the two spellings — Nevada files him as \"Mike Bell\", California as \"Michael Bell\" — and ABC training records carry the long form \"David Michael Bell\". The archive then rules out the alternative that these are two officials: the two spellings have NEVER appeared on the same bout, never on the same date, and never at the same event. \"Michael Bell\" enters the archive only on 2026-09-12, the date a second officials source began supplying judge names, while the last card filed under \"Mike Bell\" is 2026-08-15. The split follows the source boundary exactly, not a person boundary.",
     crossMatchedEvents: [
       "UFC 321 · 2025-10-25 — Volkov vs Almeida — archive spelling: Mike Bell",
       "UFC Fight Night · 2025-07-26 — Whittaker vs de Ridder — archive spelling: Mike Bell",
@@ -428,8 +428,8 @@ export const GAP_LABEL: Readonly<Record<GapClassification, string>> = {
 export const GAP_REASON_LABEL: Readonly<Record<GapReason, string>> = {
   tournament_era_time_expired_no_decision: "Tournament-era draw recorded as “Time Expired” — no three-card decision was ever issued",
   scores_present_judges_unnamed_upstream: "Scores already held in the archive; the upstream Details line named no judges",
-  ufcstats_fight_page_identified: "ESPN-sourced result whose UFC Stats fight page is already identified",
-  espn_row_unmatched_at_ingested_event: "ESPN row never matched a UFC Stats fight at an event we did ingest",
+  ufcstats_fight_page_identified: "Result whose round-statistics fight page is already identified",
+  espn_row_unmatched_at_ingested_event: "Result row never matched a round-statistics fight at an event we did ingest",
   event_series_not_covered_by_source: "Event series is not covered by the scorecard source at all",
   no_scorecard_recorded_upstream: "No scorecard recorded upstream for this bout",
 };

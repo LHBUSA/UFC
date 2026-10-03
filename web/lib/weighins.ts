@@ -179,7 +179,7 @@ export async function getBookedCardSplit(eventId: string, eventName?: string | n
   const id = encodeURIComponent(eventId);
   const [bouts, observations, statusEvents] = await Promise.all([
     read<BookedBout[]>(`ufc_bouts?select=id,espn_competition_id,fighter_a_id,fighter_b_id,weight_class,weight_class_raw,card_position,bout_order,status&event_id=eq.${id}&order=bout_order.desc.nullslast`, []),
-    read<CardObservation[]>(`ufc_event_card_observations?select=observed_at,source,competition_ids,placeholder_ids,complete&event_id=eq.${id}&source=eq.espn&order=observed_at.desc&limit=12`, []),
+    read<CardObservation[]>(`ufc_event_card_observations?select=observed_at,source,competition_ids,placeholder_ids,complete&event_id=eq.${id}&source=eq.espn&order=observed_at.desc&limit=12`, []), // source-brand:allow (internal PostgREST filter, never rendered)
     read<CardStatusEvent[]>(`ufc_fighter_status_feed?select=id,fighter_id,fighter_name,status_type,state,event_id,bout_id,replacement_fighter_name,source_url,source_name,source_kind,source_published_at,confidence,occurred_at&event_id=eq.${id}&order=occurred_at.desc.nullslast&limit=200`, []),
   ]);
   const { active, changes, warnings } = splitCard(bouts, observations, statusEvents, { eventId, eventName });

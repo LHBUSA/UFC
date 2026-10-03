@@ -268,7 +268,7 @@ export default async function RoundByRoundIndex() {
         </div>
       </section>
 
-      <p className={styles.disclaimer}>PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group or ESPN.</p>
+      <p className={styles.disclaimer}>PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group or ESPN.</p>{/* source-brand:allow (legal non-affiliation disclaimer) */}
 
       <JsonLd
         data={{

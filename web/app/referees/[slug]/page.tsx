@@ -193,7 +193,7 @@ export default async function RefereeProfilePage({ params }: { params: Promise<{
           {r.bio_source_url && <div><dt>Background source</dt><dd><a href={r.bio_source_url} target="_blank" rel="noopener">{r.bio_source_name || r.bio_source_url} ↗</a>{r.bio_verified_at ? ` · verified ${fmtDate(r.bio_verified_at.slice(0, 10), { month: "short", day: "numeric", year: "numeric" })}` : ""}</dd></div>}
           {photo && <div><dt>Photo</dt><dd>{photo.attribution}{photo.sourcePage ? <> · <a href={photo.sourcePage} target="_blank" rel="noopener">file page ↗</a></> : null}</dd></div>}
           {!photo && pk?.media_search && <div><dt>Photo</dt><dd className="faint">No freely licensed portrait found in approved sources ({pk.media_search.rejected.length} candidate{pk.media_search.rejected.length === 1 ? "" : "s"} rejected on license or identity).</dd></div>}
-          {pk?.identity?.wikipedia && <div><dt>Reference</dt><dd><a href={pk.identity.wikipedia} target="_blank" rel="noopener">English Wikipedia ↗</a>{pk.identity.wikidata ? <> · <a href={`https://www.wikidata.org/wiki/${pk.identity.wikidata}`} target="_blank" rel="noopener">Wikidata ↗</a></> : null}</dd></div>}
+          {pk?.identity?.wikipedia && <div><dt>Reference</dt><dd><a href={pk.identity.wikipedia} target="_blank" rel="noopener">English Wikipedia ↗</a></dd></div>}
         </dl>
       </section>
 

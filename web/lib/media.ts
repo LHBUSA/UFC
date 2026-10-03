@@ -52,7 +52,7 @@ export function fighterImageCredit(fighter: Fighter | null | undefined): string 
     if (parts.length) return parts.join(" · ");
     if (image.kind === "wikimedia") return "Wikimedia Commons";
   }
-  return espnMmaHeadshot(fighter) ? "ESPN · display fallback" : null;
+  return espnMmaHeadshot(fighter) ? "ESPN · display fallback" : null; // source-brand:allow (image credit)
 }
 
 export function fighterMedia(fighter: Fighter | null | undefined, width = 720): FighterMedia {

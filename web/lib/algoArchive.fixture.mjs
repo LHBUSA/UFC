@@ -44,7 +44,7 @@ export function buildStore(now = Date.now()) {
         model_version: i < 60 ? 'pbe-fight-model-v1' : 'pbe-fight-model-v2', feature_version: 'pbe-fight-features-v1',
         locked_at, generated_at: locked_at, pick_fighter_id: n % 3 ? a.id : b.id, pick_probability: 0.52 + (n % 40) / 100, confidence_band: '55-60',
         market_implied_prob_pick: priced ? 0.5 : null, model_edge_pts: priced ? (n % 25) - 8 : null, market_books: priced ? 6 : null, market_snapshot_at: priced ? locked_at : null,
-        sample_context: { confidence: ['HIGH', 'MEDIUM', 'LEAN'][n % 3], market: priced ? { status: 'FRESH', source: 'the-odds-api', books: 6, observed_at: locked_at, pick_best_odds: odds, pick_best_book: 'FixtureBook', pick_consensus_odds: odds - 5, devigged_pick: odds > 0 ? 0.4 : 0.6, devigged_opponent: odds > 0 ? 0.6 : 0.4 } : { status: 'UNAVAILABLE' } },
+        sample_context: { confidence: ['HIGH', 'MEDIUM', 'LEAN'][n % 3], market: priced ? { status: 'FRESH', source: 'the-odds-api', books: 6, observed_at: locked_at, pick_best_odds: odds, pick_best_book: 'FixtureBook', pick_consensus_odds: odds - 5, devigged_pick: odds > 0 ? 0.4 : 0.6, devigged_opponent: odds > 0 ? 0.6 : 0.4 } : { status: 'UNAVAILABLE' } }, // source-brand:allow (test fixture, never rendered)
       });
       if (k < gradedCount) {
         const at = new Date(Date.parse(`${event.event_date}T23:00:00Z`) + k * 60e3).toISOString();

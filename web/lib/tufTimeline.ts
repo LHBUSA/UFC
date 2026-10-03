@@ -123,8 +123,8 @@ const FAMILY_LABEL: Record<string, string> = {
   "ufc.com": "UFC.com",
   ufc_com_recap: "UFC.com recap",
   paramount_plus_episode_metadata: "Paramount+ listing",
-  espn_retrospective: "ESPN retrospective",
-  espn_core_api: "ESPN",
+  espn_retrospective: "ESPN retrospective", // source-brand:allow (named publisher: an ESPN editorial article)
+  espn_core_api: "PropSports",
   wikipedia: "Wikipedia",
 };
 const LEVEL_LABEL: Record<string, string> = {

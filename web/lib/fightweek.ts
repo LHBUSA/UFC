@@ -78,7 +78,7 @@ export function packetSources(briefs: DeskBrief[], rankings: RankingsSnapshot | 
   const archived = briefs.reduce((n, b) => n + b.a.archive.fights + b.b.archive.fights, 0);
   const dna = briefs.some((b) => b.evidence.some((e) => /Fight DNA matchup comparison loaded/.test(e)));
   return [
-    `UFC Stats career averages${ingest?.finished_at ? ` (ingest ${fmtStamp(ingest.finished_at)})` : ""}`,
+    `PropSports career averages${ingest?.finished_at ? ` (updated ${fmtStamp(ingest.finished_at)})` : ""}`,
     rankings ? `Official rankings snapshot ${rankings.snapshot_date}` : "Rankings snapshot unavailable",
     dna ? "Fight DNA matchup comparison (main event)" : "Fight DNA not available for the main event pairing",
     `${archived} archived results with method and round`,

@@ -1030,8 +1030,8 @@ export default async function TufSeason({ params }: { params: Promise<{ slug: st
               <p key={c.draft_name}>
                 <b>{c.name}</b> — the season record printed &ldquo;{c.draft_name}&rdquo;.{" "}
                 {c.kind === "source_correction"
-                  ? `Corrected to the name ESPN and the broadcaster's episode listing use; "${c.draft_name}" is not attested by a first-party source and is not treated as an alias.`
-                  : "A misspelling of the name ESPN and the broadcaster's episode listing use."}
+                  ? `Corrected to the name the official record and the broadcaster's episode listing use; "${c.draft_name}" is not attested by a first-party source and is not treated as an alias.`
+                  : "A misspelling of the name the official record and the broadcaster's episode listing use."}
               </p>
             ))}
           </div>
