@@ -13,10 +13,11 @@ import { __resetKalshiFlashes, wireKalshi } from "@/vendor/kalshi/kalshi-market-
 import { createKalshiClient, type KalshiClient } from "@/vendor/kalshi/kalshi-market-client.js";
 import { KALSHI_MARKETS_BASE, KALSHI_SPORT, kalshiPollMs, kalshiPollState, ufcKalshiCardHtml, ufcKalshiLineHtml, type KalshiEntry } from "@/lib/kalshi";
 
-/* One shared client (canonical, vendored unchanged at 8b73545) for every
+/* One shared client (canonical, vendored unchanged at ad6187a) for every
  * browser read: its loaders keep completed entries (closed / settled market
- * with history), one in-flight request per resource, and a 15 s board cache
- * shared by every bout row. */
+ * with history), one in-flight request per resource, a 15 s board cache
+ * shared by every bout row, and a failed read is never cached as "no market"
+ * (it returns the last good value the client itself read). */
 let shared: KalshiClient | null = null;
 const client = () => (shared ??= createKalshiClient({ base: KALSHI_MARKETS_BASE, sport: KALSHI_SPORT }));
 const loadEvent = (boutId: string) => client().loadEvent(boutId, { force: true });
@@ -35,8 +36,10 @@ const serverSafe = <T,>(render: () => T): T => {
  * single time (a market cannot open for a fight that is over). */
 function usePoll(entry: KalshiEntry | null, load: () => Promise<KalshiEntry | null | undefined>, set: (e: KalshiEntry | null) => void, { once = false }: { once?: boolean } = {}) {
   const state = kalshiPollState(entry);
-  /* One empty answer keeps the current card (it may be a failed request);
-   * two in a row remove it. */
+  /* One empty answer keeps the current card; two in a row remove it. Still
+   * needed with ad6187a: the first card comes from the server, so the browser
+   * client has no last good value of its own until its first successful read,
+   * and a failed first read resolves to null. */
   const misses = useRef(0);
   useEffect(() => {
     let alive = true;

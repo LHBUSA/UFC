@@ -3,11 +3,13 @@ import Link from "next/link";
 import { PageHead } from "@/components/ui";
 import { PbeFamilyNav } from "@/components/PbeFamilyNav";
 import { PbePerformanceTracker } from "@/components/PbePerformanceTracker";
+import { AlgoVsMarketRecord } from "@/components/AlgoVsMarket";
 import { PbePicksAutoRefresh } from "@/components/PbePicksAutoRefresh";
 import { PastPicksEvent, PastPicksPager } from "@/components/PbePastPicks";
 import { getAlgoArchive, getAlgoPerformanceProof, type AlgoArchiveSlices } from "@/lib/algo";
 import { getImagesForFighters, type PortraitSet } from "@/lib/db";
 import { confidenceCopy, pctText } from "@/lib/algoView";
+import { getAlgoVsMarket } from "@/lib/kalshi";
 
 /* Track Record & Past Picks: the public, permanent archive of official PBE Picks.
  *
@@ -48,9 +50,11 @@ function SummaryRow({ label, s }: { label: string; s: Summary }) {
 
 export default async function AlgoRecordPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
-  const [archive, proof] = await Promise.all([
+  const [archive, proof, avm] = await Promise.all([
     getAlgoArchive({ page: Number(one(params.page)) || 1, event: one(params.event), pick: one(params.pick), model: one(params.model) }),
     getAlgoPerformanceProof(),
+    /* Algo vs Market: public, frozen at the PBE lock by the shared markets API; nothing until a qualifying comparison. */
+    getAlgoVsMarket(),
   ]);
 
   const fighterIds = archive.ok ? [...new Set(archive.events.flatMap((e) => e.picks.map((p) => p.pick.id)))] : [];
@@ -76,6 +80,8 @@ export default async function AlgoRecordPage({ searchParams }: { searchParams: P
       </PageHead>
 
       <PbePerformanceTracker proof={proof} compact />
+
+      <AlgoVsMarketRecord payload={avm} />
 
       <section id="past-picks" className="mdl-sec pp-past" aria-labelledby="past-picks-h">
         <div className="eyebrow">Permanent archive</div>

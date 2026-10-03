@@ -11,10 +11,10 @@
  * the card always carries UFC_KALSHI_NOTE beside it.
  *
  * No `server-only` / `@/` imports: node's test runner loads this file directly. */
-import { kalshiCard, kalshiLine, marketCloseLine, marketHistoryCard } from "../vendor/kalshi/kalshi-market-ui.js";
-import type { KalshiEntry } from "../vendor/kalshi/kalshi-market-ui.js";
+import { algoVsMarketCard, algoVsMarketEvent, kalshiCard, kalshiLine, marketCloseLine, marketHistoryCard } from "../vendor/kalshi/kalshi-market-ui.js";
+import type { AvmAlgo, AvmComparison, KalshiEntry } from "../vendor/kalshi/kalshi-market-ui.js";
 
-export type { KalshiEntry };
+export type { AvmAlgo, AvmComparison, KalshiEntry };
 
 export const KALSHI_MARKETS_BASE = "https://propsports-markets.sales-fd3.workers.dev";
 export const KALSHI_SPORT = "ufc";
@@ -43,11 +43,11 @@ const closedOrSettled = (entry: KalshiEntry | null | undefined) => {
   return lc === "CLOSED" || lc === "SETTLED";
 };
 
-async function readJson(url: string, fetchImpl: FetchLike, waitMs: number): Promise<any | null> {
+async function readJson(url: string, fetchImpl: FetchLike, waitMs: number, revalidate = KALSHI_REVALIDATE_S): Promise<any | null> {
   try {
     const res = await fetchImpl(url, {
       headers: { accept: "application/json" },
-      next: { revalidate: KALSHI_REVALIDATE_S },
+      next: { revalidate },
       signal: AbortSignal.timeout(waitMs),
     });
     return res.ok ? await res.json() : null;
@@ -135,4 +135,37 @@ export function ufcKalshiLineHtml(entry: KalshiEntry | null | undefined, { resul
   if (!entry) return "";
   if (closedOrSettled(entry)) return marketCloseLine(entry);
   return result ? "" : kalshiLine(entry);
+}
+
+/* ── ALGO vs MARKET ───────────────────────────────────────────────────────────
+ * The PBE Fight Model's official call vs the Kalshi market, both frozen at the
+ * PBE lock by the shared propsports-markets API (contract algo-vs-market/1).
+ * Rendered only through the vendored algoVsMarketCard / algoVsMarketEvent,
+ * which state their own rules. The API decides what is public: a pending UFC
+ * call is status LOCKED with selections null until graded, and nothing here
+ * adds a selection the API did not return. algos[] / comparisons[] empty,
+ * slow or failed -> nothing rendered. Frozen data: re-read once a minute. */
+export const AVM_REVALIDATE_S = 60;
+
+/** Track-record payload ({ algos }) or null. */
+export async function getAlgoVsMarket({ fetchImpl = fetch as FetchLike, waitMs = KALSHI_SERVER_WAIT_MS } = {}): Promise<{ algos: AvmAlgo[] } | null> {
+  const body = await readJson(`${KALSHI_MARKETS_BASE}/v1/algo-vs-market/${KALSHI_SPORT}`, fetchImpl, waitMs, AVM_REVALIDATE_S);
+  return body && Array.isArray(body.algos) ? body : null;
+}
+
+/** One bout's comparisons ({ comparisons }) or null. */
+export async function getAlgoVsMarketEvent(boutId: string, { fetchImpl = fetch as FetchLike, waitMs = KALSHI_SERVER_WAIT_MS } = {}): Promise<{ comparisons: AvmComparison[] } | null> {
+  if (!boutId) return null;
+  const body = await readJson(`${KALSHI_MARKETS_BASE}/v1/algo-vs-market/event/${KALSHI_SPORT}/${encodeURIComponent(boutId)}`, fetchImpl, waitMs, AVM_REVALIDATE_S);
+  return body && Array.isArray(body.comparisons) ? body : null;
+}
+
+/** /algo/record module: one shared card per official algorithm with a comparison; "" while algos[] is empty. */
+export function ufcAvmRecordHtml(payload: { algos?: AvmAlgo[] } | null | undefined): string {
+  return (payload?.algos || []).map((a) => algoVsMarketCard(a, { recent: 10 })).join("");
+}
+
+/** Fight-page layer next to Market Pulse: corner roles a / b resolve to the bout's fighters; "" without a qualifying comparison. */
+export function ufcAvmEventHtml(payload: { comparisons?: AvmComparison[] } | null | undefined, names: { a?: string | null; b?: string | null } = {}): string {
+  return algoVsMarketEvent(payload, { nameOf: (_r, role) => (role === "a" ? names.a : role === "b" ? names.b : null) || null });
 }

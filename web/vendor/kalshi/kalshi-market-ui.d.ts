@@ -42,3 +42,29 @@ export function marketCloseLine(entry: KalshiEntry | null | undefined): string;
 export function marketModule(entry: KalshiEntry | null | undefined, opts?: { placement?: string; colors?: Record<string, string>; compact?: boolean }): string;
 export function wireKalshi(root?: ParentNode | null): void;
 export function __resetKalshiFlashes(): void;
+/* ALGO vs MARKET (canonical ad6187a): /v1/algo-vs-market/:sport and /v1/algo-vs-market/event/:sport/:id. */
+export interface AvmComparison {
+  algo_id: string;
+  algo_label?: string | null;
+  canonical_event_id: string;
+  event_label?: string | null;
+  status: string;
+  algo_lock_at?: string | null;
+  algo_selection?: string | null;
+  algo_selection_label?: string | null;
+  algo_probability?: number | null;
+  market?: { selection?: string | null; selection_label?: string | null; selection_price_bp?: number | null; snapshot_age_s?: number | null; prices?: Record<string, { label?: string | null; [k: string]: unknown }> | null; [k: string]: unknown } | null;
+  result?: { h2h_outcome: string; [k: string]: unknown } | null;
+  [k: string]: unknown;
+}
+export interface AvmAlgo {
+  algo_id: string;
+  algo_label?: string | null;
+  scoreboard: { algo_wins: number; market_wins: number; neither: number; void: number; agreements: number; disagreements: number; pending: number; decided?: number; algo_win_rate?: number | null; [k: string]: unknown };
+  excluded?: Record<string, number> | null;
+  ledger: AvmComparison[];
+  [k: string]: unknown;
+}
+export type AvmNameOf = (row: AvmComparison, role: string) => string | null | undefined;
+export function algoVsMarketCard(algo: AvmAlgo | null | undefined, opts?: { nameOf?: AvmNameOf | null; recent?: number; ledgerHref?: string | null }): string;
+export function algoVsMarketEvent(payload: { comparisons?: AvmComparison[] } | null | undefined, opts?: { nameOf?: AvmNameOf | null }): string;
