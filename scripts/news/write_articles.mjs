@@ -36,6 +36,7 @@ import {
   isContenderSeries, formatDate, shortDate, dedupeEvents, loadFighterIndex, EXTERNAL_STORY_LABELS, titleCase,
   pctPrinted, numOrNull, daysBetween,
 } from './lib.mjs';
+import { legacyHashView } from './source-wording.mjs';
 import { callMessages, DEFAULT_MODEL } from './anthropic.mjs';
 import { stampEditorialInput, keepDeskProse } from './editorial_digest.mjs';
 
@@ -371,7 +372,7 @@ function previewAngle(fb) {
   const risks = [];
   for (const f of [a, b]) if (f.archive.fights < 3) risks.push(f.archive.fights ? `${f.name} has only ${plural(f.archive.fights, 'archived UFC bout')} in the PropBetEdge database, so the form read is thin.` : `${f.name} has no completed UFC bout in the PropBetEdge archive, so nothing here rests on ${surnameOf(f)}'s fight-level history.`);
   const noCareer = [a, b].filter((f) => !f.career);
-  if (noCareer.length) risks.push(`UFC Stats striking and grappling averages are not on file for ${joinWithAnd(noCareer.map((f) => f.name))}, so pace, defence and takedown rates cannot be compared${noCareer.length === 1 ? ' both ways' : ''}.`);
+  if (noCareer.length) risks.push(`Round-level striking and grappling averages are not on file for ${joinWithAnd(noCareer.map((f) => f.name))}, so pace, defence and takedown rates cannot be compared${noCareer.length === 1 ? ' both ways' : ''}.`);
   for (const f of [a, b]) if (f.career && (f.career.td_avg == null || f.career.td_def == null)) risks.push(`Grappling metrics are incomplete for ${f.name}; any takedown read is one-sided.`);
   if ([a, b].some((f) => f.reach_in == null)) risks.push(`Reach is not listed for ${joinWithAnd([a, b].filter((f) => f.reach_in == null).map((f) => f.name))}, so the range read is missing a number.`);
   if (bt.short_notice_days != null) risks.push(`Our tables have this booking at ${plural(bt.short_notice_days, "day's notice", "days' notice")}; a short camp adds variance the numbers do not show.`);
@@ -411,14 +412,14 @@ function previewSummary(fb, { reach, pace, td, finishers, orderedMarkets, both, 
     s.push(`${td.attacker.name}'s takedown rate (${td.attacker.career.td_avg} per 15 minutes) meets a ${td.defender.career.td_def}% takedown defence, which makes ${td.defender.name}'s ability to stay upright the variable the rest of the fight hangs on.`);
   } else if (reach && reach.delta >= 3) {
     const w = sideOf(m, reach);
-    s.push(`The measurable edge on file is ${w.name}'s ${inchesWord(reach.delta)} of reach; without UFC Stats pace figures for ${both ? 'this pairing' : 'both fighters'} it is a range advantage, not yet a proven output advantage.`);
+    s.push(`The measurable edge on file is ${w.name}'s ${inchesWord(reach.delta)} of reach; without round-level pace figures for ${both ? 'this pairing' : 'both fighters'} it is a range advantage, not yet a proven output advantage.`);
   } else if (finishers.length === 2) {
     s.push(`Both fighters finish: ${a.name} ${a.archive.finishes} of ${a.archive.w} archived wins, ${b.name} ${b.archive.finishes} of ${b.archive.w}. The archive points at a fight less likely to hear the final bell than the typical bout at ${bt.weight_class_label}.`);
   } else if (finishers.length === 1) {
     const f = finishers[0]; const o = f === a ? b : a;
     s.push(`${f.name}'s finishing rate (${f.archive.finishes} of ${f.archive.w} archived wins) is the number that shapes this matchup; ${o.name} has been ${finishedIn(o)}.`);
   } else if (!any && (a.archive.fights < 3 || b.archive.fights < 3)) {
-    s.push('The verified fact block is thin here: no UFC Stats averages for either fighter and a short archive, so no edge is claimed.');
+    s.push('The verified fact block is thin here: no round-level averages for either fighter and a short archive, so no edge is claimed.');
   } else {
     s.push('The tape and archive do not separate these two by a material margin; the honest read is an open matchup rather than a mismatch.');
   }
@@ -462,7 +463,7 @@ function previewFactBlock(world, bout, e, cardBouts) {
 function previewDepth(fb) {
   const { a, b } = fb.matchup; const reasons = [];
   const noCareer = [a, b].filter((f) => !f.career);
-  if (noCareer.length) reasons.push(`no UFC Stats career averages for ${joinWithAnd(noCareer.map((f) => f.name))}`);
+  if (noCareer.length) reasons.push(`no career-to-date round statistics for ${joinWithAnd(noCareer.map((f) => f.name))}`);
   const thin = [a, b].filter((f) => f.archive.fights < 3);
   if (thin.length) reasons.push(`archive shorter than 3 bouts for ${joinWithAnd(thin.map((f) => f.name))}`);
   if ([a, b].some((f) => f.reach_in == null)) reasons.push('reach not listed');
@@ -491,11 +492,11 @@ function previewDek(fb, slug) {
   const m = fb.matchup; const { a, b, edges } = m; const bt = fb.bout; const ev = fb.event;
   const reach = edgeOf(edges, 'reach'); const td = tdMismatch(a, b); const finishers = [a, b].filter(finishSignal);
   const when = shortDate(ev.event_date);
-  if (td) return `Can ${td.defender.name} keep the fight standing against ${td.attacker.name}'s ${td.attacker.career.td_avg} takedowns per 15 minutes? What the tape, the archive and UFC Stats say ahead of ${ev.short_name} on ${when}, and which markets the answer touches.`;
+  if (td) return `Can ${td.defender.name} keep the fight standing against ${td.attacker.name}'s ${td.attacker.career.td_avg} takedowns per 15 minutes? What the tape, the archive and the round statistics say ahead of ${ev.short_name} on ${when}, and which markets the answer touches.`;
   if (reach && reach.delta >= 3) { const w = sideOf(m, reach); const o = otherOf(m, reach); return `Does ${w.name}'s ${inchesWord(reach.delta)} of reach decide the range against ${o.name}? Tale of the tape, recent form and the markets connected to the answer at ${ev.short_name} on ${when}.`; }
   if (finishers.length) return `Does the finishing pattern in our archive make this a fight that ends early? Tale of the tape, form and the distance question for ${a.name} vs. ${b.name} at ${ev.short_name} on ${when}.`;
   return pick(slug, [
-    `Does either side bring a measurable edge into ${bt.weight_class_label} ${positionPhrase(bt).replace(/^on /, 'on ')} at ${ev.short_name} on ${when}? What our tape, archive and UFC Stats tables can and cannot say.`,
+    `Does either side bring a measurable edge into ${bt.weight_class_label} ${positionPhrase(bt).replace(/^on /, 'on ')} at ${ev.short_name} on ${when}? What our tape, archive and round-statistics tables can and cannot say.`,
     `${a.name} (${recStr(a) || 'record n/a'}) meets ${b.name} (${recStr(b) || 'record n/a'}) at ${ev.short_name} on ${when}. The question this preview works through: where is the edge, and what data is missing?`,
   ], 'dek');
 }
@@ -541,7 +542,7 @@ function setupSection(fb, slug) {
 
   /* What this preview examines, framed by the evidence actually on file. */
   const reach = edgeOf(edges, 'reach'); const td = tdMismatch(a, b); const finishers = [a, b].filter(finishSignal);
-  const careerNote = a.career && b.career ? 'UFC Stats career averages are on file for both fighters' : a.career || b.career ? `UFC Stats career averages are on file for ${(a.career ? a : b).name} only` : 'UFC Stats career averages are on file for neither fighter';
+  const careerNote = a.career && b.career ? 'Career-to-date round statistics are on file for both fighters' : a.career || b.career ? `Career-to-date round statistics are on file for ${(a.career ? a : b).name} only` : 'Career-to-date round statistics are on file for neither fighter';
   let p3;
   if (td) p3 = `The question this preview works through is whether ${td.defender.name} can keep the fight where ${td.defender.career.td_def}% takedown defence says it will struggle to stay, against a ${td.attacker.career.td_avg}-takedowns-per-15 opponent. ${careerNote}, so that comparison is two-sided.`;
   else if (reach && reach.delta >= 3) { const w = sideOf(fb.matchup, reach); const o = otherOf(fb.matchup, reach); p3 = `The question this preview works through is whether ${w.name}'s ${inchesWord(reach.delta)} of reach translates into control of range against ${o.name}, or whether the archive says ${surnameOf(o)} closes distance regardless. ${careerNote}, which sets the limit on how far that read can go.`; }
@@ -565,7 +566,7 @@ function tapeSection(fb, slug) {
       else s.push(`A reach edge matters most when the longer fighter also sets the pace, and here the numbers cut the other way: ${o.name} out-lands ${surnameOf(w)} ${o.career.slpm} to ${w.career.slpm} per minute, so the shorter fighter is the busier one and has to cross the gap to do it. That is a different fight from a long fighter picking apart a passive one.`);
     } else {
       s.push(reach.delta >= 3
-        ? `A gap that size usually matters, but how much depends on pace and defence, and ${w.career || o.career ? `UFC Stats averages are on file for only ${(w.career ? w : o).name}` : 'neither fighter has a UFC Stats striking profile on file'}. Treat the reach number as a starting point rather than a thesis.`
+        ? `A gap that size usually matters, but how much depends on pace and defence, and ${w.career || o.career ? `round-level averages are on file for only ${(w.career ? w : o).name}` : 'neither fighter has a round-level striking profile on file'}. Treat the reach number as a starting point rather than a thesis.`
         : `A gap under three inches is modest: enough to notice at kicking range, not enough on its own to change how the fight is fought.`);
     }
   } else if (a.reach_in != null && b.reach_in != null) {
@@ -671,13 +672,13 @@ function styleSection(fb, slug) {
     }
     if (c.sub_avg != null && d.sub_avg != null && (c.sub_avg >= 1 || d.sub_avg >= 1)) { const hi = c.sub_avg >= d.sub_avg ? a : b; g.push(`${hi.name} attempts ${hi.career.sub_avg} submissions per 15 minutes, the higher rate of the two, so any ground time carries a finishing threat.`); }
     if (g.length) paras.push(g.join(' '));
-    paras.push('All of these are career-to-date UFC Stats snapshots at capture, not as-of figures for this bout: they describe each fighter across every opponent, which is why the archive form above is read alongside them rather than replaced by them.');
+    paras.push('All of these are career-to-date PropSports round-statistics snapshots at capture, not as-of figures for this bout: they describe each fighter across every opponent, which is why the archive form above is read alongside them rather than replaced by them.');
   } else if (a.career || b.career) {
     const f = a.career ? a : b; const o = f === a ? b : a; const c = f.career;
     const bits = [];
     if (c.slpm != null) bits.push(`${f.name} lands ${c.slpm} significant strikes per minute${c.str_acc != null ? ` at ${c.str_acc}% accuracy` : ''}${c.sapm != null ? ` and absorbs ${c.sapm}` : ''}${c.str_def != null ? ` with ${c.str_def}% striking defence` : ''}.`);
     if (c.td_avg != null) bits.push(`${p.He} averages ${c.td_avg} takedowns per 15 minutes${c.td_acc != null ? ` at ${c.td_acc}% accuracy` : ''}${c.td_def != null ? ` and defends ${c.td_def}% of takedowns` : ''}${c.sub_avg != null ? `, with ${c.sub_avg} submission attempts per 15` : ''}.`);
-    bits.push(`For ${o.name}, our tables carry no UFC Stats averages, so the comparison is one-sided: treat this as a description of what ${surnameOf(f)} brings, not a matchup edge.`);
+    bits.push(`For ${o.name}, our tables carry no round-level averages, so the comparison is one-sided: treat this as a description of what ${surnameOf(f)} brings, not a matchup edge.`);
     if (c.slpm != null) bits.push(c.slpm >= 4.5 ? `A ${c.slpm}-per-minute output is high-volume by any standard, which is the one number here that connects to a market: it is the profile that lifts significant-strike totals whoever the opponent is.` : c.slpm <= 2.5 ? `A ${c.slpm}-per-minute output is low volume, which usually means a fighter who picks moments rather than accumulates, and that shapes what a scorecard fight would look like.` : `A ${c.slpm}-per-minute output is mid-range for the division and does not by itself point at a market.`);
     paras.push(bits.join(' '));
   }
@@ -686,14 +687,14 @@ function styleSection(fb, slug) {
   for (const f of [a, b]) {
     const t = f.archive.totals;
     if (!t) continue;
-    rs.push(`Round-level UFC Stats exist for ${plural(f.archive.rounds_with_stats, 'archived round')} of ${f.name}'s: ${t.sig_l} of ${t.sig_a} significant strikes landed${t.sig_pct != null ? ` (${t.sig_pct}%)` : ''}, ${t.sig_per_round} per round, ${t.td_l} of ${t.td_a} takedowns, ${t.ctrl} of control time${t.kd ? ` and ${plural(t.kd, 'knockdown')}` : ''}.`);
+    rs.push(`Round-level PropSports data exists for ${plural(f.archive.rounds_with_stats, 'archived round')} of ${f.name}'s: ${t.sig_l} of ${t.sig_a} significant strikes landed${t.sig_pct != null ? ` (${t.sig_pct}%)` : ''}, ${t.sig_per_round} per round, ${t.td_l} of ${t.td_a} takedowns, ${t.ctrl} of control time${t.kd ? ` and ${plural(t.kd, 'knockdown')}` : ''}.`);
   }
   if (rs.length) paras.push(`${rs.join(' ')} ${rs.length === 2 ? 'Those samples are small and uneven, so they colour the career averages rather than override them.' : 'That is a small sample and is offered as colour, not as a rate.'}`);
   /* Method mix as a style proxy when nothing else is on file. */
   if (!a.career && !b.career && !rs.length) {
     const mix = [];
     for (const f of [a, b]) if (f.archive.w >= 2) mix.push(`${f.name}'s archived wins split ${joinWithAnd([f.archive.ko ? `${f.archive.ko} by KO/TKO` : null, f.archive.sub ? `${f.archive.sub} by submission` : null, f.archive.dec ? `${f.archive.dec} on the cards` : null])}`);
-    if (mix.length) paras.push(`With no UFC Stats averages on file for either fighter, the method mix is the only style signal our tables hold: ${joinWithAnd(mix)}. ${mix.length === 2 ? 'Read together, that is a sketch of where each one wins, not a measure of pace or defence.' : 'That is a sketch of where the wins come from, not a measure of pace or defence.'}`);
+    if (mix.length) paras.push(`With no round-level averages on file for either fighter, the method mix is the only style signal our tables hold: ${joinWithAnd(mix)}. ${mix.length === 2 ? 'Read together, that is a sketch of where each one wins, not a measure of pace or defence.' : 'That is a sketch of where the wins come from, not a measure of pace or defence.'}`);
   }
   return paras.length ? paras.join('\n\n') : null;
 }
@@ -893,12 +894,12 @@ function resultsAngle(fb) {
   const supporting = [];
   if (m.winner) supporting.push(`${m.winner.name} ${methodPast(m.method)} ${m.loser.name}${m.round ? ` in round ${m.round}` : ''}${m.time && m.finish ? ` at ${m.time}` : ''} (${m.method_label}).`);
   else supporting.push(`${m.a.name} vs ${m.b.name} was recorded as a ${m.method_label}.`);
-  if (m.stats && m.stats.a && m.stats.b) supporting.push(`Significant strikes ${m.a.name} ${m.stats.a.sig_l}/${m.stats.a.sig_a}, ${m.b.name} ${m.stats.b.sig_l}/${m.stats.b.sig_a}; takedowns ${m.stats.a.td_l}/${m.stats.a.td_a} to ${m.stats.b.td_l}/${m.stats.b.td_a}; control ${m.stats.a.ctrl} to ${m.stats.b.ctrl} over ${plural(m.stats.a.rounds, 'round')} of UFC Stats data.`);
+  if (m.stats && m.stats.a && m.stats.b) supporting.push(`Significant strikes ${m.a.name} ${m.stats.a.sig_l}/${m.stats.a.sig_a}, ${m.b.name} ${m.stats.b.sig_l}/${m.stats.b.sig_a}; takedowns ${m.stats.a.td_l}/${m.stats.a.td_a} to ${m.stats.b.td_l}/${m.stats.b.td_a}; control ${m.stats.a.ctrl} to ${m.stats.b.ctrl} over ${plural(m.stats.a.rounds, 'round')} of round-level PropSports data.`);
   if (pm && pm.winner && pm.winner.w) supporting.push(`Coming in, ${pm.winner.name} had finished ${pm.winner.finishes} of ${pm.winner.w} archived wins${pm.winner.finish_rate != null ? ` (${pm.winner.finish_rate}%)` : ''}; ${pm.loser.name} had been finished ${once(pm.loser.finished_by)} in ${plural(pm.loser.fights, 'archived bout')}.`);
   supporting.push(`Card: ${t.finishes} of ${t.bouts} recorded bouts ended inside the distance (${t.ko_tko} KO/TKO, ${t.subs} submission${t.subs === 1 ? '' : 's'}), ${t.decisions} went to the judges.`);
 
   const risks = ['No pre-fight odds snapshot exists in PropBetEdge data, so nothing here is a claim about closing-line value, a bad beat or a mispriced market; it is a read on what the result did to each profile.'];
-  if (!m.stats) risks.push('UFC Stats round data for the main event is not in our tables yet, so the striking, takedown and control differentials are not available.');
+  if (!m.stats) risks.push('Round-level data for the main event is not in our tables yet, so the striking, takedown and control differentials are not available.');
   if (pm && pm.winner && pm.winner.fights < 3) risks.push(pm.winner.fights ? `${pm.winner.name}'s pre-fight archive held only ${plural(pm.winner.fights, 'bout')}, so the "pattern" this result confirms or breaks is thin.` : `${pm.winner.name} had no archived UFC bout before this, so there was no pattern for the result to confirm or break.`);
   if (pm && pm.loser && pm.loser.fights < 3) risks.push(pm.loser.fights ? `${pm.loser.name}'s pre-fight archive held only ${plural(pm.loser.fights, 'bout')}.` : `${pm.loser.name} had no archived UFC bout before this.`);
   risks.push('One result is one data point: it updates the archive, it does not by itself change a career average.');
@@ -990,7 +991,7 @@ function renderResults(fb, slug) {
   if (R.co_main && R.co_main.winner) notes.push(`In the co-main event, ${R.co_main.winner.name} ${methodPast(R.co_main.method)} ${R.co_main.loser.name}${R.co_main.round && R.co_main.finish ? ` in round ${R.co_main.round}` : ''} at ${R.co_main.weight_class_label}.`);
   if (R.fastest_finish && R.fastest_finish.winner) notes.push(`The quickest finish on the card was ${R.fastest_finish.winner.name}'s ${R.fastest_finish.weight_class_label} win over ${R.fastest_finish.loser.name} at ${R.fastest_finish.time} of round ${R.fastest_finish.round}.`);
   if (t.r1_finishes) notes.push(`${plural(t.r1_finishes, 'bout')} ended in the first round.`);
-  if (t.with_stats) notes.push(`UFC Stats round data is in our tables for ${t.with_stats} of the ${t.bouts} bouts.`);
+  if (t.with_stats) notes.push(`Round-level data is in our tables for ${t.with_stats} of the ${t.bouts} bouts.`);
 
   const sections = ['## Main event', mainPara];
   if (preContext.length) sections.push(preContext.join(' '));
@@ -998,7 +999,7 @@ function renderResults(fb, slug) {
   if (mu) {
     const tape = mu.edges.filter((e) => ['reach', 'height', 'age', 'archive_fights'].includes(e.key)).map((e) => e.note.replace(/\.$/, ''));
     const tapeLine = tape.length ? `On the pre-fight tape: ${tape.join('; ')}.` : `On the pre-fight tape, the two were level on every listed measure our tables hold${mu.a.reach_in != null && mu.b.reach_in != null ? ` (reach ${mu.a.reach_in}" to ${mu.b.reach_in}")` : ''}.`;
-    const cov = mu.a.career && mu.b.career ? 'UFC Stats career averages were on file for both fighters.' : mu.a.career || mu.b.career ? `UFC Stats career averages were on file for ${(mu.a.career ? mu.a : mu.b).name} only.` : 'UFC Stats career averages were on file for neither fighter, so striking and grappling rates could not be compared going in.';
+    const cov = mu.a.career && mu.b.career ? 'Career-to-date round statistics were on file for both fighters.' : mu.a.career || mu.b.career ? `Career-to-date round statistics were on file for ${(mu.a.career ? mu.a : mu.b).name} only.` : 'Career-to-date round statistics were on file for neither fighter, so striking and grappling rates could not be compared going in.';
     sections.push(`${tapeLine} ${cov}`);
     for (const f of [mu.a, mu.b]) {
       if (!f.archive.last.length) continue;
@@ -1011,7 +1012,7 @@ function renderResults(fb, slug) {
     const A = m.stats.a; const B = m.stats.b;
     const pct = (v) => (v == null ? 'n/a' : `${v}%`);
     sections.push('## By the numbers');
-    sections.push(`Over ${plural(A.rounds, 'round')} of UFC Stats data, ${m.a.name} landed ${A.sig_l} of ${A.sig_a} significant strikes (${pct(A.sig_pct)}) against ${B.sig_l} of ${B.sig_a} (${pct(B.sig_pct)}) for ${m.b.name}. Takedowns went ${A.td_l} of ${A.td_a} for ${m.a.name} and ${B.td_l} of ${B.td_a} for ${m.b.name}; control time was ${A.ctrl} to ${B.ctrl}${A.kd || B.kd ? `, with knockdowns ${A.kd}-${B.kd}` : ''}.`);
+    sections.push(`Over ${plural(A.rounds, 'round')} of round-level PropSports data, ${m.a.name} landed ${A.sig_l} of ${A.sig_a} significant strikes (${pct(A.sig_pct)}) against ${B.sig_l} of ${B.sig_a} (${pct(B.sig_pct)}) for ${m.b.name}. Takedowns went ${A.td_l} of ${A.td_a} for ${m.a.name} and ${B.td_l} of ${B.td_a} for ${m.b.name}; control time was ${A.ctrl} to ${B.ctrl}${A.kd || B.kd ? `, with knockdowns ${A.kd}-${B.kd}` : ''}.`);
     sections.push([
       `- **Significant strikes:** ${m.a.name} ${A.sig_l}/${A.sig_a} · ${m.b.name} ${B.sig_l}/${B.sig_a}`,
       `- **Total strikes:** ${m.a.name} ${A.tot_l}/${A.tot_a} · ${m.b.name} ${B.tot_l}/${B.tot_a}`,
@@ -1052,7 +1053,7 @@ function postMortemProse(fb, slug) {
     if (d.kd !== 0) bits.push(`Knockdowns went ${Math.abs(d.kd)} in ${d.kd > 0 ? 'the winner' : 'the loser'}'s favour${d.kd < 0 ? ', the clearest sign the scorecards and the damage did not agree' : ''}.`);
     paras.push(bits.join(' '));
   } else {
-    paras.push('UFC Stats round data for this bout is not yet in our tables, so the striking, takedown and control differentials that would normally sit here are unavailable; the profile update below rests on the result alone.');
+    paras.push('Round-level data for this bout is not yet in our tables, so the striking, takedown and control differentials that would normally sit here are unavailable; the profile update below rests on the result alone.');
   }
   /* 3. Distance and archive pattern. */
   const dist = pm.went_distance
@@ -1511,7 +1512,8 @@ function printArticle(art, tag) {
 
 async function persist(sb, world, art, env, stats, batch, opts) {
   const heroNote = enforceHeroCredit(art);
-  const hash = factHash(art.fact_block, { salt: HASH_SALT });
+  /* Wording-only changes are not fact changes: hash the legacy-equivalent view (see source-wording.mjs). */
+  const hash = factHash(legacyHashView(art.fact_block), { salt: HASH_SALT });
   const problems = gateArticle(art, world, batch);
   batch.slugs.add(art.slug); batch.headlines.set(art.slug, tokenSet(art.headline));
   const words = bodyWords(art.body_md);

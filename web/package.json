@@ -11,7 +11,7 @@
     "preserve:diff": "node scripts/preservation-diff.mjs",
     "preserve:baseline": "node scripts/preservation-check.mjs --write-baseline",
     "prebuild": "node ../scripts/guard-source-brand.mjs && node scripts/preservation-check.mjs && node scripts/check-route-css-scope.mjs",
-    "test:source-brand": "node --experimental-strip-types --test lib/sourceBrand.test.mjs",
+    "test:source-brand": "node --experimental-strip-types --test lib/sourceBrand.test.mjs ../scripts/news/source-wording.test.mjs",
     "test:preferred-source": "node --experimental-strip-types --test lib/preferredSource.test.ts",
     "test:market": "node --experimental-strip-types --test lib/market.test.mjs",
     "test:kalshi": "node --experimental-strip-types --test lib/kalshi.test.ts",
