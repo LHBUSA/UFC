@@ -1,6 +1,11 @@
 name = "ufc-record-alerts"
 main = "src/index.js"
 compatibility_date = "2026-09-14"
+# A Worker cannot reach another Worker on this account through its workers.dev
+# URL by a plain fetch (Cloudflare error 1042). This flag sends fetch() out
+# through the public internet, the same path any external monitor takes, and
+# keeps the "no service binding" isolation rule (src/recordAlerts.test.mjs).
+compatibility_flags = ["global_fetch_strictly_public"]
 account_id = "fd3a233edadd0a60916413c1199f71ee"
 workers_dev = true
 
