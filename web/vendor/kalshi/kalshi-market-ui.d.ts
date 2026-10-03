@@ -27,6 +27,8 @@ export interface KalshiEntry {
   event: { sport: string; canonical_event_id: string; state?: string | null; start_at?: string | null; [k: string]: unknown };
   kalshi: KalshiBlock | null;
   movement?: { kalshi?: Record<string, unknown> | null } | null;
+  market?: { venue?: string; lifecycle?: string; market_url?: string; proposition?: string; close?: { lifecycle?: string; shape?: string; outcomes?: Record<string, unknown>[] } | null; [k: string]: unknown } | null;
+  market_history?: { lifecycle?: string; status_label?: string; shape?: string; market_url?: string; outcomes?: Record<string, unknown>[]; [k: string]: unknown } | null;
   [k: string]: unknown;
 }
 export function ageLabel(sec: number | null | undefined): string;
@@ -34,5 +36,9 @@ export function sparkline(points: unknown[], opts?: { width?: number; height?: n
 export function kalshiCard(entry: KalshiEntry | null | undefined, opts?: { placement?: string; colors?: Record<string, string>; compact?: boolean }): string;
 export function kalshiStrip(entry: KalshiEntry | null | undefined, opts?: { placement?: string; colors?: Record<string, string> }): string;
 export function kalshiLine(entry: KalshiEntry | null | undefined): string;
+export function historyChart(h: Record<string, unknown>, opts?: { width?: number; height?: number }): string;
+export function marketHistoryCard(entry: KalshiEntry | null | undefined, opts?: { placement?: string }): string;
+export function marketCloseLine(entry: KalshiEntry | null | undefined): string;
+export function marketModule(entry: KalshiEntry | null | undefined, opts?: { placement?: string; colors?: Record<string, string>; compact?: boolean }): string;
 export function wireKalshi(root?: ParentNode | null): void;
 export function __resetKalshiFlashes(): void;

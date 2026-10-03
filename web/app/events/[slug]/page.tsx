@@ -131,8 +131,10 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
     : await unresolvedBouts(bouts.map((b) => ({ id: b.id, a: b.fighter_a.name, b: b.fighter_b.name })), e.event_date);
   /* Kalshi prediction-market board: PUBLIC data, read for every reader (not
    * gated on access.pro like the sportsbook market above), one request for the
-   * whole card, bounded wait. A finished card has no open market to show. */
-  const kalshiBoard = done || !live.length ? {} : await getKalshiBoard();
+   * whole card, bounded wait. The board keeps events completed in the last
+   * 7 days, so a finished card read within that window gets each bout's
+   * market close line on its result row. */
+  const kalshiBoard = !live.length || (done && (d == null || d < -8)) ? {} : await getKalshiBoard();
   const [briefs, rankings, ingest] = await Promise.all([!done && live.length > 0 ? buildDeskBriefs(e, live, 1, { dna: access.pro }).catch(() => []) : Promise.resolve([]), getRankings().catch(() => null), getIngestFreshness().catch(() => null)]);
   const nearby = done || historical ? await getRecentEvents(4) : await getUpcomingEvents(4);
   const isCurrent = !done && nearby[0]?.id === e.id;

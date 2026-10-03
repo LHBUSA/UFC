@@ -8,7 +8,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { getKalshiBoard, getKalshiEvent, kalshiPollState, ufcKalshiCardHtml, ufcKalshiLineHtml, UFC_KALSHI_NOTE, KALSHI_MARKETS_BASE } from "./kalshi.ts";
+import { getKalshiBoard, getKalshiEvent, kalshiPollMs, kalshiPollState, ufcKalshiCardHtml, ufcKalshiLineHtml, UFC_KALSHI_NOTE, KALSHI_MARKETS_BASE, KALSHI_CLOSED_POLL_MS } from "./kalshi.ts";
 import type { KalshiEntry } from "./kalshi.ts";
 
 const WEB = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -95,6 +95,105 @@ test("poll state maps the API event state", () => {
   assert.equal(kalshiPollState({ ...entry(), event: { ...entry().event, state: "in" } }), "live");
   assert.equal(kalshiPollState({ ...entry(), event: { ...entry().event, state: "post" } }), "idle");
   assert.equal(kalshiPollState(null), "idle");
+  /* market lifecycle wins: closed -> 5 min until settled; settled -> never */
+  const shared = (s: string) => (s === "live" ? 20_000 : s === "pregame" ? 45_000 : 120_000);
+  assert.equal(kalshiPollMs(kalshiPollState(entry()), shared), 45_000);
+  assert.equal(kalshiPollMs(kalshiPollState({ ...entry(), event: { ...entry().event, state: "in" } }), shared), 20_000);
+  assert.equal(kalshiPollState(closedEntry()), "closed");
+  assert.equal(kalshiPollMs("closed", shared), KALSHI_CLOSED_POLL_MS);
+  assert.equal(KALSHI_CLOSED_POLL_MS, 300_000);
+  assert.equal(kalshiPollState(settledEntry()), "settled");
+  assert.equal(kalshiPollMs("settled", shared), null);
+});
+
+/* ── market history: the REAL settled tennis event (Rybakina vs Charaeva, captured
+ * from GET /v1/market-intelligence/event/tennis/00a0f4e8-…) reshaped ONLY for sport
+ * and ids — every price, timestamp and settlement is the stored value. ── */
+const REAL = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "fixtures", "kalshi-settled-tennis-real.json"), "utf8"));
+function settledEntry(): KalshiEntry {
+  const e = structuredClone(REAL.event);
+  e.event.sport = "ufc";
+  e.event.competition = "ufc";
+  e.event.canonical_event_id = BOUT;
+  return e;
+}
+function closedEntry(): KalshiEntry {
+  const e = settledEntry() as any;
+  e.market.lifecycle = "CLOSED";
+  e.market.close.lifecycle = "CLOSED";
+  for (const o of e.market.close.outcomes) o.result = null;
+  e.market_history.lifecycle = "CLOSED";
+  e.market_history.status_label = "Market closed";
+  for (const o of e.market_history.outcomes) o.settlement = null;
+  e.kalshi.state = "closed";
+  return e;
+}
+
+test("SETTLED: real history renders 'How the market closed' with stored values, venue settlement and the UFC note", () => {
+  const html = ufcKalshiCardHtml(settledEntry());
+  assert.match(html, /How the market closed/);
+  assert.doesNotMatch(html, /Market Pulse/, "history replaces the live card");
+  assert.match(html, /Alina Charaeva/);
+  assert.match(html, /Elena Rybakina/);
+  assert.match(html, /First observed/);
+  assert.doesNotMatch(html, /<small>Open|opened at/i, "first observed is never labelled an opening price");
+  assert.match(html, /5\.5¢/, "Charaeva first observed 5.5¢");
+  assert.match(html, /Final trade/);
+  assert.match(html, /Settled YES/);
+  assert.match(html, /Kalshi settlement: <b>Alina Charaeva<\/b> — YES/);
+  assert.match(html, /Settlement is the market venue's, not our result/);
+  assert.match(html, /not the opening price/, "partial history is stated");
+  assert.match(html, /<svg/);
+  assert.doesNotMatch(html, /style="/, "no inline styles (strict CSP)");
+  assert.ok(html.includes(UFC_KALSHI_NOTE), "draw / NC note stays with the history");
+  assert.doesNotMatch(html, /earlier|more accurate|stale/i);
+});
+
+test("CLOSED: shows 'Market closed · awaiting settlement' and no settlement claim", () => {
+  const html = ufcKalshiCardHtml(closedEntry());
+  assert.match(html, /How the market closed/);
+  assert.match(html, /Market closed · awaiting settlement/);
+  assert.match(html, /Awaiting settlement/);
+  assert.doesNotMatch(html, /Settled YES|Settled NO/);
+  const line = ufcKalshiLineHtml(closedEntry(), { result: true });
+  assert.match(line, /awaiting settlement/);
+});
+
+test("history links: every anchor is the verified market with rel sponsored", () => {
+  for (const html of [ufcKalshiCardHtml(settledEntry()), ufcKalshiCardHtml(closedEntry())]) {
+    const anchors = [...html.matchAll(/<a\b[^>]*>/g)].map((m) => m[0]);
+    assert.ok(anchors.length >= 1);
+    for (const a of anchors) {
+      assert.match(a, /href="https:\/\/kalshi\.com\/markets\//);
+      assert.match(a, /rel="noopener noreferrer sponsored"/);
+    }
+  }
+});
+
+test("result row: market close line from the board summary, never live prices", () => {
+  const line = ufcKalshiLineHtml(settledEntry(), { result: true });
+  assert.match(line, /MARKET/);
+  assert.match(line, /Alina Charaeva/);
+  assert.match(line, /settled YES/);
+  assert.doesNotMatch(line, /<a\b/);
+  /* a result row whose market still trades shows nothing (not live prices) */
+  assert.equal(ufcKalshiLineHtml(entry(), { result: true }), "");
+  /* no close summary recorded -> nothing */
+  const bare = settledEntry() as any;
+  bare.market.close = null;
+  assert.equal(ufcKalshiLineHtml(bare, { result: true }), "");
+  assert.equal(ufcKalshiLineHtml(null, { result: true }), "");
+});
+
+test("server reads keep a settled entry whose live block is gone", async () => {
+  const gone = settledEntry() as any;
+  gone.kalshi = null;
+  const ok = (body: unknown) => (async () => new Response(JSON.stringify(body), { status: 200 })) as never;
+  const ev = await getKalshiEvent(BOUT, { fetchImpl: ok({ enabled: true, event: gone }) });
+  assert.equal(ev?.market_history?.lifecycle, "SETTLED");
+  assert.match(ufcKalshiCardHtml(ev), /How the market closed/);
+  const board = await getKalshiBoard({ fetchImpl: ok({ enabled: true, events: [gone] }) });
+  assert.deepEqual(Object.keys(board), [BOUT]);
 });
 
 test("server reads use our markets Worker, key the board by bout uuid and fail to nothing", async () => {
@@ -131,6 +230,18 @@ test("fight page: Kalshi card is public and separate from the Pro sportsbook Mar
   /* the sportsbook market block is untouched by this layer */
   assert.doesNotMatch(read("components/Market.tsx"), /kalshi/i);
   assert.doesNotMatch(read("lib/market.ts"), /kalshi/i);
+});
+
+test("fight page: the market module is mounted for completed bouts too", () => {
+  const src = read("app/fights/[slug]/page.tsx");
+  const cardLine = src.split("\n").find((l) => l.includes("<KalshiMarketCard"))!;
+  assert.doesNotMatch(cardLine, /!r\b/, "not limited to unsettled bouts");
+  assert.match(cardLine, /completed=\{Boolean\(r\)\}/);
+  const fetchLine = src.split("\n").find((l) => l.includes("getKalshiEvent(b.id)"))!;
+  assert.doesNotMatch(fetchLine, /b\.result|kalshiAge/, "completed bouts are read");
+  const ui = read("components/ui.tsx");
+  assert.match(ui, /<KalshiBoutLine boutId=\{b\.id\} initial=\{kalshi\} result=\{Boolean\(r\)\} \/>/);
+  assert.doesNotMatch(ui.split("\n").find((l) => l.includes("<KalshiBoutLine"))!, /!r\b/);
 });
 
 test("event page: board read is public and passed to the card rows", () => {
@@ -170,8 +281,8 @@ test("no Kalshi API host in web code", () => {
 
 /* ── vendored files unchanged ── */
 const VENDORED: Record<string, string> = {
-  "kalshi-market-ui.js": "0f03224b086e11967329e2a4666ef5327e335fbb32ae251a31a2a543b30e1952",
-  "kalshi-market-ui.css": "572d18127bf6ce357e50b4320e0d98d83b07aa3d6bfb1e1c04c43bee4f009f98",
+  "kalshi-market-ui.js": "c343805e546cde66d01676c9c6c9f6f4ca746a8ba138b4b1ad0159a341f3db2a",
+  "kalshi-market-ui.css": "db0f4b1efd5209966fb627f72e217b9539876d5123edc10d80524d172da41a06",
   "kalshi-market-client.js": "653cb0fc2673f909552453052560bfd6194e0e4d045c51b1eb73483957d4c049",
   "README.md": "a80e4ac5d8733bde8afc0c13c281242babff8b1acd083974741f677b7af5a480",
 };

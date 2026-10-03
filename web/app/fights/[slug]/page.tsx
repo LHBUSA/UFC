@@ -133,10 +133,10 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
   /* Kalshi prediction market: PUBLIC, read for every reader regardless of
    * access (it is not the Pro sportsbook market below). Keyed by the bout uuid,
    * started here so it runs alongside the page's other reads, with a bounded
-   * wait so the card is in the first paint without holding the page. Old
-   * settled bouts skip the read: their markets are long closed. */
-  const kalshiAge = daysUntil(e.event_date);
-  const kalshiRead = !b.result || (kalshiAge != null && kalshiAge >= -3) ? getKalshiEvent(b.id) : Promise.resolve(null);
+   * wait so the card is in the first paint without holding the page. Read for
+   * completed bouts too: a closed or settled market keeps "How the market
+   * closed" on the page (pricing never disappears when the fight ends). */
+  const kalshiRead = b.status !== "cancelled" ? getKalshiEvent(b.id) : Promise.resolve(null);
   const [imgs, rounds, articles, histA, histB, statusByBout, weighInsByBout, fightTotals] = await Promise.all([
     getImagesForFighters([b.fighter_a.id, b.fighter_b.id, ...bouts.flatMap((x) => [x.fighter_a.id, x.fighter_b.id])]), getRoundStats(b.id), getArticlesForBout(b.id), getFighterBouts(b.fighter_a.id), getFighterBouts(b.fighter_b.id),
     getBoutStatusEvents([b.id]).catch(() => new Map()),
@@ -357,10 +357,11 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
         : !r && b.status !== "cancelled" && <section className="segment" id="market"><h3>Market</h3><ProPreview feature="market" access={access} returnPath={returnPath} /></section>}
 
       {/* Public Kalshi prediction-market card, deliberately outside the Pro
-          gate above. Mounted for an unsettled bout (so a market that opens
-          after the page was cached still appears) or when the server already
-          has an entry; renders nothing without one. */}
-      {(kalshi || (!r && b.status !== "cancelled")) && <KalshiMarketCard boutId={b.id} initial={kalshi} />}
+          gate above. Mounted for every bout that is not cancelled, completed
+          ones included: the live card while the market trades, "How the market
+          closed" once it closes or settles (no release needed). Renders nothing
+          without an entry; a completed bout with none is checked once. */}
+      {(kalshi || b.status !== "cancelled") && <KalshiMarketCard boutId={b.id} initial={kalshi} completed={Boolean(r)} />}
 
       {/* Two datasets, two sections, never blurred: ESPN publishes verified
           whole-fight totals with no round dimension, UFC Stats publishes the

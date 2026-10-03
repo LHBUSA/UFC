@@ -214,8 +214,9 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState
       </div>
       {/* Public Kalshi prediction-market line (not the Pro sportsbook market):
           its own full-width row so long fighter names never squeeze the corners.
-          Rendered only when the server board already had an entry for this bout. */}
-      {kalshi && !r && !off ? <KalshiBoutLine boutId={b.id} initial={kalshi} /> : null}
+          Rendered only when the server board already had an entry for this bout.
+          On a result row it is the market's close line only (marketCloseLine). */}
+      {kalshi && !off ? <KalshiBoutLine boutId={b.id} initial={kalshi} result={Boolean(r)} /> : null}
     </Link>
   );
 }

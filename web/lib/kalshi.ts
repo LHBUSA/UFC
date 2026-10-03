@@ -11,7 +11,7 @@
  * the card always carries UFC_KALSHI_NOTE beside it.
  *
  * No `server-only` / `@/` imports: node's test runner loads this file directly. */
-import { kalshiCard, kalshiLine } from "../vendor/kalshi/kalshi-market-ui.js";
+import { kalshiLine, marketCloseLine, marketModule } from "../vendor/kalshi/kalshi-market-ui.js";
 import type { KalshiEntry } from "../vendor/kalshi/kalshi-market-ui.js";
 
 export type { KalshiEntry };
@@ -26,9 +26,21 @@ export const KALSHI_REVALIDATE_S = 15;
 
 type FetchLike = (url: string, init?: RequestInit & { next?: { revalidate?: number } }) => Promise<Response>;
 
+/* An entry is usable while it has a live block, or once it has a recorded
+ * market (closed / settled history or a board close summary). A completed
+ * bout keeps its market: pricing never disappears when the fight ends. */
 const usableEntry = (e: unknown): e is KalshiEntry => {
   const x = e as KalshiEntry | null;
-  return Boolean(x && x.event && x.event.canonical_event_id && x.kalshi);
+  return Boolean(x && x.event && x.event.canonical_event_id && (x.kalshi || x.market_history || x.market?.close));
+};
+
+/** Market lifecycle from the API (DISCOVERED | UPCOMING | ACTIVE | CLOSED | SETTLED), or null. */
+export function marketLifecycle(entry: KalshiEntry | null | undefined): string | null {
+  return entry?.market?.lifecycle ?? entry?.market_history?.lifecycle ?? null;
+}
+const closedOrSettled = (entry: KalshiEntry | null | undefined) => {
+  const lc = marketLifecycle(entry);
+  return lc === "CLOSED" || lc === "SETTLED";
 };
 
 async function readJson(url: string, fetchImpl: FetchLike, waitMs: number): Promise<any | null> {
@@ -61,22 +73,41 @@ export async function getKalshiBoard({ fetchImpl = fetch as FetchLike, waitMs = 
   return out;
 }
 
-/** API event state ('pre' | 'in' | 'post') -> the shared client's poll state. */
-export function kalshiPollState(entry: KalshiEntry | null | undefined): "live" | "pregame" | "idle" {
+/** Poll state. A settled market never changes again; a closed one only waits
+ * for the venue's settlement; otherwise the API event state decides. */
+export function kalshiPollState(entry: KalshiEntry | null | undefined): "live" | "pregame" | "closed" | "settled" | "idle" {
+  const lc = marketLifecycle(entry);
+  if (lc === "SETTLED") return "settled";
+  if (lc === "CLOSED") return "closed";
   const s = entry?.event?.state;
   if (s === "in" || s === "live") return "live";
   if (s === "pre") return "pregame";
   return "idle";
 }
 
-/** Full card plus the UFC draw / no-contest note, or "" when there is nothing to show. */
+/* Live 20 s / pregame 45 s come from the shared client; a closed market is
+ * re-read every 5 minutes until it settles; a settled market is never polled. */
+export const KALSHI_CLOSED_POLL_MS = 5 * 60_000;
+export function kalshiPollMs(state: ReturnType<typeof kalshiPollState>, sharedPollMs: (s: string) => number): number | null {
+  if (state === "settled") return null;
+  if (state === "closed") return KALSHI_CLOSED_POLL_MS;
+  return sharedPollMs(state);
+}
+
+/** Fight-page module: the live card while the market trades, "How the market
+ * closed" once it has closed or settled, always with the UFC draw / no-contest
+ * note (the fight-winner contract resolves 50/50 on either). "" without an entry. */
 export function ufcKalshiCardHtml(entry: KalshiEntry | null | undefined, placement = "fight-page"): string {
-  const card = entry ? kalshiCard(entry, { placement }) : "";
+  const card = entry ? marketModule(entry, { placement }) : "";
   if (!card) return "";
   return `${card}<p class="ufc-kx__rule">${UFC_KALSHI_NOTE}</p>`;
 }
 
-/** Restrained compact line for a bout row, or "". */
-export function ufcKalshiLineHtml(entry: KalshiEntry | null | undefined): string {
-  return entry ? kalshiLine(entry) : "";
+/** Restrained compact line for a bout row: live prices while trading, the
+ * market's close once the bout's market has closed or settled, or "". A result
+ * card (`result`) never shows live prices: only the close line, when it has content. */
+export function ufcKalshiLineHtml(entry: KalshiEntry | null | undefined, { result = false }: { result?: boolean } = {}): string {
+  if (!entry) return "";
+  if (closedOrSettled(entry)) return marketCloseLine(entry);
+  return result ? "" : kalshiLine(entry);
 }
