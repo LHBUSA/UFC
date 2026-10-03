@@ -25,6 +25,7 @@ export * from "@/lib/broadcast-display";
 
 import type { EventBroadcast } from "@/lib/broadcast-display";
 import { isFinished } from "@/lib/broadcast-display";
+import { matchStoredRow } from "@/lib/broadcastHealth";
 import { approvedScheduleIds, mergeApprovedSchedules, resolveEventSchedule, type ScheduleEvent } from "@/lib/eventSchedule";
 export { resolveEventSchedule, scheduleSourceLabel, APPROVED_SOURCE } from "@/lib/eventSchedule";
 
@@ -114,12 +115,10 @@ async function getStoredBroadcastForEvent(event: ScheduleEvent): Promise<EventBr
   const sameDate = await rest<EventBroadcast[]>(
     `ufc_event_broadcasts?select=${COLS}&event_date=eq.${event.event_date}&event_id=is.null&limit=4`, [],
   );
-  if (sameDate.length === 1) return sameDate[0];
-  if (sameDate.length === 0) return null;
-  /* More than one unlinked card on the date: only accept a decisive name
-   * overlap, otherwise show nothing rather than the wrong card's start time. */
-  const hit = sameDate.filter((r) => nameOverlap(event.name, r.event_name) > 0);
-  return hit.length === 1 ? hit[0] : null;
+  /* The same matching rule the Worker's /health uses (lib/broadcastHealth):
+   * the single unlinked card on the date, or one decisive name overlap among
+   * several, otherwise nothing rather than the wrong card's start time. */
+  return matchStoredRow(event, sameDate);
 }
 
 /** Every stored card dated on or after `fromDate` (or undated), soonest first.
@@ -142,15 +141,3 @@ export async function getNextBroadcast(now = Date.now(), revalidate?: number): P
   const rows = await getBroadcastSchedule(12, revalidate);
   return rows.find((r) => !isFinished(r, now)) ?? null;
 }
-
-const STOP = new Set(["ufc", "fight", "night", "vs", "the", "noche", "on", "espn", "abc"]);
-function tokens(s: string): Set<string> {
-  return new Set(s.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter((t) => t.length > 2 && !STOP.has(t)));
-}
-function nameOverlap(a: string, b: string): number {
-  const x = tokens(a); const y = tokens(b);
-  let n = 0;
-  for (const t of x) if (y.has(t)) n += 1;
-  return n;
-}
-

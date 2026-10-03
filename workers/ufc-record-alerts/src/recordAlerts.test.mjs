@@ -191,7 +191,14 @@ test('isolation: the alert Worker has no way to reach the model, the database or
   assert.deepEqual([...src.matchAll(/^import .*$/gm)].map((m) => m[0]), [], 'recordAlerts.js imports nothing');
   assert.doesNotMatch(src.replace(/\/\/.*$/gm, ''), /supabase|SUPABASE|ufc_model|gradeLocked|runCycle|publish_prediction|rest\/v1/, 'no database handle and no model call');
   const index = readFileSync(new URL('./index.js', import.meta.url), 'utf8');
-  assert.deepEqual([...index.matchAll(/^import .*$/gm)].map((m) => m[0]), ["import { runRecordAlerts, recordAlertStatus } from './recordAlerts.js';"]);
+  assert.deepEqual([...index.matchAll(/^import .*$/gm)].map((m) => m[0]), [
+    "import { runRecordAlerts, recordAlertStatus } from './recordAlerts.js';",
+    "import { runBroadcastAlerts, broadcastAlertStatus, DEFAULT_BROADCAST_HEALTH_URL } from './broadcastAlerts.js';",
+  ]);
+  /* The broadcast check reuses this module's rules and nothing else: no database, no model. */
+  const broadcast = readFileSync(new URL('./broadcastAlerts.js', import.meta.url), 'utf8');
+  assert.deepEqual([...broadcast.matchAll(/^import .*$/gm)].map((m) => m[0]), ["import { decide, settle, discord, READ_FAILURE_CONFIRM } from './recordAlerts.js';"]);
+  assert.doesNotMatch(broadcast.replace(/\/\/.*$/gm, ''), /supabase|SUPABASE|ufc_model|gradeLocked|runCycle|publish_prediction|rest\/v1/);
   assert.match(index, /ctx\.waitUntil\(runRecordAlerts\(env\)\.catch\(/);
   const toml = readFileSync(new URL('../wrangler.toml', import.meta.url), 'utf8').replace(/^#.*$/gm, '');
   assert.doesNotMatch(toml, /SUPABASE|\[\[services\]\]|ALGO_|ufc-algo-artifacts|workflows/, 'no database var, no service binding, not the model bucket');

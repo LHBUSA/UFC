@@ -186,7 +186,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         </div>
       </div>
 
-      <HowToWatchPanel b={broadcast} />
+      <HowToWatchPanel b={broadcast} event={done ? null : e} />
 
       <div className="mt-4"><OfficialDestinations compact keys={["home", "fightpass", "store"]} /></div>
 

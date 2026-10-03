@@ -18,6 +18,9 @@ workers_dev = true
 
 [vars]
 RECORD_HEALTH_URL = "https://ufc.propbetedge.ai/api/ufc/record-health"
+# The How to Watch lane's health invariant (web/lib/broadcastHealth.ts), served
+# by the ufc-broadcast-schedule Worker: 503 + payload when RED. src/broadcastAlerts.js.
+BROADCAST_HEALTH_URL = "https://ufc-broadcast-schedule.sales-fd3.workers.dev/health"
 
 # Every five minutes. "Overdue" is a 48-hour condition; one-minute polling would
 # only buy noise and 1,440 health reads a day.

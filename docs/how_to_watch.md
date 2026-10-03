@@ -328,3 +328,68 @@ Cloudflare.
 cd workers/ufc-broadcast-schedule && npm test        # parser, normalize, window, pass
 cd web && node --experimental-strip-types --test lib/broadcast-display.test.ts
 ```
+
+## Health invariant and the fight-week notice (P0, 2026-10-03)
+
+Incident: the Worker (version d0e1ecc2, uploaded 2026-09-13) never had
+`SUPABASE_SERVICE_ROLE_KEY` or `ADMIN_TOKEN`. Every `*/30` pass died before
+writing, `ufc_ingest_runs` held zero rows for the lane, and the homepage strip
+silently disappeared in fight week. The 09-26 approved-schedule fallback
+(`web/lib/eventSchedule.ts`) covered one card and left the secrets missing.
+
+**One definition**: `web/lib/broadcastHealth.ts` (pure; the Worker bundles it,
+the web app imports it, `node --test` runs it).
+
+| Condition | Severity |
+|---|---|
+| a Worker secret/binding is missing (`supabase_url`, `supabase_service_role_key`, `admin_token`, `broadcast_lock`) | RED |
+| a canonical card (`ufc_events`, not Contender Series / Road to UFC, not cancelled, not finished) is within 8 days (site clock, `lib/siteClock.ts`) and has no resolved broadcast row (same match rule the pages use: linked `event_id`, else the single unlinked row that date, else one decisive name overlap; plus the approved schedule) | RED |
+| no successful pass in the ledger, or the last success is older than 150 min (inside 24 h of the card), 13 h (fight week) or 25 h (otherwise) | RED |
+| the health inputs cannot be read | RED |
+| the latest pass failed, but a recent one succeeded | AMBER |
+| a fight-week row exists but UFC.com has not published times | AMBER |
+
+`GET https://ufc-broadcast-schedule.sales-fd3.workers.dev/health` returns
+`status`, `incident` and `health` (`canonical_next_event`, `broadcast_attached`,
+`broadcast_source`, `last_worker_run` (the last cron wake, skipped ones included,
+kept in the BroadcastLock Durable Object), `last_ledger_run`, `last_success`,
+`minutes_since_success`, `stale_limit_minutes`, `last_verified_at`,
+`secrets_present`). It returns HTTP 503 when RED. Every cron wake evaluates the
+invariant and writes a `HEALTH RED` error line to Workers observability.
+`ufc-record-alerts` polls that `/health` every 5 minutes (`src/broadcastAlerts.js`)
+and sends RED conditions to the ops Discord with the same dedupe, reminder and
+recovery rules as the PBE record alerts. Delivery needs that Worker's
+`DISCORD_WEBHOOK_URL` secret; until it is set, alerts stay held as
+undelivered in R2 state, visible on its `/health`.
+
+**Why a missing row in fight week is always our fault**: UFC.com's `/events`
+listing carries every announced card weeks ahead, and the collector stores a
+row for each one, with null times and an empty carrier list until the promotion
+publishes them. "Not published yet" is a row with nulls. "No row" means the
+collector did not run, did not write, or could not match the card.
+
+**Watch-surface states** (`selectWatchSurface`, homepage hero and event page):
+
+| State | When | Renders |
+|---|---|---|
+| `strip` | resolved row with a start time or a carrier | WatchStrip |
+| `pending` | resolved row with neither | "START TIMES & BROADCAST · Start times to be announced" (UFC.com has not published) |
+| `unavailable` | no resolved row, card within 8 days | "START TIMES & BROADCAST · Schedule verification temporarily unavailable" + link to the official UFC schedule |
+| `finished` | the row's broadcast window has closed | nothing |
+| `none` | no card, or no row for a card outside fight week | nothing |
+
+The page never reads the Worker's health. Times and channels are still never
+invented. The notice is server-rendered at a reserved minimum height in the
+WatchStrip's place, so it causes no layout shift.
+
+**Release gate** (run after every production deploy; no GitHub Action):
+
+```bash
+cd web
+npm run accept:watch                    # live https://ufc.propbetedge.ai, exit 0/1/2
+node scripts/accept-watch-surface.mjs https://<deployment-url>
+```
+
+The gate asserts that a fight-week homepage hero contains the WatchStrip or
+the explicit notice, never neither. `--static` runs in `prebuild` and checks
+the source wiring. The offline checker tests run in `npm run test:event-schedule`.

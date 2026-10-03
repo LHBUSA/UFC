@@ -408,6 +408,42 @@
   .carrier { padding: 14px 16px 15px 18px; }
 }
 
+/* ---- START TIMES & BROADCAST notice (components/HowToWatch WatchNotice) ----
+ * Fight week without verified values: the area keeps its place at a reserved
+ * height and says what is true. Same frame as the strip, quieter colour, no
+ * time, no channel. Server-rendered, so nothing swaps in after paint. */
+.notice {
+  display: grid;
+  align-content: center;
+  gap: 8px;
+  min-height: 132px;
+  padding: 16px 20px 18px;
+  border: 1px solid var(--pbe-line-faint);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, rgba(212, 175, 55, .035), rgba(0, 0, 0, .22));
+  min-width: 0;
+}
+.noticeHero {
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(180deg, rgba(212, 175, 55, .035), rgba(8, 7, 6, .5));
+}
+.noticeLine {
+  margin: 0;
+  color: var(--pbe-paper);
+  font: 750 15px/1.3 var(--pbe-font-ui);
+  overflow-wrap: anywhere;
+}
+.noticeSub {
+  color: var(--pbe-dim);
+  font: 650 11.5px/1.5 var(--pbe-font-data);
+  overflow-wrap: anywhere;
+}
+.noticeSub a { color: var(--pbe-gold); white-space: nowrap; }
+@media (max-width: 560px) {
+  .notice { padding: 14px 16px 16px; }
+}
+
 /* ---- hero variant: the base of the homepage featured-event card ----
  *
  * Same strip, but living inside .hero-feature, so it drops its own border and

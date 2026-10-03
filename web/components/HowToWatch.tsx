@@ -29,6 +29,7 @@ import {
 } from "@/lib/broadcast-display";
 import { Countdown, VerifiedAgo, LocalTimesNote } from "@/components/HowToWatchClient";
 import { APPROVED_SOURCE, scheduleSourceLabel } from "@/lib/eventSchedule";
+import { selectWatchSurface } from "@/lib/broadcastHealth";
 import styles from "@/app/how-to-watch.module.css";
 
 /* The server renders in US Eastern — the promotion's own reference zone, and a
@@ -98,9 +99,61 @@ function Carriers({ b }: { b: EventBroadcast }) {
   );
 }
 
-/** The full block for an event page. */
-export function HowToWatchPanel({ b, now = Date.now() }: { b: EventBroadcast | null; now?: number }) {
-  if (!b) return null;
+/**
+ * START TIMES & BROADCAST, when we cannot show verified values.
+ *
+ *   unavailable  the card is inside fight week and our pipeline delivered no
+ *                broadcast row (lib/broadcastHealth: that is always our fault,
+ *                never UFC.com's — the listing carries every announced card).
+ *   pending      we have the card's row and UFC.com has not published a start
+ *                time or a carrier for it yet.
+ *
+ * Fail-closed: no time, no channel, no guess. Only a link to the official
+ * source. Server-rendered at a reserved minimum height, so it neither collapses
+ * the hero nor shifts it.
+ */
+export function WatchNotice({
+  kind, eventName, href = "https://www.ufc.com/events", variant = "default",
+}: {
+  kind: "pending" | "unavailable";
+  eventName: string;
+  href?: string;
+  variant?: "default" | "hero";
+}) {
+  const unavailable = kind === "unavailable";
+  return (
+    <div
+      className={`${styles.notice}${variant === "hero" ? ` ${styles.noticeHero}` : ""}`}
+      data-watch-state={kind}
+      role="status"
+    >
+      <span className={styles.stripEyebrow}>Start times &amp; broadcast · {eventName}</span>
+      <p className={styles.noticeLine}>
+        {unavailable ? "Schedule verification temporarily unavailable" : "Start times to be announced"}
+      </p>
+      <span className={styles.noticeSub}>
+        {unavailable
+          ? "We are not showing unverified times or channels. "
+          : "UFC.com has not published start times or a broadcaster for this card yet. "}
+        <a href={href} target="_blank" rel="noopener noreferrer">Official UFC schedule →</a>
+      </span>
+    </div>
+  );
+}
+
+/** The full block for an event page. `event` lets the panel keep its place
+ *  during fight week when the broadcast row is missing (WatchNotice). */
+export function HowToWatchPanel({ b, event = null, now = Date.now() }: { b: EventBroadcast | null; event?: { name: string; event_date: string | null } | null; now?: number }) {
+  if (!b) {
+    if (event && selectWatchSurface(event, null, now) === "unavailable") {
+      return (
+        <section className="segment" id="how-to-watch">
+          <WatchNotice kind="unavailable" eventName={event.name} />
+        </section>
+      );
+    }
+    return null;
+  }
 
   const lines = startLines(b);
   const state = watchState(b, now, SERVER_ZONE);
@@ -193,7 +246,11 @@ export function WatchStrip({
   const lines = startLines(b);
   const state = watchState(b, now, SERVER_ZONE);
   if (state === "finished") return null;
-  if (lines.length === 0 && (b.broadcasts?.length ?? 0) === 0) return null;
+  /* A row with neither a time nor a carrier: UFC.com has not published them.
+   * Say so honestly instead of collapsing the area. */
+  if (lines.length === 0 && (b.broadcasts?.length ?? 0) === 0) {
+    return <WatchNotice kind="pending" eventName={b.event_name} href={b.ufc_event_url} variant={variant} />;
+  }
 
   const eyebrow = state === "live" ? "Live now" : state === "today" ? "Today" : "How to watch";
   const providers = providerList(b.broadcasts ?? []);
@@ -209,7 +266,7 @@ export function WatchStrip({
     : "";
 
   const body = (
-    <div className={hero ? `${styles.strip} ${styles.stripHero}` : styles.strip}>
+    <div className={hero ? `${styles.strip} ${styles.stripHero}` : styles.strip} data-watch-state="strip">
       <div className={styles.stripTop}>
         <span className={styles.stripEyebrow}>{eyebrow} · {b.event_name}</span>
         <Countdown event={b} initialState={state} initialLabel={serverLabel(b, now)} />

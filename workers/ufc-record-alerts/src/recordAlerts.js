@@ -94,7 +94,7 @@ const emptyState = () => ({ version: 1, health: 'UNKNOWN', read_failures: 0, act
  * `sends` carry a `commit(delivered)` closure target via `key`; the caller
  * reports delivery back through settle().
  */
-export function decide({ previous, check, now }) {
+export function decide({ previous, check, now, alertFn = alertMessage, recoveryFn = recoveryMessage }) {
   const prev = previous && previous.version === 1 ? previous : emptyState();
   /* A deep copy: `previous` must stay as it was read, or "did the state change" can never be answered. */
   const next = JSON.parse(JSON.stringify({ version: 1, health: prev.health, read_failures: prev.read_failures, active: prev.active || {}, recovery: prev.recovery || null }));
@@ -125,7 +125,7 @@ export function decide({ previous, check, now }) {
   const healthy = present.size === 0;
   next.health = healthy ? 'PASS' : 'FAIL';
   /* One RECOVERED, and only when the whole record is back to PASS. */
-  if (healthy && next.recovery && due(next.recovery, RETRY_MINUTES)) sends.push({ kind: 'recovered', key: null, loud: false, content: recoveryMessage(next.recovery.cleared) });
+  if (healthy && next.recovery && due(next.recovery, RETRY_MINUTES)) sends.push({ kind: 'recovered', key: null, loud: false, content: recoveryFn(next.recovery.cleared) });
   /* While anything is still wrong, cleared conditions wait here and are named in that one notice. */
   return { sends, next };
 
@@ -134,16 +134,16 @@ export function decide({ previous, check, now }) {
     const summary = { klass: c.klass, event_id: c.event_id, event_name: c.event_name, event_date: c.event_date };
     if (!entry) {
       next.active[c.key] = { first_seen_at: new Date(now).toISOString(), delivered: false, last_alert_at: null, last_attempt_at: null, alerts: 0, summary };
-      sends.push({ kind: 'alert', key: c.key, loud: true, content: alertMessage(c) });
+      sends.push({ kind: 'alert', key: c.key, loud: true, content: alertFn(c) });
       return;
     }
     entry.summary = summary;
     if (!entry.delivered) {
-      if (due(entry, RETRY_MINUTES)) sends.push({ kind: 'alert', key: c.key, loud: true, content: alertMessage(c) });
+      if (due(entry, RETRY_MINUTES)) sends.push({ kind: 'alert', key: c.key, loud: true, content: alertFn(c) });
       return;
     }
     if (now - Date.parse(entry.last_alert_at) >= REMIND_HOURS * 3600e3) {
-      sends.push({ kind: 'reminder', key: c.key, loud: false, content: alertMessage({ ...c, reminder: true, open_hours: (now - Date.parse(entry.first_seen_at)) / 3600e3 }) });
+      sends.push({ kind: 'reminder', key: c.key, loud: false, content: alertFn({ ...c, reminder: true, open_hours: (now - Date.parse(entry.first_seen_at)) / 3600e3 }) });
     }
   }
 }

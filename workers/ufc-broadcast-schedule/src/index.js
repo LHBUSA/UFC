@@ -17,7 +17,9 @@
  * timeout, single-flight lock, and the run ledger.
  *
  * Routes:
- *   GET  /health   configuration + last run + freshness, no secrets
+ *   GET  /health   configuration + last run + freshness + the broadcast health
+ *                  invariant (web/lib/broadcastHealth.ts): status GREEN/AMBER/RED,
+ *                  HTTP 503 when RED. Booleans only, never a secret value.
  *   POST /run      Authorization: Bearer <ADMIN_TOKEN>
  *                  ?dry=1 (parse and diff, write nothing)  ?force=1 (ignore cadence)
  */
@@ -25,8 +27,12 @@ import { runBroadcastPass, LOCK_ID, WORKER, TABLE } from '../../../scripts/broad
 import { CADENCE, WINDOW } from '../../../scripts/broadcast/lib/window.mjs';
 import { PARSER, EVENTS_URL } from '../../../scripts/broadcast/lib/parse.mjs';
 import { BroadcastPostgrest } from '../../../scripts/broadcast/lib/postgrest.mjs';
+/* The ONE definition of broadcast health, shared with the web app's watch
+ * surface. Pure TypeScript; esbuild strips the types at bundle time. */
+import { evaluateBroadcastHealth, rowResolver, FIGHT_WEEK_DAYS } from '../../../web/lib/broadcastHealth.ts';
+import { ufcSiteDate } from '../../../web/lib/siteClock.ts';
 
-export const VERSION = '1.0.0';
+export const VERSION = '1.1.0';
 const CRON = '*/30 * * * *';
 const USER_AGENT = 'Mozilla/5.0 (compatible; PropBetEdgeNewsBot/1.0; +https://ufc.propbetedge.ai/about)';
 const LOCK_TTL_MS = 4 * 60 * 1000;
@@ -63,6 +69,17 @@ export class BroadcastLock {
     if (url.pathname === '/state') {
       const held = await this.ctx.storage.get('holder');
       return Response.json({ held: Boolean(held), at: held?.at ?? null });
+    }
+    /* The last cron WAKE, skipped ones included. A skipped wake writes no
+     * ledger row (that is the point of the cadence gate), so without this the
+     * only proof the trigger fires at all is a pass that happened to be due. */
+    if (url.pathname === '/beat' && request.method === 'POST') {
+      const beat = await request.json().catch(() => null);
+      if (beat && typeof beat.at === 'string') await this.ctx.storage.put('beat', beat);
+      return Response.json({ ok: true });
+    }
+    if (url.pathname === '/beat') {
+      return Response.json((await this.ctx.storage.get('beat')) ?? null);
     }
     return new Response('not found', { status: 404 });
   }
@@ -110,6 +127,78 @@ function summarize(r) {
   };
 }
 
+function lockStub(env) {
+  return env.BROADCAST_LOCK.get(env.BROADCAST_LOCK.idFromName(LOCK_ID));
+}
+
+function bindingsOf(env) {
+  return {
+    supabase_url: Boolean(env.SUPABASE_URL),
+    supabase_service_role_key: Boolean(env.SUPABASE_SERVICE_ROLE_KEY),
+    admin_token: Boolean(env.ADMIN_TOKEN),
+    broadcast_lock: Boolean(env.BROADCAST_LOCK),
+  };
+}
+
+const shiftDay = (ymd, days) => {
+  const d = new Date(`${ymd}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+};
+
+/* Every input the invariant needs, read the way the pages read it. Any read
+ * failure is reported as readError, which the invariant turns RED: an
+ * unreadable schedule is never a GREEN one. */
+async function readHealthInputs(env, now) {
+  const out = { last: null, lastSuccess: null, rows: [], events: [], lastWake: null, readError: null };
+  try {
+    if (env.BROADCAST_LOCK) out.lastWake = await (await lockStub(env).fetch('https://broadcast.lock/beat')).json();
+  } catch { /* heartbeat is diagnostics only */ }
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    out.readError = 'no Supabase credentials: the schedule cannot be read or written';
+    return out;
+  }
+  try {
+    const sb = client(env);
+    const today = ufcSiteDate(now);
+    const [last, lastSuccess, rows, events] = await Promise.all([
+      sb.select('ufc_ingest_runs', `select=started_at,finished_at,status,notes&worker=eq.${WORKER}&order=started_at.desc&limit=1`),
+      sb.select('ufc_ingest_runs', `select=started_at,finished_at,status,notes&worker=eq.${WORKER}&status=in.(success,partial)&order=started_at.desc&limit=1`),
+      sb.select(TABLE, 'select=ufc_slug,event_id,match_status,event_name,event_headline,event_date,venue,city,region,country,location_raw,early_prelims_start_utc,prelims_start_utc,main_card_start_utc,broadcasts,ufc_event_url,tickets_url,source,source_url,parser,verified_at,last_changed_at&order=main_card_start_utc.asc.nullslast&limit=200'),
+      sb.select('ufc_events', `select=id,name,event_date,card_status,bouts:ufc_bouts_effective(effective_status)&event_date=gte.${shiftDay(today, -1)}&event_date=lte.${shiftDay(today, 45)}&order=event_date.asc&limit=30`),
+    ]);
+    out.last = last[0] || null;
+    out.lastSuccess = lastSuccess[0] || null;
+    out.rows = rows;
+    out.events = events.map((e) => {
+      const bouts = Array.isArray(e.bouts) ? e.bouts : null;
+      return {
+        id: e.id, name: e.name, event_date: e.event_date, card_status: e.card_status,
+        bouts_total: bouts ? bouts.length : null,
+        bouts_active: bouts ? bouts.filter((b) => b.effective_status !== 'cancelled').length : null,
+      };
+    });
+  } catch (e) {
+    out.readError = String(e?.message || e).slice(0, 160);
+  }
+  return out;
+}
+
+async function healthReport(env, now = Date.now()) {
+  const i = await readHealthInputs(env, now);
+  const health = evaluateBroadcastHealth({
+    now,
+    events: i.events,
+    resolve: rowResolver(i.rows),
+    lastRun: i.last,
+    lastSuccess: i.lastSuccess,
+    bindings: bindingsOf(env),
+    lastWake: i.lastWake,
+    readError: i.readError,
+  });
+  return { health, inputs: i };
+}
+
 async function pass(env, { write, force, trigger }) {
   return withLock(env, async () => runBroadcastPass(
     { sb: client(env), log: console },
@@ -120,13 +209,32 @@ async function pass(env, { write, force, trigger }) {
 export default {
   async scheduled(controller, env, ctx) {
     ctx.waitUntil((async () => {
+      const at = new Date().toISOString();
+      let outcome = 'error';
       try {
         const r = await pass(env, { write: true, force: false, trigger: `cron ${controller.cron}` });
+        outcome = r.status;
         /* A skipped wake is the normal case and logging it 48 times a day is
          * noise. Everything else is worth a structured line. */
         if (r.status !== 'skipped') console.log(`[${WORKER}] ${JSON.stringify(summarize(r))}`);
       } catch (e) {
         console.error(`[${WORKER}] pass failed: ${String(e?.stack || e).slice(0, 500)}`);
+      }
+      try {
+        await lockStub(env).fetch('https://broadcast.lock/beat', {
+          method: 'POST', body: JSON.stringify({ at, trigger: `cron ${controller.cron}`, outcome }),
+        });
+      } catch { /* heartbeat is diagnostics only */ }
+      /* The invariant, every wake. RED is an error line in Workers
+       * observability AND the 503 on /health that ufc-record-alerts polls. */
+      try {
+        const { health } = await healthReport(env);
+        if (health.status !== 'GREEN') {
+          const line = `[${WORKER}] HEALTH ${health.status} ${JSON.stringify({ conditions: health.conditions, event: health.canonical_next_event })}`;
+          if (health.status === 'RED') console.error(line); else console.log(line);
+        }
+      } catch (e) {
+        console.error(`[${WORKER}] HEALTH RED health check failed: ${String(e?.message || e).slice(0, 200)}`);
       }
     })());
   },
@@ -135,27 +243,21 @@ export default {
     const url = new URL(request.url);
 
     if (url.pathname === '/health') {
-      let last = null;
-      let lastSuccess = null;
-      let freshness = null;
-      try {
-        const sb = client(env);
-        last = (await sb.select('ufc_ingest_runs', `select=started_at,finished_at,status,notes&worker=eq.${WORKER}&order=started_at.desc&limit=1`))[0] || null;
-        lastSuccess = (await sb.select('ufc_ingest_runs', `select=started_at,finished_at,notes&worker=eq.${WORKER}&status=in.(success,partial)&order=started_at.desc&limit=1`))[0] || null;
-        const rows = await sb.select(TABLE, 'select=ufc_slug,event_name,main_card_start_utc,verified_at,last_changed_at&order=main_card_start_utc.asc&limit=200');
-        const nowMs = Date.now();
-        const next = rows.find((r) => r.main_card_start_utc && Date.parse(r.main_card_start_utc) + 5 * 3600e3 > nowMs) || null;
-        freshness = {
-          rows: rows.length,
-          next_event: next ? { slug: next.ufc_slug, name: next.event_name, main_card_start_utc: next.main_card_start_utc } : null,
-          verified_age_minutes: next?.verified_at ? Math.round((nowMs - Date.parse(next.verified_at)) / 60000) : null,
-        };
-      } catch (e) {
-        last = { error: String(e?.message || e).slice(0, 160) };
-      }
+      const now = Date.now();
+      const { health, inputs } = await healthReport(env, now);
+      const last = inputs.readError && !inputs.last ? { error: inputs.readError } : inputs.last;
+      const lastSuccess = inputs.lastSuccess;
+      const next = inputs.rows.find((r) => r.main_card_start_utc && Date.parse(r.main_card_start_utc) + 5 * 3600e3 > now) || null;
+      const freshness = inputs.readError ? null : {
+        rows: inputs.rows.length,
+        next_event: next ? { slug: next.ufc_slug, name: next.event_name, main_card_start_utc: next.main_card_start_utc } : null,
+        verified_age_minutes: next?.verified_at ? Math.round((now - Date.parse(next.verified_at)) / 60000) : null,
+      };
       return Response.json({
         worker: WORKER,
         version: VERSION,
+        status: health.status,
+        incident: health.incident,
         runtime: 'cloudflare-workers',
         scheduler: 'cloudflare-cron',
         github_actions: false,
@@ -164,16 +266,13 @@ export default {
         source: { url: EVENTS_URL, parser: PARSER, timeout_ms: FETCH_TIMEOUT_MS },
         cadence_minutes: CADENCE,
         window_hours: WINDOW,
-        bindings: {
-          supabase_url: Boolean(env.SUPABASE_URL),
-          supabase_service_role_key: Boolean(env.SUPABASE_SERVICE_ROLE_KEY),
-          admin_token: Boolean(env.ADMIN_TOKEN),
-          broadcast_lock: Boolean(env.BROADCAST_LOCK),
-        },
+        fight_week_days: FIGHT_WEEK_DAYS,
+        bindings: bindingsOf(env),
+        health,
         last_run: last,
         last_success: lastSuccess ? { started_at: lastSuccess.started_at, finished_at: lastSuccess.finished_at, counters: lastSuccess.notes?.counters ?? null } : null,
         freshness,
-      }, { headers: { 'cache-control': 'no-store' } });
+      }, { status: health.status === 'RED' ? 503 : 200, headers: { 'cache-control': 'no-store' } });
     }
 
     if (url.pathname === '/run' && request.method === 'POST') {

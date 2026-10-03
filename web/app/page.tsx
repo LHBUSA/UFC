@@ -25,7 +25,8 @@ import { storyMedia } from "@/lib/faces";
 import { Voices } from "@/components/Voices";
 import { ApiCta } from "@/components/ApiCta";
 import { getBroadcastForEvent } from "@/lib/broadcast";
-import { WatchStrip } from "@/components/HowToWatch";
+import { WatchStrip, WatchNotice } from "@/components/HowToWatch";
+import { selectWatchSurface } from "@/lib/broadcastHealth";
 import { getRankingMap } from "@/lib/rankings";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { buildProofRail, type ProofCell } from "@/lib/proofRail";
@@ -80,6 +81,10 @@ export default async function Home() {
   /* Verified start times and carriers for the next card, from our own table.
    * The homepage never waits on UFC.com; a failure renders no strip. */
   const broadcast = next ? await getBroadcastForEvent(next).catch(() => null) : null;
+  /* strip | pending | unavailable | finished | none (lib/broadcastHealth). In
+   * fight week a missing row never collapses the area: it renders the honest
+   * "verification unavailable" notice, and never an invented time or channel. */
+  const watchSurface = selectWatchSurface(next, broadcast, Date.now());
   const live = bouts.filter((b) => b.status !== "cancelled");
   const mainEvent = live[0] || null;
   const headline = live.slice(0, 3);
@@ -201,7 +206,7 @@ export default async function Home() {
             {/* Card and broadcast panel share ONE frame, one border and one
                 shadow, so the times read as the bottom third of the featured
                 event rather than as a tray bolted underneath it. */}
-            <div className="hero-feature">
+            <div className="hero-feature" data-watch-surface={watchSurface} data-event-date={next?.event_date ?? undefined}>
             {next ? (
               <Link href={`/events/${eventSlug(next)}`} className="poster" aria-label={`${next.name}: full card`}>
                 <div className="poster-top">
@@ -273,9 +278,14 @@ export default async function Home() {
                 the visitor's own timezone, the carrier, and a live countdown.
                 Rendered from data the page already has, so it cannot shift the
                 poster when it "loads" — there is nothing to load. */}
-            {next && broadcast && (
-              <div className="hero-watch">
+            {next && broadcast && (watchSurface === "strip" || watchSurface === "pending") && (
+              <div className="hero-watch" data-watch-surface={watchSurface}>
                 <WatchStrip b={broadcast} variant="hero" />
+              </div>
+            )}
+            {next && watchSurface === "unavailable" && (
+              <div className="hero-watch" data-watch-surface="unavailable">
+                <WatchNotice kind="unavailable" eventName={next.name} variant="hero" />
               </div>
             )}
             </div>
