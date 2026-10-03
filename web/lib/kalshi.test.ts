@@ -8,7 +8,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { getKalshiBoard, getKalshiEvent, kalshiPollMs, kalshiPollState, ufcKalshiCardHtml, ufcKalshiLineHtml, UFC_KALSHI_NOTE, KALSHI_MARKETS_BASE, KALSHI_CLOSED_POLL_MS } from "./kalshi.ts";
+import { getKalshiBoard, getKalshiEvent, kalshiPollMs, kalshiPollState, ufcKalshiCardHtml, ufcKalshiLineHtml, ufcMarketPhase, UFC_KALSHI_NOTE, KALSHI_MARKETS_BASE, KALSHI_CLOSED_POLL_MS } from "./kalshi.ts";
 import type { KalshiEntry } from "./kalshi.ts";
 
 const WEB = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -221,10 +221,11 @@ test("fight page: Kalshi card is public and separate from the Pro sportsbook Mar
   const cardLine = src.split("\n").find((l) => l.includes("<KalshiMarketCard"));
   assert.ok(cardLine, "card is mounted");
   assert.doesNotMatch(cardLine!, /access|\.pro|ProPreview/);
-  /* not nested in the access.pro ternary that wraps MarketSection */
-  const gate = src.indexOf("<MarketSection");
-  const gateEnd = src.indexOf("}", src.indexOf("ProPreview feature=\"market\"", gate));
-  assert.ok(src.indexOf("<KalshiMarketCard") > gateEnd, "Kalshi card sits after the closed Pro market expression");
+  /* not nested in the access.pro ternary that wraps MarketSection: it sits
+   * directly under the faceoff, above every Pro gate (MLB PBEcast standard) */
+  const card = src.indexOf("<KalshiMarketCard");
+  assert.ok(card > src.indexOf("<BoutStatusAlert") && card > src.indexOf('className="faceoff"'), "card is under the faceoff");
+  assert.ok(card < src.indexOf("<MarketSection") && card < src.indexOf('<div className="card mt-5">'), "card is above the event card and the Pro market gate");
   const comp = read("components/KalshiMarket.tsx");
   assert.doesNotMatch(comp, /getUfcAccess|ProPreview|access\.pro/);
   /* the sportsbook market block is untouched by this layer */
@@ -236,7 +237,7 @@ test("fight page: the market module is mounted for completed bouts too", () => {
   const src = read("app/fights/[slug]/page.tsx");
   const cardLine = src.split("\n").find((l) => l.includes("<KalshiMarketCard"))!;
   assert.doesNotMatch(cardLine, /!r\b/, "not limited to unsettled bouts");
-  assert.match(cardLine, /completed=\{Boolean\(r\)\}/);
+  assert.match(cardLine, /completed=\{Boolean\(r\)\} final=\{Boolean\(r\)\}/);
   const fetchLine = src.split("\n").find((l) => l.includes("getKalshiEvent(b.id)"))!;
   assert.doesNotMatch(fetchLine, /b\.result|kalshiAge/, "completed bouts are read");
   const ui = read("components/ui.tsx");
@@ -279,11 +280,11 @@ test("no Kalshi API host in web code", () => {
   assert.deepEqual(hits, []);
 });
 
-/* ── vendored files unchanged ── */
+/* ── vendored files unchanged (canonical client propbetedge-workers 8b73545) ── */
 const VENDORED: Record<string, string> = {
-  "kalshi-market-ui.js": "c343805e546cde66d01676c9c6c9f6f4ca746a8ba138b4b1ad0159a341f3db2a",
-  "kalshi-market-ui.css": "db0f4b1efd5209966fb627f72e217b9539876d5123edc10d80524d172da41a06",
-  "kalshi-market-client.js": "653cb0fc2673f909552453052560bfd6194e0e4d045c51b1eb73483957d4c049",
+  "kalshi-market-ui.js": "93a8f485e90633a1cd70e93ab4123c1dc2161d08b3a76e41ec3cc4a0279d74f4",
+  "kalshi-market-ui.css": "fb046ada2b2e5450207e4301c0e41a193aa599e4661843fdcdb50d45ac7191ae",
+  "kalshi-market-client.js": "211be23bb9a5b2be0a1b4ed1a1c2c1b3b2dfc4ef45a040ae13c07d28a8ae8744",
   "README.md": "a80e4ac5d8733bde8afc0c13c281242babff8b1acd083974741f677b7af5a480",
 };
 const CANONICAL = process.env.KALSHI_CLIENT_SRC || "D:/Workers/propbetedge-workers/workers/propsports-markets/client";
@@ -294,4 +295,44 @@ test("vendored Kalshi files are byte-identical to the canonical client", () => {
     const src = join(CANONICAL, name);
     if (existsSync(src)) assert.ok(mine.equals(readFileSync(src)), `${name} differs from ${src} (canonical moved: re-vendor and update the pin)`);
   }
+});
+
+/* ── MLB-standard prominence: lifecycle label + full card (8b73545) ── */
+test("lifecycle label: pre / live / fight final still trading / stale / closed / settled", () => {
+  assert.equal(ufcMarketPhase(null), null);
+  assert.deepEqual(ufcMarketPhase(entry()), ["pre", "MARKET OPEN · PRE-FIGHT"]);
+  assert.deepEqual(ufcMarketPhase({ ...entry(), event: { ...entry().event, state: "in" } }), ["live", "LIVE MARKET"]);
+  assert.deepEqual(ufcMarketPhase({ ...entry(), event: { ...entry().event, state: "in" } }, { final: true }), ["final-open", "FIGHT FINAL · MARKET STILL TRADING"]);
+  assert.deepEqual(ufcMarketPhase({ ...entry({ freshness: "stale" } as never), event: { ...entry().event, state: "in" } }), ["stale", "MARKET OPEN · LAST QUOTE STALE"], "a stale quote is never labelled live");
+  assert.deepEqual(ufcMarketPhase({ ...entry(), market: { lifecycle: "CLOSED" } }, { final: true }), ["closed", "MARKET CLOSED · AWAITING SETTLEMENT"]);
+  assert.deepEqual(ufcMarketPhase({ ...entry(), kalshi: null, market_history: { lifecycle: "SETTLED" } }), ["settled", "MARKET SETTLED"]);
+});
+
+test("fight-page module: full Market Pulse card (not compact, not a strip) with label, link and UFC note", () => {
+  const html = ufcKalshiCardHtml(entry());
+  assert.match(html, /^<div class="ufc-mkt" data-phase="pre"><div class="ufc-mkt-phase">/);
+  assert.match(html, /MARKET OPEN · PRE-FIGHT/);
+  assert.match(html, /Market Pulse/);
+  assert.match(html, /Updated 36s ago/);
+  assert.match(html, /<dt>Bid<\/dt>/);
+  assert.match(html, /View market on Kalshi ↗/);
+  assert.doesNotMatch(html, /kx--compact|kx-strip/);
+  for (const a of html.match(/<a [^>]*>/g) || []) assert.match(a, /rel="noopener noreferrer sponsored"/);
+  assert.ok(html.endsWith(`<p class="ufc-kx__rule">${UFC_KALSHI_NOTE}</p></div>`));
+  const fin = ufcKalshiCardHtml(entry(), "fight-page", { final: true });
+  assert.match(fin, /data-phase="final-open"/);
+  assert.match(fin, /FIGHT FINAL · MARKET STILL TRADING/);
+});
+
+test("shared client 8b73545 loaders keep completed entries (the product-side workaround is gone)", async () => {
+  const { createKalshiClient } = await import("../vendor/kalshi/kalshi-market-client.js");
+  const done = { event: { sport: "ufc", canonical_event_id: BOUT, state: "post" }, kalshi: null, market: { lifecycle: "SETTLED" }, market_history: { lifecycle: "SETTLED" } };
+  const fetchImpl = (async (url: string) => new Response(JSON.stringify(url.includes("/event/") ? { enabled: true, event: done } : { enabled: true, events: [done] }))) as never;
+  const c = createKalshiClient({ base: KALSHI_MARKETS_BASE, sport: "ufc", fetchImpl });
+  assert.equal((await c.loadBoard()).get(BOUT)?.market?.lifecycle, "SETTLED");
+  assert.equal((await c.loadEvent(BOUT))?.market_history?.lifecycle, "SETTLED");
+  const comp = read("components/KalshiMarket.tsx");
+  assert.doesNotMatch(comp, /getKalshiEvent|getKalshiBoard|BROWSER_WAIT_MS/, "browser reads use the shared client loaders");
+  assert.match(comp, /client\(\)\.loadEvent\(boutId, \{ force: true \}\)/);
+  assert.match(comp, /client\(\)\.loadBoard\(\)/);
 });

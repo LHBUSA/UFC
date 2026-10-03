@@ -11,7 +11,7 @@
  * the card always carries UFC_KALSHI_NOTE beside it.
  *
  * No `server-only` / `@/` imports: node's test runner loads this file directly. */
-import { kalshiLine, marketCloseLine, marketModule } from "../vendor/kalshi/kalshi-market-ui.js";
+import { kalshiCard, kalshiLine, marketCloseLine, marketHistoryCard } from "../vendor/kalshi/kalshi-market-ui.js";
 import type { KalshiEntry } from "../vendor/kalshi/kalshi-market-ui.js";
 
 export type { KalshiEntry };
@@ -94,13 +94,38 @@ export function kalshiPollMs(state: ReturnType<typeof kalshiPollState>, sharedPo
   return sharedPollMs(state);
 }
 
-/** Fight-page module: the live card while the market trades, "How the market
- * closed" once it has closed or settled, always with the UFC draw / no-contest
- * note (the fight-winner contract resolves 50/50 on either). "" without an entry. */
-export function ufcKalshiCardHtml(entry: KalshiEntry | null | undefined, placement = "fight-page"): string {
-  const card = entry ? marketModule(entry, { placement }) : "";
-  if (!card) return "";
-  return `${card}<p class="ufc-kx__rule">${UFC_KALSHI_NOTE}</p>`;
+/** Lifecycle label for the fight-page module (the MLB PBEcast standard):
+ * [phase key, text], or null without an entry. The venue's market lifecycle
+ * decides first (a finished fight is not a settled market); then the bout:
+ * a result on file -> FIGHT FINAL while the market still trades; the API's
+ * live bout state -> LIVE MARKET; otherwise pre-fight. A stale quote is never
+ * labelled live. */
+export function ufcMarketPhase(entry: KalshiEntry | null | undefined, { final = false }: { final?: boolean } = {}): [string, string] | null {
+  if (!entry) return null;
+  const lc = marketLifecycle(entry);
+  if (lc === "SETTLED") return ["settled", "MARKET SETTLED"];
+  if (lc === "CLOSED") return ["closed", "MARKET CLOSED · AWAITING SETTLEMENT"];
+  if (final) return ["final-open", "FIGHT FINAL · MARKET STILL TRADING"];
+  if (entry.kalshi?.freshness === "stale") return ["stale", "MARKET OPEN · LAST QUOTE STALE"];
+  const s = entry.event?.state;
+  if (s === "in" || s === "live") return ["live", "LIVE MARKET"];
+  return ["pre", "MARKET OPEN · PRE-FIGHT"];
+}
+
+/** Fight-page module, directly under the faceoff for the whole bout lifecycle:
+ * the full Market Pulse card (Mid-market, Updated Ns ago, movement, bid / ask,
+ * View market on Kalshi) while the market trades, "How the market closed" in
+ * the SAME place once it has closed or settled, always with the lifecycle
+ * label and the UFC draw / no-contest note (the fight-winner contract resolves
+ * 50/50 on either). "" without an entry or without anything to show. */
+export function ufcKalshiCardHtml(entry: KalshiEntry | null | undefined, placement = "fight-page", { final = false }: { final?: boolean } = {}): string {
+  const phase = ufcMarketPhase(entry, { final });
+  if (!entry || !phase) return "";
+  const body = closedOrSettled(entry)
+    ? marketHistoryCard(entry, { placement }) || kalshiCard(entry, { placement })
+    : kalshiCard(entry, { placement });
+  if (!body) return "";
+  return `<div class="ufc-mkt" data-phase="${phase[0]}"><div class="ufc-mkt-phase"><span class="ufc-mkt-dot" aria-hidden="true"></span>${phase[1]}</div>${body}<p class="ufc-kx__rule">${UFC_KALSHI_NOTE}</p></div>`;
 }
 
 /** Restrained compact line for a bout row: live prices while trading, the

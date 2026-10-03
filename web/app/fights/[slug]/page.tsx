@@ -276,6 +276,16 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
 
       <BoutStatusAlert events={boutStatus} settled={Boolean(r)} />
 
+      {/* Market Pulse, directly under the faceoff for the whole bout lifecycle
+          (MLB PBEcast standard): MARKET OPEN · PRE-FIGHT / LIVE MARKET / FIGHT
+          FINAL · MARKET STILL TRADING with the full card, then "How the market
+          closed" in the same place once the market closes or settles. PUBLIC:
+          deliberately outside (and above) the Pro sportsbook Market gate below.
+          Mounted for every bout that is not cancelled, completed ones included.
+          Renders nothing without an entry; a completed bout with none is
+          checked once. */}
+      {(kalshi || b.status !== "cancelled") && <KalshiMarketCard boutId={b.id} initial={kalshi} completed={Boolean(r)} final={Boolean(r)} />}
+
       {!r && <BoutWeighIns weighIns={boutWeighIns} cornerA={{ id: b.fighter_a.id, name: b.fighter_a.name }} cornerB={{ id: b.fighter_b.id, name: b.fighter_b.name }} ranks={ranks} division={boutDivision} />}
 
       <div className="card mt-5">
@@ -355,13 +365,6 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
       {access.pro
         ? <MarketSection market={market} state={marketState} nameA={b.fighter_a.name} nameB={b.fighter_b.name} />
         : !r && b.status !== "cancelled" && <section className="segment" id="market"><h3>Market</h3><ProPreview feature="market" access={access} returnPath={returnPath} /></section>}
-
-      {/* Public Kalshi prediction-market card, deliberately outside the Pro
-          gate above. Mounted for every bout that is not cancelled, completed
-          ones included: the live card while the market trades, "How the market
-          closed" once it closes or settles (no release needed). Renders nothing
-          without an entry; a completed bout with none is checked once. */}
-      {(kalshi || b.status !== "cancelled") && <KalshiMarketCard boutId={b.id} initial={kalshi} completed={Boolean(r)} />}
 
       {/* Two datasets, two sections, never blurred: ESPN publishes verified
           whole-fight totals with no round dimension, UFC Stats publishes the

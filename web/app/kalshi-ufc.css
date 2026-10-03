@@ -5,6 +5,19 @@
    apart from the gold PBE model and the Pro sportsbook Market section. */
 .ufc-kx .kx { border-width: 1px; border-style: solid; border-radius: var(--r-md); padding: var(--s-4); }
 .ufc-kx .kx__note { max-width: 72ch; }
+
+/* Fight page: Market Pulse directly under the faceoff (MLB PBEcast standard), one
+   module for the whole bout lifecycle with its label. Server-rendered in the first
+   paint; price updates rewrite text inside a fixed structure (no layout shift). */
+.ufc-kx--top { margin-top: var(--s-4); min-width: 0; }
+.ufc-mkt { min-width: 0; }
+.ufc-mkt-phase { display: flex; align-items: center; gap: 6px; margin: 0 0 6px 2px; font: 800 10.5px/1 var(--pbe-font-data); letter-spacing: .14em; color: #7fb8ff; }
+.ufc-mkt-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+.ufc-mkt[data-phase="live"] .ufc-mkt-phase { color: var(--pbe-live); }
+.ufc-mkt[data-phase="live"] .ufc-mkt-dot { animation: ufc-mkt-blink 1.6s ease-in-out infinite; }
+.ufc-mkt[data-phase="closed"] .ufc-mkt-phase, .ufc-mkt[data-phase="settled"] .ufc-mkt-phase, .ufc-mkt[data-phase="final-open"] .ufc-mkt-phase, .ufc-mkt[data-phase="stale"] .ufc-mkt-phase { color: var(--pbe-dim); }
+@keyframes ufc-mkt-blink { 50% { opacity: .25 } }
+@media (prefers-reduced-motion: reduce) { .ufc-mkt-dot { animation: none !important; } }
 .ufc-kx .ufc-kx__rule { margin: var(--s-2) 0 0; font: 500 var(--fs-sm)/1.45 var(--pbe-font-data); color: var(--pbe-dim); }
 
 /* Event-card bout row: the line sits on its own full-width row so long fighter

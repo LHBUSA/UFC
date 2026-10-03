@@ -6,26 +6,21 @@
  * this component only places them and keeps them fresh. The browser polls our
  * propsports-markets Worker (never Kalshi): live 20 s, pregame 45 s, idle 2 min,
  * closed 5 min until settled, settled never. Once the market closes or settles the
- * card becomes "How the market closed" (shared marketModule) with no release.
+ * card becomes "How the market closed" (shared marketHistoryCard) in the same place.
  * No entry -> nothing rendered; a single empty or failed refresh keeps the last good card. */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { __resetKalshiFlashes, wireKalshi } from "@/vendor/kalshi/kalshi-market-ui.js";
 import { createKalshiClient, type KalshiClient } from "@/vendor/kalshi/kalshi-market-client.js";
-import { KALSHI_MARKETS_BASE, KALSHI_SPORT, getKalshiBoard, getKalshiEvent, kalshiPollMs, kalshiPollState, ufcKalshiCardHtml, ufcKalshiLineHtml, type KalshiEntry } from "@/lib/kalshi";
+import { KALSHI_MARKETS_BASE, KALSHI_SPORT, kalshiPollMs, kalshiPollState, ufcKalshiCardHtml, ufcKalshiLineHtml, type KalshiEntry } from "@/lib/kalshi";
 
+/* One shared client (canonical, vendored unchanged at 8b73545) for every
+ * browser read: its loaders keep completed entries (closed / settled market
+ * with history), one in-flight request per resource, and a 15 s board cache
+ * shared by every bout row. */
 let shared: KalshiClient | null = null;
 const client = () => (shared ??= createKalshiClient({ base: KALSHI_MARKETS_BASE, sport: KALSHI_SPORT }));
-
-/* Browser reads go through lib/kalshi (our Worker, never Kalshi) rather than
- * the shared client's loaders, because those drop entries whose live block is
- * gone — a closed or settled market keeps its history and must stay on the page.
- * One board request is shared by every bout row (15 s, like the shared client). */
-const BROWSER_WAIT_MS = 8000;
-let board: { at: number; value: Promise<Record<string, KalshiEntry>> } | null = null;
-const loadBoard = () => {
-  if (!board || Date.now() - board.at > 15_000) board = { at: Date.now(), value: getKalshiBoard({ waitMs: BROWSER_WAIT_MS }) };
-  return board.value;
-};
+const loadEvent = (boutId: string) => client().loadEvent(boutId, { force: true });
+const loadBoard = () => client().loadBoard();
 
 /* The module remembers the last price each placement showed (for its change
  * flash). On the server that memory would outlive the request and make the
@@ -69,17 +64,18 @@ function usePoll(entry: KalshiEntry | null, load: () => Promise<KalshiEntry | nu
   }, [state]);
 }
 
-/** Full card for one bout. `initial` comes from the server so it is in the first paint. */
-export function KalshiMarketCard({ boutId, initial, completed = false }: { boutId: string; initial: KalshiEntry | null; completed?: boolean }) {
+/** Full card for one bout, directly under the faceoff with its lifecycle label.
+ * `initial` comes from the server so it is in the first paint. `final`: the bout
+ * has a result (the label says FIGHT FINAL while the market still trades). */
+export function KalshiMarketCard({ boutId, initial, completed = false, final = false }: { boutId: string; initial: KalshiEntry | null; completed?: boolean; final?: boolean }) {
   const [entry, setEntry] = useState<KalshiEntry | null>(initial);
   const ref = useRef<HTMLDivElement>(null);
-  usePoll(entry, () => getKalshiEvent(boutId, { waitMs: BROWSER_WAIT_MS }), setEntry, { once: completed });
-  const html = useMemo(() => serverSafe(() => ufcKalshiCardHtml(entry, "fight-page")), [entry]);
+  usePoll(entry, () => loadEvent(boutId), setEntry, { once: completed });
+  const html = useMemo(() => serverSafe(() => ufcKalshiCardHtml(entry, "fight-page", { final })), [entry, final]);
   useEffect(() => { if (html && ref.current) wireKalshi(ref.current); }, [html]);
   if (!html) return null;
   return (
-    <section className="segment ufc-kx" id="kalshi" aria-label="Kalshi prediction market">
-      <h3>Prediction market <small>Kalshi · public</small></h3>
+    <section className="ufc-kx ufc-kx--top" id="kalshi" aria-label="Kalshi prediction market">
       <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />
     </section>
   );
@@ -91,7 +87,7 @@ export function KalshiMarketCard({ boutId, initial, completed = false }: { boutI
 export function KalshiBoutLine({ boutId, initial, result = false }: { boutId: string; initial: KalshiEntry | null; result?: boolean }) {
   const [entry, setEntry] = useState<KalshiEntry | null>(initial);
   const ref = useRef<HTMLDivElement>(null);
-  usePoll(entry, async () => (await loadBoard())[boutId] ?? null, setEntry);
+  usePoll(entry, async () => (await loadBoard()).get(boutId) ?? null, setEntry);
   const html = useMemo(() => ufcKalshiLineHtml(entry, { result }), [entry, result]);
   useEffect(() => { if (html && ref.current) wireKalshi(ref.current); }, [html]);
   if (!html) return null;
