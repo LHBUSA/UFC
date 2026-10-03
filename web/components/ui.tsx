@@ -2,6 +2,8 @@ import Link from "next/link";
 import { MarketInline } from "@/components/Market";
 import type { BoutMarket, MarketState } from "@/lib/market";
 import { marketStateFor } from "@/lib/market";
+import { KalshiBoutLine } from "@/components/KalshiMarket";
+import type { KalshiEntry } from "@/lib/kalshi";
 import type { Article, Bout, Event, Fighter, PortraitSet } from "@/lib/db";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
 import { cardPositionLabel, daysUntil, eventBrand, eventHeadline, eventStatusLabel, fmtDate, fmtHeight, fmtReach, fmtRecord, fmtTime, initials, locationLine, METHOD_LABEL, METHOD_SHORT, weightClassLabel, age, stanceLabel, cityLine, winnerOf } from "@/lib/format";
@@ -170,7 +172,7 @@ export function EventRow({ e, main, bouts }: { e: Event; main?: Bout | null; bou
 }
 
 /* ---- bouts ------------------------------------------------------------- */
-export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState, ranks }: { b: Bout; e: Event; imgs?: Portraits; isMain?: boolean; roundCoverage?: { rounds: number; bothCorners: boolean } | null; market?: BoutMarket; marketState?: MarketState; ranks?: Ranks }) {
+export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState, ranks, kalshi }: { b: Bout; e: Event; imgs?: Portraits; isMain?: boolean; roundCoverage?: { rounds: number; bothCorners: boolean } | null; market?: BoutMarket; marketState?: MarketState; ranks?: Ranks; kalshi?: KalshiEntry | null }) {
   const r = b.result;
   /* The bout's own division decides the badge, so a champion fighting up is
    * not labelled champion in a fight that is not for that belt. */
@@ -210,10 +212,14 @@ export function BoutRow({ b, e, imgs, isMain, roundCoverage, market, marketState
           <div className="r">{fmtRecord(b.fighter_b)}{b.fighter_b.nickname ? <> · <em>{b.fighter_b.nickname}</em></> : null}</div>
         </div>
       </div>
+      {/* Public Kalshi prediction-market line (not the Pro sportsbook market):
+          its own full-width row so long fighter names never squeeze the corners.
+          Rendered only when the server board already had an entry for this bout. */}
+      {kalshi && !r && !off ? <KalshiBoutLine boutId={b.id} initial={kalshi} /> : null}
     </Link>
   );
 }
-export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolved, ranks }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }>; markets?: Map<string, BoutMarket>; unresolved?: Set<string>; ranks?: Ranks }) {
+export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolved, ranks, kalshi }: { bouts: Bout[]; e: Event; imgs?: Portraits; roundCoverage?: Map<string, { rounds: number; bothCorners: boolean }>; markets?: Map<string, BoutMarket>; unresolved?: Set<string>; ranks?: Ranks; kalshi?: Record<string, KalshiEntry> }) {
   const order = ["main", "prelim", "early", null] as const;
   /* A bout that came off the card (stored status, or card truth: lib/cardTruth.ts) is not a row of the card.
    * It is not dropped either: it gets its own segment, with the reason the sources gave. */
@@ -230,7 +236,7 @@ export function CardSegments({ bouts, e, imgs, roundCoverage, markets, unresolve
         <section className="segment" key={String(g.p)}>
           <h3>{g.p ? cardPositionLabel(g.p) : e.card_status === "complete" ? "Results" : "Announced bouts"} <small>{g.rows.length} bouts</small></h3>
           <div className="bouts">
-            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} roundCoverage={roundCoverage?.get(b.id) || null} market={markets?.get(b.id)} marketState={markets ? marketStateFor(markets.get(b.id), { eventDate: e.event_date, hasResult: Boolean(b.result), unresolved: unresolved?.has(b.id) }) : undefined} ranks={ranks} />)}
+            {g.rows.map((b) => <BoutRow key={b.id} b={b} e={e} imgs={imgs} isMain={b.id === mainId} roundCoverage={roundCoverage?.get(b.id) || null} market={markets?.get(b.id)} marketState={markets ? marketStateFor(markets.get(b.id), { eventDate: e.event_date, hasResult: Boolean(b.result), unresolved: unresolved?.has(b.id) }) : undefined} ranks={ranks} kalshi={kalshi?.[b.id] ?? null} />)}
           </div>
         </section>
       ))}

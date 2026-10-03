@@ -1,0 +1,17 @@
+/* UFC placement of the shared Kalshi component (web/vendor/kalshi/kalshi-market-ui.css is
+   vendored unchanged). The shared .kx block borrows border-colour and background but
+   expects its host to supply the card frame, which other products give via their own
+   card class; the UFC frame is supplied here. Public prediction-market data, styled
+   apart from the gold PBE model and the Pro sportsbook Market section. */
+.ufc-kx .kx { border-width: 1px; border-style: solid; border-radius: var(--r-md); padding: var(--s-4); }
+.ufc-kx .kx__note { max-width: 72ch; }
+.ufc-kx .ufc-kx__rule { margin: var(--s-2) 0 0; font: 500 var(--fs-sm)/1.45 var(--pbe-font-data); color: var(--pbe-dim); }
+
+/* Event-card bout row: the line sits on its own full-width row so long fighter
+   names never squeeze the corners. */
+.bout .ufc-kx-line { grid-column: 1 / -1; display: flex; justify-content: center; min-width: 0; }
+.bout .ufc-kx-line .kx-line { flex-wrap: wrap; justify-content: center; text-align: center; max-width: 100%; }
+@media (max-width: 680px) {
+  .bout .ufc-kx-line { justify-content: flex-start; padding-left: 58px; }
+  .bout .ufc-kx-line .kx-line { justify-content: flex-start; text-align: left; }
+}

@@ -41,7 +41,7 @@ function Section({ id, title, children }: { id: string; title: string; children:
 }
 
 export default function MethodologyPage() {
-  const updated = "2026-09-10";
+  const updated = "2026-10-03";
   return (
     <div className="wrap page">
       <Breadcrumbs items={[{ name: "Editorial & Data Methodology" }]} />
@@ -93,6 +93,7 @@ export default function MethodologyPage() {
             <li><strong>Rankings</strong> — divisional and pound-for-pound standing, with movement.</li>
             <li><strong>Fight DNA</strong> — derived per-fighter metrics, described below.</li>
             <li><strong>Market data</strong> — sportsbook prices we recorded, with the time we recorded them.</li>
+            <li><strong>Prediction-market prices</strong> — Kalshi contract prices, described below.</li>
             <li><strong>Official video</strong> — clips published by the UFC&rsquo;s own channels.</li>
           </ul>
           <p>
@@ -158,6 +159,32 @@ export default function MethodologyPage() {
             the bookmaker&rsquo;s margin — which is why the figures across both fighters add up to more than 100%. We
             show the underlying price alongside it. If we have no verified price for a bout, we show no odds at all
             rather than an estimate.
+          </p>
+        </Section>
+
+        <Section id="kalshi" title="Kalshi prediction-market prices">
+          <p>
+            Fight and event pages show prices from{" "}
+            <a href="https://kalshi.com" target="_blank" rel="noopener noreferrer sponsored">Kalshi</a>, a
+            prediction market. These are <strong>traded contract prices</strong>: they are not sportsbook odds and they
+            are not a PropBetEdge model or prediction. They are shown to every reader, and every price links to that
+            bout&rsquo;s market on Kalshi.
+          </p>
+          <p>
+            Each YES contract pays $1 if that fighter wins. <strong>Mid-market</strong> is the midpoint of the best YES
+            bid and the best YES ask, and we show it only when both exist and the spread is 10¢ or less; otherwise we
+            show the bid and ask themselves. Bid, ask, last trade and Mid-market are different numbers and are labelled
+            as such.
+          </p>
+          <p>
+            Movement is drawn only from prices we observed and stored ourselves — every point on a sparkline is a real
+            read, nothing is interpolated, and a change is only ever measured between two observed Mid-markets. Each card
+            says how old its latest read is, and a market we have not been able to read recently is labelled stale or
+            removed.
+          </p>
+          <p>
+            <strong>Draws and no contests:</strong> Kalshi&rsquo;s UFC fight markets resolve a draw or no contest 50/50,
+            so each contract on either fighter pays 50¢.
           </p>
         </Section>
 

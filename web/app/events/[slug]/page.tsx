@@ -34,6 +34,7 @@ import { CardIntelligence } from "@/components/CardIntelligence";
 import { WhereTheyWent } from "@/components/Dwcs";
 import { contenderIdentity } from "@/lib/contenderIdentity";
 import { eventResultsDescription } from "@/lib/seo";
+import { getKalshiBoard } from "@/lib/kalshi";
 
 export const revalidate = 300;
 
@@ -128,6 +129,10 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const unresolved = done || !providerLive
     ? new Set<string>()
     : await unresolvedBouts(bouts.map((b) => ({ id: b.id, a: b.fighter_a.name, b: b.fighter_b.name })), e.event_date);
+  /* Kalshi prediction-market board: PUBLIC data, read for every reader (not
+   * gated on access.pro like the sportsbook market above), one request for the
+   * whole card, bounded wait. A finished card has no open market to show. */
+  const kalshiBoard = done || !live.length ? {} : await getKalshiBoard();
   const [briefs, rankings, ingest] = await Promise.all([!done && live.length > 0 ? buildDeskBriefs(e, live, 1, { dna: access.pro }).catch(() => []) : Promise.resolve([]), getRankings().catch(() => null), getIngestFreshness().catch(() => null)]);
   const nearby = done || historical ? await getRecentEvents(4) : await getUpcomingEvents(4);
   const isCurrent = !done && nearby[0]?.id === e.id;
@@ -187,7 +192,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
       {bouts.length ? (
         <>
-          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={access.pro && providerLive && !done ? marketMap : undefined} unresolved={unresolved} ranks={ranks} />
+          <CardSegments bouts={bouts} e={e} imgs={imgs} roundCoverage={roundCoverage} markets={access.pro && providerLive && !done ? marketMap : undefined} unresolved={unresolved} ranks={ranks} kalshi={kalshiBoard} />
           {!access.pro && !done && <ProPreview feature="market" access={access} returnPath={returnPath} compact />}
           {done && <CardIntelligence bouts={live} e={e} totals={cardTotals} />}
           {dwcs && dwcsGraph && <WhereTheyWent alumni={dwcsGraph.alumni} imgs={imgs} ranks={ranks} eventId={e.id} />}
