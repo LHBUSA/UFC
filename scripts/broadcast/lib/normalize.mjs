@@ -142,10 +142,28 @@ export function fingerprint(rec) {
   return sha256(JSON.stringify(comparableOf(rec)));
 }
 
+/* Postgres hands stored values back in its own spelling: timestamptz as
+ * "2026-10-04T00:00:00+00:00" where the parser wrote "...T00:00:00.000Z", and
+ * jsonb with its keys re-ordered. Comparing those spellings made EVERY pass
+ * report every row as changed (48 change rows per pass, last_changed_at moving
+ * every 30 minutes; first seen on the 2026-10-03 cron proof). Compare the
+ * instant and the key-sorted value instead. */
+const ISO_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})$/;
+function stable(v) {
+  if (Array.isArray(v)) return v.map(stable);
+  if (v && typeof v === 'object') return Object.fromEntries(Object.keys(v).sort().map((k) => [k, stable(v[k])]));
+  return v;
+}
 function asComparableString(v) {
   if (v == null) return null;
-  if (typeof v === 'string') return v;
-  return JSON.stringify(v);
+  if (typeof v === 'string') {
+    if (ISO_INSTANT.test(v)) {
+      const t = Date.parse(v);
+      if (Number.isFinite(t)) return new Date(t).toISOString();
+    }
+    return v;
+  }
+  return JSON.stringify(stable(v));
 }
 
 /**

@@ -147,3 +147,19 @@ test('no candidate on the date leaves the row unmatched rather than guessing the
   assert.equal(m.match_status, 'unmatched');
   assert.equal(m.event_id, null);
 });
+
+test('diffEvent ignores Postgres spelling: timestamptz offsets and jsonb key order', () => {
+  const rec = {
+    event_name: 'UFC Fight Night: A vs B', main_card_start_utc: '2026-11-15T00:00:00.000Z', prelims_start_utc: '2026-11-14T21:00:00Z',
+    broadcasts: [{ provider: 'Paramount+', region: 'US', type: 'streaming', watch_url: 'https://example.test/p', segments: ['prelims', 'main_card'] }],
+  };
+  const stored = {
+    event_name: 'UFC Fight Night: A vs B', main_card_start_utc: '2026-11-15T00:00:00+00:00', prelims_start_utc: '2026-11-14T21:00:00+00:00',
+    broadcasts: [{ segments: ['prelims', 'main_card'], type: 'streaming', region: 'US', provider: 'Paramount+', watch_url: 'https://example.test/p' }],
+  };
+  assert.deepEqual(diffEvent(stored, rec), []);
+  /* A real move is still a change. */
+  assert.equal(diffEvent({ ...stored, main_card_start_utc: '2026-11-15T01:00:00+00:00' }, rec).length, 1);
+  /* So is a different carrier. */
+  assert.equal(diffEvent({ ...stored, broadcasts: [{ ...stored.broadcasts[0], provider: 'RMC Sport' }] }, rec).length, 1);
+});

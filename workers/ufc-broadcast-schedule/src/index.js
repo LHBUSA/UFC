@@ -32,11 +32,17 @@ import { BroadcastPostgrest } from '../../../scripts/broadcast/lib/postgrest.mjs
 import { evaluateBroadcastHealth, rowResolver, FIGHT_WEEK_DAYS } from '../../../web/lib/broadcastHealth.ts';
 import { ufcSiteDate } from '../../../web/lib/siteClock.ts';
 
-export const VERSION = '1.1.0';
+export const VERSION = '1.1.1';
 const CRON = '*/30 * * * *';
 const USER_AGENT = 'Mozilla/5.0 (compatible; PropBetEdgeNewsBot/1.0; +https://ufc.propbetedge.ai/about)';
 const LOCK_TTL_MS = 4 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 15000;
+/* UFC.com localises each card's carriers by the requester's region (Vary:
+ * Cookie; STYXKEY_region). A Cron Trigger runs in whatever Cloudflare colo
+ * picks it up, so without this pin the 2026-10-03 22:00 UTC pass ran from a
+ * French colo and overwrote every US carrier with RMC Sport. The product is
+ * a US How to Watch: always ask for the US listing. */
+export const UFC_REGION_COOKIE = 'STYXKEY_region=USA.US.en.Default';
 
 /* --------------------------------------------------------------- lock (DO) */
 
@@ -108,7 +114,7 @@ function client(env) {
  * crafted request. */
 function fetchImpl(url, { timeoutMs = FETCH_TIMEOUT_MS } = {}) {
   return fetch(url, {
-    headers: { 'user-agent': USER_AGENT, accept: 'text/html,application/xhtml+xml' },
+    headers: { 'user-agent': USER_AGENT, accept: 'text/html,application/xhtml+xml', 'accept-language': 'en-US,en;q=0.8', cookie: UFC_REGION_COOKIE },
     signal: AbortSignal.timeout(timeoutMs),
     redirect: 'follow',
     cf: { cacheTtl: 0, cacheEverything: false },

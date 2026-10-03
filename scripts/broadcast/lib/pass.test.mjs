@@ -383,3 +383,10 @@ test('the fetch is given a timeout on every call', async () => {
   assert.ok(calls.length > 0);
   for (const c of calls) assert.ok(Number.isFinite(c.timeoutMs) && c.timeoutMs > 0, `no timeout on ${c.url}`);
 });
+
+test('the Worker always requests the US UFC.com listing (carriers are geo-localised by colo)', async () => {
+  const { readFileSync } = await import('node:fs');
+  const src = readFileSync(new URL('../../../workers/ufc-broadcast-schedule/src/index.js', import.meta.url), 'utf8');
+  assert.match(src, /UFC_REGION_COOKIE = 'STYXKEY_region=USA\.US\.en\.Default'/);
+  assert.match(src, /cookie: UFC_REGION_COOKIE/);
+});
