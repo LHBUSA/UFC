@@ -135,7 +135,7 @@ export default async function NewsPage({ searchParams }: { searchParams: Promise
               datePublished: a.published_at || undefined,
               dateModified: a.updated_at,
               author: { "@id": `${SITE.url}/#desk` },
-              publisher: { "@id": `${SITE.parent}/#org` },
+              publisher: { "@id": `${SITE.parent}/#organization` },
             },
           })),
         },

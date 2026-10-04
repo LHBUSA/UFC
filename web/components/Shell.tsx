@@ -4,7 +4,7 @@ import { MobileNav } from "./MobileNav";
 import { Logo, Mark } from "./Brand";
 import { StoreCartButton } from "./store/StoreCartButton";
 import { SITE } from "@/lib/site";
-import { CURRENT_SPORT, NETWORK } from "@/lib/network";
+import { CURRENT_SPORT, NETWORK, NETWORK_PRODUCTS } from "@/lib/network";
 import { ALL_ACCESS_URL } from "@/lib/pbe-membership.js";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
@@ -130,6 +130,10 @@ export function Footer() {
           {NETWORK.sports.map((s) => s.key === CURRENT_SPORT
             ? <Link key={s.key} href={s.href} className="here"><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></Link>
             : <a key={s.key} href={s.href}><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></a>)}
+        </nav>
+        <nav className="net-intel" aria-label="PropBetEdge intelligence">
+          <span className="net-intel-k">Intelligence</span>
+          {NETWORK_PRODUCTS.map((p) => <a key={p.key} href={p.href}><span>{p.name}</span><small>{p.blurb}</small></a>)}
         </nav>
         <p className="disclaimer">
           PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, Paramount, or any sportsbook. Links labeled Official UFC go directly to UFC-owned destinations so readers can verify the official record, watch licensed programming and shop official merchandise.{/* source-brand:allow (legal non-affiliation disclaimer) */}

@@ -27,7 +27,7 @@ export default function AboutPage() {
         <h2 id="play">Responsible play</h2>
         <p>Nothing on this site is betting advice. Please gamble responsibly and only where it is legal for you to do so.</p>
       </div>
-      <JsonLd data={{ "@context": "https://schema.org", "@type": "AboutPage", name: "About PropBetEdge UFC", url: `${SITE.url}/about`, isPartOf: { "@id": `${SITE.url}/#site` }, about: { "@id": `${SITE.parent}/#org` } }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "AboutPage", name: "About PropBetEdge UFC", url: `${SITE.url}/about`, isPartOf: { "@id": `${SITE.url}/#site` }, about: { "@id": `${SITE.parent}/#organization` } }} />
     </div>
   );
 }

@@ -103,7 +103,7 @@ const ORG = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": `${SITE.parent}/#org`,
+      "@id": `${SITE.parent}/#organization`,
       name: "PropBetEdge",
       legalName: SITE.publisher,
       url: SITE.parent,
@@ -116,7 +116,7 @@ const ORG = {
       "@id": `${SITE.url}/#desk`,
       name: SITE.desk,
       url: SITE.url,
-      parentOrganization: { "@id": `${SITE.parent}/#org` },
+      parentOrganization: { "@id": `${SITE.parent}/#organization` },
       logo: imageObject(ownedImage({ url: `${SITE.url}${SITE.brand.logoWide}`, width: 600, height: 160, caption: SITE.desk })),
       ethicsPolicy: `${SITE.url}/about`,
       correctionsPolicy: `${SITE.url}/about#corrections`,

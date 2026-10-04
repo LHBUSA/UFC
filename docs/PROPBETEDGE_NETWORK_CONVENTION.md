@@ -9,9 +9,18 @@ behaviour, canonicals, over-linking rules still apply).
 Reference code: `web/lib/network.ts` (registry), `web/components/Shell.tsx`
 (footer), `web/lib/site.ts` NAV (More-menu group).
 
+**Family registry (owner decision 2026-10-03).** The canonical PropBetEdge
+family list lives in LHBUSA/propbetedge-workers `shared/network/pbe-network.js`
+with its generated mirror `shared/network/family.json`. This repo vendors that
+mirror at `web/lib/family.json` (never hand-edit; re-copy it when the family
+changes) and `web/lib/network.test.ts` (`npm run test:network`) fails if
+`web/lib/network.ts` drifts from it: sports set, order and URLs, the
+Predictions URL, and the network URLs. Add a destination by updating the
+family registry first, then re-vendoring and extending `network.ts`.
+
 ## 1. Footer
 
-Two network blocks. No more.
+Three network blocks (PropBetEdge column, Sports rail, Intelligence row). No more.
 
 **PropBetEdge** column
 
@@ -21,10 +30,21 @@ Two network blocks. No more.
 | Store       | the store, in this sport's collection context (§3)     |
 | Discord     | `PROPBETEDGE_DISCORD_URL` = `https://discord.gg/kb5zCTHbME` (§5) |
 
-**Sports** rail — one card per sport, in this order: MLB, NFL, UFC, NHL, NBA.
-The current product is styled `here`. A sport appears only while it has a
-public destination; if a product goes dark, remove the entry, never point it
-at a placeholder.
+**Sports** rail — one card per sport, in family order: MLB, NFL, NBA, WNBA,
+NHL, UFC, Tennis, Soccer, Golf, F1 (F1 Intelligence). The current product is
+styled `here`. A sport appears only while it has a public destination; if a
+product goes dark, remove the entry, never point it at a placeholder.
+
+**Intelligence** row — `PropBetEdge Predictions`
+(`https://predictions.propbetedge.ai/`), from `NETWORK_PRODUCTS`. It is a
+product, not a sport: never in `NETWORK.sports`, never counted, never in the
+membership sport list. All Access copy, where a footer states it, reads
+`10 sports + PropBetEdge Predictions · $29/month` (never "11 sports").
+
+Every footer carries exactly one link to `https://f1.propbetedge.ai/` and one
+to `https://predictions.propbetedge.ai/`, visible at 390px, and no
+`hub.propbetedge.ai` links. The one organization id in JSON-LD is
+`https://propbetedge.ai/#organization`.
 
 Product-specific columns (UFC: Fight Intelligence, Editorial, Developers,
 Official UFC) stay as they are. The footer is not a sitemap.

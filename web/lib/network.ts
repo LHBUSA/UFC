@@ -18,9 +18,23 @@
  *     /store. When propbetedge.ai/store ships on the same commerce engine it
  *     becomes /store/ufc there, and ufc.propbetedge.ai/store/... keeps
  *     resolving (see the convention doc — print, order and checkout paths
- *     are never redirected). */
+ *     are never redirected).
+ *   - Family parity: the sports (order + URLs), products and network URLs must
+ *     match the vendored canonical registry lib/family.json (generated from
+ *     LHBUSA/propbetedge-workers shared/network/pbe-network.js; never
+ *     hand-edit it). lib/network.test.ts fails on drift. */
 
-export type NetworkSport = { key: "mlb" | "nfl" | "ufc" | "nhl" | "nba" | "wnba" | "tennis" | "soccer" | "golf"; label: string; name: string; blurb: string; href: string };
+export type NetworkSport = { key: "mlb" | "nfl" | "ufc" | "nhl" | "nba" | "wnba" | "tennis" | "soccer" | "golf" | "f1"; label: string; name: string; blurb: string; href: string };
+
+/* Non-sport PropBetEdge products. Deliberately NOT in NETWORK.sports: nothing
+ * that iterates sports (footer rail, house promos, membership) may pick these
+ * up, and they are never counted as a sport. Footer renders them in their own
+ * "Intelligence" row. */
+export type NetworkProduct = { key: "predictions"; label: string; name: string; blurb: string; href: string };
+
+export const NETWORK_PRODUCTS: readonly NetworkProduct[] = [
+  { key: "predictions", label: "Predictions", name: "PropBetEdge Predictions", blurb: "Market prices read against PropBetEdge models", href: "https://predictions.propbetedge.ai/" },
+];
 
 export const CURRENT_SPORT: NetworkSport["key"] = "ufc";
 
@@ -35,12 +49,13 @@ export const NETWORK = {
   sports: [
     { key: "mlb", label: "MLB", name: "Baseball Intelligence", blurb: "Live markets, model research, archives", href: "https://mlb.propbetedge.ai/" },
     { key: "nfl", label: "NFL", name: "Football Intelligence", blurb: "Prop board, Model Lab, Player DNA", href: "https://nfl.propbetedge.ai/" },
-    { key: "ufc", label: "UFC", name: "Fight Intelligence", blurb: "Cards, fighters, rankings, newsroom", href: "/" },
-    { key: "nhl", label: "NHL", name: "Hockey Intelligence", blurb: "PBE Cast, goalies, shot maps, props", href: "https://nhl.propbetedge.ai/" },
     { key: "nba", label: "NBA", name: "Basketball Intelligence", blurb: "NBACast, injuries, matchups, props", href: "https://nba.propbetedge.ai/" },
     { key: "wnba", label: "WNBA", name: "Women's Basketball Intelligence", blurb: "WNBACast, news, matchups, odds", href: "https://wnba.propbetedge.ai/" },
+    { key: "nhl", label: "NHL", name: "Hockey Intelligence", blurb: "PBE Cast, goalies, shot maps, props", href: "https://nhl.propbetedge.ai/" },
+    { key: "ufc", label: "UFC", name: "Fight Intelligence", blurb: "Cards, fighters, rankings, newsroom", href: "/" },
     { key: "tennis", label: "Tennis", name: "Tennis Intelligence", blurb: "Live scores, rankings, Tennis DNA, PBEcast", href: "https://tennis.propbetedge.ai/" },
     { key: "soccer", label: "Soccer", name: "Soccer Intelligence", blurb: "Live matches, Player DNA, tables, PBEcast", href: "https://soccer.propbetedge.ai/" },
     { key: "golf", label: "Golf", name: "Golf Intelligence", blurb: "Player DNA, Course DNA, history, PBEcast", href: "https://golf.propbetedge.ai/" },
+    { key: "f1", label: "F1", name: "F1 Intelligence", blurb: "Race weekends, drivers, circuits, history", href: "https://f1.propbetedge.ai/" },
   ] as readonly NetworkSport[],
 } as const;
