@@ -41,6 +41,9 @@ export function marketHistoryCard(entry: KalshiEntry | null | undefined, opts?: 
 export function marketCloseLine(entry: KalshiEntry | null | undefined): string;
 export function marketModule(entry: KalshiEntry | null | undefined, opts?: { placement?: string; colors?: Record<string, string>; compact?: boolean }): string;
 export function wireKalshi(root?: ParentNode | null): void;
+/* OTHER VENUES (canonical 4e49f5f): one desk event from /v1/market-desk; '' when no second venue qualifies. */
+export interface DeskEvent { canonical_event_id: string; contracts: Record<string, unknown>[]; [k: string]: unknown }
+export function venueLines(deskEvent: DeskEvent | null | undefined, opts?: { placement?: string }): string;
 export function __resetKalshiFlashes(): void;
 /* ALGO vs MARKET (canonical ad6187a): /v1/algo-vs-market/:sport and /v1/algo-vs-market/event/:sport/:id. */
 export interface AvmComparison {

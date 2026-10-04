@@ -9,7 +9,7 @@
  * card becomes "How the market closed" (shared marketHistoryCard) in the same place.
  * No entry -> nothing rendered; a single empty or failed refresh keeps the last good card. */
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { __resetKalshiFlashes, wireKalshi } from "@/vendor/kalshi/kalshi-market-ui.js";
+import { __resetKalshiFlashes, venueLines, wireKalshi, type DeskEvent } from "@/vendor/kalshi/kalshi-market-ui.js";
 import { createKalshiClient, type KalshiClient } from "@/vendor/kalshi/kalshi-market-client.js";
 import { KALSHI_MARKETS_BASE, KALSHI_SPORT, kalshiCents, kalshiMoveCents, kalshiPollMs, kalshiPollState, sideMove, ufcFreshnessText, ufcKalshiCardHtml, ufcQuote, type KalshiEntry, type UfcClosedQuote, type UfcMove, type UfcRole } from "@/lib/kalshi";
 
@@ -66,19 +66,43 @@ function usePoll(entry: KalshiEntry | null, load: () => Promise<KalshiEntry | nu
   }, [state]);
 }
 
+/* Other venues: the multi-venue desk is read in the browser after mount (never blocks the server render), then on
+ * the card's own cadence; a failed read keeps the last good desk (shared client). A settled market stops it. */
+function useDesk(id: string, entry: KalshiEntry | null, set: (d: DeskEvent | null) => void) {
+  const state = kalshiPollState(entry);
+  useEffect(() => {
+    if (state === "settled") return;
+    let alive = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const tick = async () => {
+      if (typeof document === "undefined" || !document.hidden) { const d = await client().loadDesk(id); if (alive) set(d); }
+      const ms = kalshiPollMs(state, (s) => client().pollMsFor(s));
+      if (alive && ms != null) timer = setTimeout(tick, ms);
+    };
+    tick();
+    return () => { alive = false; if (timer) clearTimeout(timer); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, state]);
+}
+
 /** Full card for one bout, directly under the faceoff with its lifecycle label.
  * `initial` comes from the server so it is in the first paint. `final`: the bout
  * has a result (the label says FIGHT FINAL while the market still trades). */
 export function KalshiMarketCard({ boutId, initial, completed = false, final = false }: { boutId: string; initial: KalshiEntry | null; completed?: boolean; final?: boolean }) {
   const [entry, setEntry] = useState<KalshiEntry | null>(initial);
+  const [desk, setDesk] = useState<DeskEvent | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   usePoll(entry, () => loadEvent(boutId), setEntry, { once: completed });
+  useDesk(boutId, entry, setDesk);
   const html = useMemo(() => serverSafe(() => ufcKalshiCardHtml(entry, "fight-page", { final })), [entry, final]);
-  useEffect(() => { if (html && ref.current) wireKalshi(ref.current); }, [html]);
+  /* Other venues (shared venueLines): Polymarket under the Kalshi card only, as a qualifying quote or a labelled
+   * related market with its own price + reason (never compared). No second venue -> nothing. */
+  const venues = useMemo(() => (html ? venueLines(desk, { placement: "fight-page-venues" }) : ""), [html, desk]);
+  useEffect(() => { if (html && ref.current) wireKalshi(ref.current); }, [html, venues]);
   if (!html) return null;
   return (
     <section className="ufc-kx ufc-kx--top" id="kalshi" aria-label="Kalshi prediction market">
-      <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />
+      <div ref={ref} dangerouslySetInnerHTML={{ __html: html + venues }} />
     </section>
   );
 }

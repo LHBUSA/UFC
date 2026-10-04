@@ -280,11 +280,11 @@ test("no Kalshi API host in web code", () => {
   assert.deepEqual(hits, []);
 });
 
-/* ── vendored files unchanged (canonical client propbetedge-workers ad6187a) ── */
+/* ── vendored files unchanged (canonical client propbetedge-workers 4e49f5f: + loadDesk / venueLines) ── */
 const VENDORED: Record<string, string> = {
-  "kalshi-market-ui.js": "03712a0eb48e5265523ec45b145fd2fa880c9435e1adf2c6ca988c78c3fa37a8",
-  "kalshi-market-ui.css": "fb046ada2b2e5450207e4301c0e41a193aa599e4661843fdcdb50d45ac7191ae",
-  "kalshi-market-client.js": "68f9ed06de627654634e385acc79b1efdee858de4a59801e20b401b5c0bc43dc",
+  "kalshi-market-ui.js": "b5daf1ae57e254dbc0c9bd6de8f9c084d662e7275ee05b2f718571ab44da51e4",
+  "kalshi-market-ui.css": "8e9bff06672342c6902b0cbcf9972ee90acf676a9c01e63987163481ab82c4ba",
+  "kalshi-market-client.js": "91120da57a6e85dffe505e32b67fb6511165804ec030901cd155ffb928941b03",
   "README.md": "a80e4ac5d8733bde8afc0c13c281242babff8b1acd083974741f677b7af5a480",
 };
 const CANONICAL = process.env.KALSHI_CLIENT_SRC || "D:/Workers/propbetedge-workers/workers/propsports-markets/client";
@@ -563,4 +563,21 @@ test("chip CSS: cool-blue tokens, distinct from the gold ML chip and the gold PB
   assert.match(css, /\.ufc-kc \{[^}]*border: 1px solid var\(--ufc-kc-line\)/);
   assert.match(css, /\.ufc-avm-chip \{[^}]*border: 1px solid var\(--pbe-gold\)/);
   assert.doesNotMatch(css, /kalshi\.com|url\(/i, "no venue branding or logo images");
+});
+
+/* ── other venues under the card (canonical 4e49f5f venueLines; pm-ufc, propsports-markets 0b2c1b7) ── */
+test("fight card: other venues render under the Kalshi card only, from the shared venueLines, and stop when settled", () => {
+  const src = readFileSync(join(WEB, "components", "KalshiMarket.tsx"), "utf8");
+  assert.match(src, /const venues = useMemo\(\(\) => \(html \? venueLines\(desk, \{ placement: "fight-page-venues" \}\) : ""\), \[html, desk\]\);/);
+  assert.match(src, /dangerouslySetInnerHTML=\{\{ __html: html \+ venues \}\}/);
+  assert.match(src, /if \(state === "settled"\) return;/);
+});
+test("UFC related market (pm-ufc gate wording): own price + exact fight reason, never a gap", async () => {
+  const { venueLines } = await import("../vendor/kalshi/kalshi-market-ui.js");
+  const rel = (mid: number) => ({ venue: "polymarket", match: "RULE_MISMATCH", label: "RELATED MARKET · RULES DIFFER", reason: "Rules differ if the fight is postponed, cancelled or not scored", market_url: "https://polymarket.com/event/ufc-bre1-chr20-2026-10-10", mid_bp: mid, bid_bp: mid - 50, ask_bp: mid + 50, freshness: "live" });
+  const html = venueLines({ canonical_event_id: "aabde22a-cbc0-467f-bffa-830f8eadfadb", contracts: [{ label: "Brendan Allen", venues: [], related: [rel(6150)] }, { label: "Christian Leroy Duncan", venues: [], related: [rel(3850)] }] });
+  assert.match(html, /Brendan Allen/);
+  assert.match(html, /61\.5¢/);
+  assert.match(html, /Rules differ if the fight is postponed, cancelled or not scored\. Shown at its own price; not compared\./);
+  assert.ok(!/gap \d/.test(html));
 });
