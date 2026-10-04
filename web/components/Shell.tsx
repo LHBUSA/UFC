@@ -88,7 +88,6 @@ export function Footer() {
             <a href="https://propbetedge.ai/terms">Terms</a>
             <a href="https://propbetedge.ai/legal">Legal</a>
             <a href="https://propbetedge.ai/support">Support</a>
-            <a href="https://propbetedge.ai/media">Media</a>
             <Link href={NETWORK.store.href}>{NETWORK.store.label}</Link>
             <a href={SITE.billingPortal} target="_blank" rel="noopener noreferrer">Manage billing ↗</a>
             {NETWORK.discord && <a href={NETWORK.discord} target="_blank" rel="noopener">Discord ↗</a>}
