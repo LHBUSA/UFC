@@ -9,13 +9,23 @@ test("network registry carries canonical Learn", () => {
   assert.deepEqual(NETWORK.learn, { label: "Learn", href: "https://learn.propbetedge.ai/" });
 });
 
-test("footer PropBetEdge column renders Learn from the registry, same-tab, once", () => {
+/* The footer groups are pinned by heading in lib/footerGroups.test.ts; this
+ * reads one group block by its data-ufc-footer-group marker. */
+const footerGroup = (shell: string, key: string) => {
+  const at = shell.indexOf(`data-ufc-footer-group="${key}"`);
+  assert.ok(at > 0, key);
+  return shell.slice(at, shell.indexOf("</div>", at));
+};
+
+test("footer PropBetEdge group renders Learn from the registry, same-tab, once", () => {
   const shell = readFileSync(new URL("../components/Shell.tsx", import.meta.url), "utf8");
-  const col = shell.slice(shell.indexOf("<h4>PropBetEdge</h4>"), shell.indexOf("<h4>Fight Intelligence</h4>"));
+  const col = footerGroup(shell, "propbetedge");
   assert.ok(col.includes("<a href={NETWORK.learn.href}>{NETWORK.learn.label}</a>"), "footer link, no target/rel");
   assert.equal(shell.split("NETWORK.learn.href").length - 1, 1, "footer only; not in the header");
   assert.ok(!/learn\.propbetedge\.ai/.test(shell), "the URL lives only in lib/network.ts");
-  for (const s of ["All Access", "NETWORK.news", "NETWORK.store", "Manage billing", "Discord"]) assert.ok(col.includes(s), s);
+  for (const s of ["All Access", "NETWORK.news", "NETWORK.store"]) assert.ok(col.includes(s), s);
+  assert.ok(footerGroup(shell, "account").includes("Manage billing"), "billing lives under Account");
+  assert.ok(footerGroup(shell, "community").includes("NETWORK.discord"), "Discord lives under Community");
 });
 
 test("network sports follow the family order; the footer rail renders them from the registry", () => {

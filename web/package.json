@@ -54,7 +54,8 @@
     "test:social": "node --experimental-strip-types --test lib/socialIdentity.test.ts",
     "test:training": "node --experimental-strip-types --test lib/training.test.ts",
     "test:simulator": "node --experimental-strip-types --test lib/simulator.test.ts lib/simulatorEngine.test.ts",
-    "sync:simulator": "node scripts/sync-simulator-engine.mjs"
+    "sync:simulator": "node scripts/sync-simulator-engine.mjs",
+    "test:footer": "node --experimental-strip-types --test lib/footerGroups.test.ts lib/network.test.ts lib/socialIdentity.test.ts lib/allAccessHero.test.ts lib/membership.test.ts lib/nav.test.ts"
   },
   "dependencies": {
     "next": "^15.5.25",

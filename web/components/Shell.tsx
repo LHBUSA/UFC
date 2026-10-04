@@ -78,55 +78,71 @@ export function Footer() {
               <em>From raw signal to decision infrastructure.</em> Fight intelligence built from the data layer up: current cards, fighter identity, results, round evidence, history and a newsroom that only writes what its source packet can prove.
             </p>
           </div>
-          <div className="col">
-            <h4>PropBetEdge</h4>
-            <a href={ALL_ACCESS_URL} className="ftr-aa-link" rel="noopener" data-ufc-footer-all-access="">All Access</a>
-            <a href={ALL_ACCESS_URL} rel="noopener" data-ufc-footer-all-access-included="">What&apos;s included</a>
-            <a href={NETWORK.news.href}>{NETWORK.news.label}</a>
-            <a href={NETWORK.learn.href}>{NETWORK.learn.label}</a>
-            <a href="https://propbetedge.ai/about">About PropBetEdge</a>
-            <a href="https://propbetedge.ai/terms">Terms</a>
-            <a href="https://propbetedge.ai/legal">Legal</a>
-            <a href="https://propbetedge.ai/support">Support</a>
-            <Link href={NETWORK.store.href}>{NETWORK.store.label}</Link>
-            <a href={SITE.billingPortal} target="_blank" rel="noopener noreferrer">Manage billing ↗</a>
-            {NETWORK.discord && <a href={NETWORK.discord} target="_blank" rel="noopener">Discord ↗</a>}
-            <a href={SITE.xUrl} target="_blank" rel="noopener noreferrer" aria-label={`Follow PropBetEdge on X (${SITE.twitter})`} title="Follow PropBetEdge on X"><span aria-hidden="true">𝕏</span> {SITE.twitter}</a>
-          </div>
-          <div className="col">
-            <h4>Fight Intelligence</h4>
-            <Link href="/events">Schedule &amp; results</Link>
-            <Link href="/contender-series">Contender Series</Link>
-            <Link href="/fighters">Fighters</Link>
-            <Link href="/rankings">Rankings</Link>
-            <Link href="/referees">Referees</Link>
-            <Link href="/history">History</Link>
-            <Link href="/hall-of-fame">Hall of Fame tribute</Link>
-          </div>
-          <div className="col">
-            <h4>Editorial</h4>
-            <Link href="/news">Newsroom</Link>
-            <Link href="/#notable-voices">Notable voices</Link>
-            <Link href="/about">Editorial policy</Link>
-            <Link href="/methodology">Editorial &amp; Data Methodology</Link>
-            <a href="/feed.xml">RSS feed</a>
-            <Link href="/pro">UFC Pro</Link>
-            <a href={`mailto:${SITE.contact}`}>Contact us</a>
-          </div>
-          <div className="col">
-            <h4>Developers</h4>
-            <a href={SITE.ufcApi} target="_blank" rel="noopener">UFC Intelligence API ↗</a>
-            <a href={SITE.ufcApiDocs} target="_blank" rel="noopener">API Docs ↗</a>
-            <p className="ftr-note">Build with events, fighters, round stats, Fight DNA and Matchup DNA.</p>
-          </div>
-          <div className="col">
-            <h4>Official UFC</h4>
-            <a href={UFC_OFFICIAL.home} target="_blank" rel="noopener">UFC.com ↗</a>
-            <a href={UFC_OFFICIAL.athletes} target="_blank" rel="noopener">Official athletes ↗</a>
-            <a href={UFC_OFFICIAL.rankings} target="_blank" rel="noopener">Official rankings ↗</a>
-            <a href={UFC_OFFICIAL.hallOfFame} target="_blank" rel="noopener">UFC Hall of Fame ↗</a>
-            <a href={UFC_OFFICIAL.fightPass} target="_blank" rel="noopener">UFC Fight Pass ↗</a>
-            <a href={UFC_OFFICIAL.store} target="_blank" rel="noopener">Official UFC Store ↗</a>
+          {/* Directory: UFC's own areas first, then the PropBetEdge network groups.
+              Every link sits under the heading that names what it is (pinned by
+              lib/footerGroups.test.ts): no billing or social link trails the
+              trust/legal group, and the Preferred Source band stays below. */}
+          <div className="ftr-dir">
+            <div className="col" data-ufc-footer-group="fight-intelligence">
+              <h4>Fight Intelligence</h4>
+              <Link href="/events">Schedule &amp; results</Link>
+              <Link href="/contender-series">Contender Series</Link>
+              <Link href="/fighters">Fighters</Link>
+              <Link href="/rankings">Rankings</Link>
+              <Link href="/referees">Referees</Link>
+              <Link href="/history">History</Link>
+              <Link href="/hall-of-fame">Hall of Fame tribute</Link>
+            </div>
+            <div className="col" data-ufc-footer-group="editorial">
+              <h4>Editorial</h4>
+              <Link href="/news">Newsroom</Link>
+              <Link href="/#notable-voices">Notable voices</Link>
+              <Link href="/about">Editorial policy</Link>
+              <Link href="/methodology">Editorial &amp; Data Methodology</Link>
+              <a href="/feed.xml">RSS feed</a>
+              <a href={`mailto:${SITE.contact}`}>Contact us</a>
+            </div>
+            <div className="col" data-ufc-footer-group="developers">
+              <h4>Developers</h4>
+              <a href={SITE.ufcApi} target="_blank" rel="noopener">UFC Intelligence API ↗</a>
+              <a href={SITE.ufcApiDocs} target="_blank" rel="noopener">API Docs ↗</a>
+              <p className="ftr-note">Build with events, fighters, round stats, Fight DNA and Matchup DNA.</p>
+            </div>
+            <div className="col" data-ufc-footer-group="official-ufc">
+              <h4>Official UFC</h4>
+              <a href={UFC_OFFICIAL.home} target="_blank" rel="noopener">UFC.com ↗</a>
+              <a href={UFC_OFFICIAL.athletes} target="_blank" rel="noopener">Official athletes ↗</a>
+              <a href={UFC_OFFICIAL.rankings} target="_blank" rel="noopener">Official rankings ↗</a>
+              <a href={UFC_OFFICIAL.hallOfFame} target="_blank" rel="noopener">UFC Hall of Fame ↗</a>
+              <a href={UFC_OFFICIAL.fightPass} target="_blank" rel="noopener">UFC Fight Pass ↗</a>
+              <a href={UFC_OFFICIAL.store} target="_blank" rel="noopener">Official UFC Store ↗</a>
+            </div>
+            <div className="col" data-ufc-footer-group="propbetedge">
+              <h4>PropBetEdge</h4>
+              <a href={ALL_ACCESS_URL} className="ftr-aa-link" rel="noopener" data-ufc-footer-all-access="">All Access</a>
+              <a href={ALL_ACCESS_URL} rel="noopener" data-ufc-footer-all-access-included="">What&apos;s included</a>
+              <a href={NETWORK.news.href}>{NETWORK.news.label}</a>
+              <a href={NETWORK.learn.href}>{NETWORK.learn.label}</a>
+              <Link href={NETWORK.store.href}>{NETWORK.store.label}</Link>
+            </div>
+            <div className="col" data-ufc-footer-group="account">
+              <h4>Account</h4>
+              <Link href="/account">Your account</Link>
+              <Link href="/pro">UFC Pro</Link>
+              <a href={SITE.billingPortal} target="_blank" rel="noopener noreferrer">Manage billing ↗</a>
+              <a href="https://propbetedge.ai/support">Support</a>
+            </div>
+            <div className="col" data-ufc-footer-group="community">
+              <h4>Community</h4>
+              {NETWORK.discord && <a href={NETWORK.discord} target="_blank" rel="noopener">Discord ↗</a>}
+              <a href={SITE.xUrl} target="_blank" rel="noopener noreferrer" aria-label={`Follow PropBetEdge on X (${SITE.twitter})`} title="Follow PropBetEdge on X"><span aria-hidden="true">𝕏</span> {SITE.twitter}</a>
+            </div>
+            <div className="col" data-ufc-footer-group="company-legal">
+              <h4>Company &amp; Legal</h4>
+              <a href="https://propbetedge.ai/about">About PropBetEdge</a>
+              <a href="https://propbetedge.ai/terms">Terms</a>
+              <a href="https://propbetedge.ai/legal">Legal</a>
+            </div>
           </div>
         </div>
         <PreferredSource surface="footer" />
