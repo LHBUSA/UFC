@@ -89,12 +89,6 @@ export function Footer() {
             <a href="https://propbetedge.ai/legal">Legal</a>
             <a href="https://propbetedge.ai/support">Support</a>
             <a href="https://propbetedge.ai/media">Media</a>
-            <a href="https://propbetedge.ai/authors">Editorial Team</a>
-            <a href="https://propbetedge.ai/authors/justin-erickson">Justin Erickson</a>
-            <a href="https://propbetedge.ai/authors/propbetedge-editorial-team">PropBetEdge Editorial Team</a>
-            <a href="https://propbetedge.ai/authors/ty-whitney">Ty Whitney</a>
-            <a href="https://propbetedge.ai/authors/erik-schwartz">Erik Schwartz</a>
-            <a href="https://propbetedge.ai/editorial-standards">Editorial Standards</a>
             <Link href={NETWORK.store.href}>{NETWORK.store.label}</Link>
             <a href={SITE.billingPortal} target="_blank" rel="noopener noreferrer">Manage billing ↗</a>
             {NETWORK.discord && <a href={NETWORK.discord} target="_blank" rel="noopener">Discord ↗</a>}
