@@ -30,7 +30,7 @@ const EXPECTED: Record<string, { heading: string; hrefs: string[] }> = {
   propbetedge: { heading: "PropBetEdge", hrefs: ["ALL_ACCESS_URL", "ALL_ACCESS_URL", "NETWORK.news.href", "NETWORK.learn.href", "NETWORK.store.href"] },
   account: { heading: "Account", hrefs: ["/account", "/pro", "SITE.billingPortal", "https://propbetedge.ai/support"] },
   community: { heading: "Community", hrefs: ["NETWORK.discord", "SITE.xUrl"] },
-  "company-legal": { heading: "Company &amp; Legal", hrefs: ["https://propbetedge.ai/about", "https://propbetedge.ai/terms", "https://propbetedge.ai/legal"] },
+  "company-legal": { heading: "Company &amp; Legal", hrefs: ["https://propbetedge.ai/about", "https://propbetedge.ai/privacy", "https://propbetedge.ai/terms", "https://propbetedge.ai/legal"] },
 };
 
 test("footer directory: exactly the eight semantic groups, UFC areas first, then the network groups", () => {

@@ -140,6 +140,7 @@ export function Footer() {
             <div className="col" data-ufc-footer-group="company-legal">
               <h4>Company &amp; Legal</h4>
               <a href="https://propbetedge.ai/about">About PropBetEdge</a>
+              <a href="https://propbetedge.ai/privacy">Privacy</a>
               <a href="https://propbetedge.ai/terms">Terms</a>
               <a href="https://propbetedge.ai/legal">Legal</a>
             </div>
