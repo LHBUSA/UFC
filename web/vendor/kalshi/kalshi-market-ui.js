@@ -395,8 +395,13 @@ const REL = {
   listed: { tag: 'Prediction market', sub: 'Only venue with a market here' },
 }
 const secondsSince = (iso) => { const t = Date.parse(iso || ''); return Number.isFinite(t) ? Math.max(0, (Date.now() - t) / 1000) : null }
+// "Live" is earned by the observation's AGE, not by the lane cadence: a quote read 10 min ago on a 15-min pregame cadence
+// is current for its lane but is NOT live — it gets the neutral "Updated 10 min ago" (same 2.5-min rule as the Kalshi card).
+export const VENUE_LIVE_MAX_S = 150
+const venueLive = (fresh, observedAt) => fresh === 'live' && (secondsSince(observedAt) ?? Infinity) <= VENUE_LIVE_MAX_S
 function venueBadge(fresh, observedAt) {
   const age = ageLabel(secondsSince(observedAt))
+  if ((fresh === 'live' || fresh === 'delayed') && !venueLive(fresh, observedAt) && secondsSince(observedAt) <= 1800) return `<span class="kx__st" data-kx-age-of="${esc(observedAt || '')}">Updated ${esc(age)}</span>`
   if (fresh === 'live') return `<span class="kx__st kx__st--live" data-kx-age-of="${esc(observedAt || '')}"><span class="kx__pulse" aria-hidden="true"></span>Updated ${esc(age)}</span>`
   if (fresh === 'delayed') return `<span class="kx__st kx__st--delayed" data-kx-age-of="${esc(observedAt || '')}">Delayed · Updated ${esc(age)}</span>`
   return ''
@@ -447,7 +452,7 @@ export function venueLines(deskEvent, { placement = 'venues', standalone = false
   const cards = [...groups.values()].map((g) => {
     const rel = REL[g.kind] || REL.related
     const tag = g.kind === 'related' ? (g.label || 'RELATED MARKET · RULES DIFFER') : rel.tag
-    const live = g.fresh === 'live'
+    const live = venueLive(g.fresh, g.observedAt)
     const sub = `${live ? 'Live prediction market' : 'Prediction market'}${standalone ? ` · ${vName(g.venue)}` : ''}`
     const note = g.kind === 'related'
       ? `<div class="kx-v__rules" role="note"><b>${esc(g.summary || 'Settlement rules differ between venues')}</b><small>${esc(g.reason || '')}${g.reason ? '. ' : ''}Shown at its own price; not compared.</small></div>`

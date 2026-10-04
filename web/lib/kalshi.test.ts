@@ -280,9 +280,9 @@ test("no Kalshi API host in web code", () => {
   assert.deepEqual(hits, []);
 });
 
-/* ── vendored files unchanged (canonical client propbetedge-workers cf55721: venue cards) ── */
+/* ── vendored files unchanged (canonical client propbetedge-workers e1d4284: venue cards) ── */
 const VENDORED: Record<string, string> = {
-  "kalshi-market-ui.js": "b82d82a2b99f53b4e27e2e827c506512caf86a416aef012471d8d728a9193aa7",
+  "kalshi-market-ui.js": "c4989c79ed3824c92363780d08d966ab752a5e65347af1693a8b22afc6fd7e29",
   "kalshi-market-ui.css": "df81df5650cc66d0bcea37c2808eaf783522ad9f921449e954f590d4ad9a2c60",
   "kalshi-market-client.js": "bbab54f78382f336a149b18f332bc54abe0b9c471ada3dd8ef0d67e5e5706301",
   "README.md": "a80e4ac5d8733bde8afc0c13c281242babff8b1acd083974741f677b7af5a480",
