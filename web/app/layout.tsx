@@ -40,6 +40,7 @@ import "./all-access.css";
 import "./preferred-source.css";
 import "./article-rail.css";
 import "../vendor/kalshi/kalshi-market-ui.css";
+import "../vendor/kalshi/article-market-ui.css";
 import "./kalshi-ufc.css";
 import { Header, Footer } from "@/components/Shell";
 import { CartProvider } from "@/components/store/CartProvider";

@@ -24,6 +24,8 @@ import { PreferredSource } from "@/components/PreferredSource";
 import { classifyStory, selectPromo, weightsFor } from "@/lib/housePromo";
 import { algoCallsActive } from "@/lib/algo";
 import { BettorsEdge, MatchupModule, MarketWatch, Methodology, type FactBlock } from "@/components/editorial";
+import { ArticleMarket } from "@/components/ArticleMarket";
+import { articleMarketEvent, articleMarketHtml, getArticleMarket } from "@/lib/articleMarket";
 import { getEditorialMarket } from "@/lib/editorialMarket";
 import { getRankingMap } from "@/lib/rankings";
 import {
@@ -53,6 +55,11 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
    * Fight DNA, market) are decided here, before their data is read. */
   const access = await getUfcAccess();
   const returnPath = `/news/${a.slug}`;
+  /* MARKET (article-market/1): public prediction-market observations for the ONE bout this story
+   * is linked to (bout_id), only on a story first published after the module's activation. The
+   * read starts now, beside the rest of the page's data, and has its own short budget. */
+  const marketBout = preview ? null : articleMarketEvent(a);
+  const marketRead = marketBout ? getArticleMarket(a) : Promise.resolve(null);
   const [hero, fighters, event, bout, moreRes, relatedHeads, latestHeads] = await Promise.all([
     a.hero_image_ref ? getImageById(a.hero_image_ref) : null,
     getFightersByIds(a.fighter_ids || []),
@@ -118,6 +125,10 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
   const heroName = hero?.fighter_id ? people.find((f) => f.id === hero.fighter_id)?.name : subject?.name;
   const label = STORY_TYPE_LABEL[a.story_type] || a.story_type;
   const charts = chartsOf(plan);
+  const marketPayload = await marketRead;
+  const marketNode = marketBout && a.published_at
+    ? <ArticleMarket key="article-market" boutId={marketBout} publishedAt={a.published_at} initial={marketPayload} html={articleMarketHtml(marketPayload)} />
+    : null;
   const planNames = { a: fb.primary?.name || subject?.name, b: fb.opponent?.name };
   const legacyAngle = fb.bettor_angle && (fb.bettor_angle.summary || fb.bettor_angle.markets?.length) ? fb.bettor_angle : null;
   const angle = plan ? planAngle(plan) : legacyAngle;
@@ -231,6 +242,7 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
           {plan ? (
             <ArticleBody
               md={a.body_md}
+              afterFirstSection={marketNode}
               modules={[
                 <BoutContextModule key="booking" plan={plan} eventHref={event ? `/events/${eventSlug(event)}` : null} />,
                 /* The subject card and the head-to-head table state many of the same
@@ -248,6 +260,8 @@ export async function StoryView({ a, preview = false }: { a: Article; preview?: 
                 access.pro ? <MarketModule key="mkt" plan={plan} charts={charts} /> : null,
               ]}
             />
+          ) : marketNode ? (
+            <ArticleBody md={a.body_md} modules={[]} afterFirstSection={marketNode} />
           ) : (
             <div className="prose" dangerouslySetInnerHTML={{ __html: renderMarkdown(a.body_md) }} />
           )}

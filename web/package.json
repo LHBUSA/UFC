@@ -15,6 +15,7 @@
     "test:preferred-source": "node --experimental-strip-types --test lib/preferredSource.test.ts",
     "test:market": "node --experimental-strip-types --test lib/market.test.mjs",
     "test:kalshi": "node --experimental-strip-types --test lib/kalshi.test.ts",
+    "test:article-market": "node --experimental-strip-types --test lib/articleMarket.test.ts",
     "test:store": "node --test lib/store/store.test.ts",
     "test:judges": "node --experimental-strip-types --test lib/judgeScoring.test.mjs lib/judgeSchema.test.mjs",
     "test:model": "node --experimental-strip-types --test lib/model.test.mjs",

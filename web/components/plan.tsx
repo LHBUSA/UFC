@@ -20,6 +20,7 @@
  * modules it wants where it wants them, and a module the plan did not produce
  * simply returns null.
  */
+import { firstSectionEnd } from "@/lib/articleMarket";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Chart, ChartSet, type ChartSpec } from "@/components/charts";
@@ -703,7 +704,7 @@ export function MethodologyModule({ plan, updated, corroborating }: { plan: Cont
  * If there is not enough prose to hold them all, the surplus falls through to
  * the end rather than being dropped or crowded in.
  */
-export function ArticleBody({ md, modules }: { md: string; modules: ReactNode[] }) {
+export function ArticleBody({ md, modules, afterFirstSection = null }: { md: string; modules: ReactNode[]; afterFirstSection?: ReactNode }) {
   const blocks = renderMarkdownBlocks(md);
   const mods = modules.filter(Boolean);
   const n = blocks.length;
@@ -711,6 +712,12 @@ export function ArticleBody({ md, modules }: { md: string; modules: ReactNode[] 
 
   const at = new Map<number, ReactNode[]>();
   const overflow: ReactNode[] = [];
+  /* The article market module (article-market/1) sits after the first editorial section: at the
+   * second heading, else after the first two blocks. It goes first at its slot. */
+  if (afterFirstSection) {
+    const slot = firstSectionEnd(blocks);
+    if (slot < n) at.set(slot, [afterFirstSection]); else overflow.push(afterFirstSection);
+  }
   const used = new Set<number>();
   mods.forEach((node, i) => {
     let want = Math.round(((i + 1) * n) / (mods.length + 1));
