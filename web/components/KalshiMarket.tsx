@@ -314,6 +314,10 @@ export function KalshiChip({ boutId, initial, names, variant, side, favLabel = f
 export function KalshiBoutLine({ boutId, initial, result = false, names }: { boutId: string; initial: KalshiEntry | null; result?: boolean; names?: Names }) {
   const entry = useBoardEntry(boutId, initial);
   const q = useMemo(() => ufcQuote(entry, names), [entry, names?.a, names?.b]); // eslint-disable-line react-hooks/exhaustive-deps
-  if (!q || (q.kind === "open" && result)) return null;
-  return <div className="ufc-kx-line"><KalshiChip boutId={boutId} initial={initial} names={names} variant="pair" result={result} placement="bout-row" /></div>;
+  /* VENUE-NEUTRAL: the Kalshi chip and the other-venue cue are independent (a Polymarket-only bout still gets its cue). */
+  const showK = Boolean(q && !(q.kind === "open" && result));
+  return <>
+    {showK ? <div className="ufc-kx-line"><KalshiChip boutId={boutId} initial={initial} names={names} variant="pair" result={result} placement="bout-row" /></div> : null}
+    <VenueCue boutId={boutId} result={result} wrapClass="ufc-kx-line" />
+  </>;
 }

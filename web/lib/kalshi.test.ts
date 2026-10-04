@@ -241,7 +241,7 @@ test("fight page: the market module is mounted for completed bouts too", () => {
   const fetchLine = src.split("\n").find((l) => l.includes("getKalshiEvent(b.id)"))!;
   assert.doesNotMatch(fetchLine, /b\.result|kalshiAge/, "completed bouts are read");
   const ui = read("components/ui.tsx");
-  assert.match(ui, /<KalshiBoutLine boutId=\{b\.id\} initial=\{kalshi\} result=\{Boolean\(r\)\} names=\{\{ a: b\.fighter_a\.name, b: b\.fighter_b\.name \}\} \/>/);
+  assert.match(ui, /<KalshiBoutLine boutId=\{b\.id\} initial=\{kalshi \?\? null\} result=\{Boolean\(r\)\} names=\{\{ a: b\.fighter_a\.name, b: b\.fighter_b\.name \}\} \/>/);
   assert.doesNotMatch(ui.split("\n").find((l) => l.includes("<KalshiBoutLine"))!, /!r\b/);
 });
 
@@ -578,7 +578,7 @@ test("Market Pulse is VENUE-NEUTRAL: Kalshi and other venues computed independen
 });
 test("compact surfaces carry a venue cue independent of the Kalshi chip (home hero, schedule, event card, poster, matchup card, Fight Week)", () => {
   const read = (...p: string[]) => readFileSync(join(WEB, ...p), "utf8");
-  for (const [f, n] of [[["app", "page.tsx"], 1], [["app", "events", "page.tsx"], 1], [["app", "events", "[slug]", "page.tsx"], 1], [["components", "ui.tsx"], 3], [["components", "FightWeek.tsx"], 1]] as const) {
+  for (const [f, n] of [[["app", "page.tsx"], 1], [["app", "events", "page.tsx"], 1], [["app", "events", "[slug]", "page.tsx"], 1], [["components", "ui.tsx"], 3], [["components", "KalshiMarket.tsx"], 1], [["components", "FightWeek.tsx"], 1]] as const) {
     const src = read(...f);
     assert.equal((src.match(/<VenueCue /g) || []).length, n, f.join("/"));
   }
@@ -600,4 +600,10 @@ test("UFC related market (pm-ufc gate wording): own price + exact fight reason, 
   assert.match(html, /61\.5¢/);
   assert.match(html, /Rules differ if the fight is postponed, cancelled or not scored\. Shown at its own price; not compared\./);
   assert.ok(!/gap \d/.test(html));
+});
+test("bout rows: KalshiBoutLine is venue-neutral and mounted without a Kalshi precondition", () => {
+  const src = readFileSync(join(WEB, "components", "KalshiMarket.tsx"), "utf8");
+  assert.match(src, /<VenueCue boutId=\{boutId\} result=\{result\} wrapClass="ufc-kx-line" \/>/);
+  const ui = readFileSync(join(WEB, "components", "ui.tsx"), "utf8");
+  assert.match(ui, /\{!off \? <KalshiBoutLine boutId=\{b\.id\} initial=\{kalshi \?\? null\}/);
 });
