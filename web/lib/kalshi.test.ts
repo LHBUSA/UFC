@@ -280,11 +280,11 @@ test("no Kalshi API host in web code", () => {
   assert.deepEqual(hits, []);
 });
 
-/* ── vendored files unchanged (canonical client propbetedge-workers 4e49f5f: + loadDesk / venueLines) ── */
+/* ── vendored files unchanged (canonical client propbetedge-workers 4303a38: venue-neutral desk client) ── */
 const VENDORED: Record<string, string> = {
-  "kalshi-market-ui.js": "b5daf1ae57e254dbc0c9bd6de8f9c084d662e7275ee05b2f718571ab44da51e4",
-  "kalshi-market-ui.css": "8e9bff06672342c6902b0cbcf9972ee90acf676a9c01e63987163481ab82c4ba",
-  "kalshi-market-client.js": "91120da57a6e85dffe505e32b67fb6511165804ec030901cd155ffb928941b03",
+  "kalshi-market-ui.js": "54609730281182c3a7d2ba704edb6a9ffe544aae8d9f47f6cab4f65515102375",
+  "kalshi-market-ui.css": "96dca895400c7b76c76e490dd8e945e8cf3af2f22aa1fd97f5d329dc333ba30f",
+  "kalshi-market-client.js": "bbab54f78382f336a149b18f332bc54abe0b9c471ada3dd8ef0d67e5e5706301",
   "README.md": "a80e4ac5d8733bde8afc0c13c281242babff8b1acd083974741f677b7af5a480",
 };
 const CANONICAL = process.env.KALSHI_CLIENT_SRC || "D:/Workers/propbetedge-workers/workers/propsports-markets/client";
@@ -525,21 +525,21 @@ test("presentation placements: hero, card rows, matchup cards, schedule, event p
   const home = read("app/page.tsx");
   assert.equal((home.match(/getKalshiBoard\(/g) || []).length, 1, "homepage: one board read");
   assert.doesNotMatch(home.split("\n").find((l) => l.includes("getKalshiBoard("))!, /access|\.pro/);
-  assert.match(home, /<KalshiBoard initial=\{kalshi\}>/);
+  assert.match(home, /<KalshiBoard initial=\{kalshi\}( desk=\{[^\n]+\})?>/);
   assert.equal((home.match(/variant="hero" side="[ab]"/g) || []).length, 2, "hero: one chip per fighter");
   assert.match(home, /favLabel=\{!heroBook\}/);
   assert.match(home, /<CardSegments [^>]*kalshi=\{kalshi\}/);
   assert.match(home, /<MatchupCard [^>]*kalshi=\{kalshi\[b\.id\] \?\? null\}/);
   const ev = read("app/events/[slug]/page.tsx");
   assert.equal((ev.match(/getKalshiBoard\(/g) || []).length, 1);
-  assert.match(ev, /<KalshiBoard initial=\{kalshiBoard\}>/);
+  assert.match(ev, /<KalshiBoard initial=\{kalshiBoard\}( desk=\{[^\n]+\})?>/);
   assert.match(ev, /placement="event-poster"/);
   const sched = read("app/events/page.tsx");
   assert.equal((sched.match(/getKalshiBoard\(/g) || []).length, 1);
-  assert.match(sched, /<KalshiBoard initial=\{kalshi\}>/);
+  assert.match(sched, /<KalshiBoard initial=\{kalshi\}( desk=\{[^\n]+\})?>/);
   for (const r of ["app/fight-week/page.tsx", "app/pregame/[slug]/page.tsx"]) assert.match(read(r), /getKalshiForBouts\(packet\.live\.map\(\(b\) => b\.id\), \{ moves: true \}\)/);
   const fw = read("components/FightWeek.tsx");
-  assert.match(fw, /<KalshiBoard initial=\{kx\?\.board \?\? \{\}\}>/);
+  assert.match(fw, /<KalshiBoard initial=\{kx\?\.board \?\? \{\}\}( desk=\{[^\n]+\})?>/);
   assert.equal((fw.match(/<KxLine /g) || []).length, 3, "main event, matchup card, scan tile");
   const ui = read("components/ui.tsx");
   assert.match(ui, /placement="matchup-card"/);
@@ -566,11 +566,31 @@ test("chip CSS: cool-blue tokens, distinct from the gold ML chip and the gold PB
 });
 
 /* ── other venues under the card (canonical 4e49f5f venueLines; pm-ufc, propsports-markets 0b2c1b7) ── */
-test("fight card: other venues render under the Kalshi card only, from the shared venueLines, and stop when settled", () => {
+test("Market Pulse is VENUE-NEUTRAL: Kalshi and other venues computed independently; renders when either exists", () => {
   const src = readFileSync(join(WEB, "components", "KalshiMarket.tsx"), "utf8");
-  assert.match(src, /const venues = useMemo\(\(\) => \(html \? venueLines\(desk, \{ placement: "fight-page-venues" \}\) : ""\), \[html, desk\]\);/);
-  assert.match(src, /dangerouslySetInnerHTML=\{\{ __html: html \+ venues \}\}/);
-  assert.match(src, /if \(state === "settled"\) return;/);
+  assert.match(src, /const venues = useMemo\(\(\) => venueLines\(desk, \{ placement: "fight-page-venues", standalone: !html \}\), \[html, desk\]\);/);
+  assert.match(src, /if \(!html && !venues\) return null;/);
+  assert.ok(!/if \(!html\) return null;/.test(src.slice(src.indexOf("export function KalshiMarketCard"), src.indexOf("/* ── ONE BOARD PER PAGE"))), "Kalshi is never a prerequisite");
+  assert.match(src, /aria-label="Market Pulse: prediction markets"/);
+  const page = readFileSync(join(WEB, "app", "fights", "[slug]", "page.tsx"), "utf8");
+  assert.match(page, /const deskRead = b\.status !== "cancelled" \? getMarketDesk\(b\.id\)/);
+  assert.match(page, /initialDesk=\{desk\}/);
+});
+test("compact surfaces carry a venue cue independent of the Kalshi chip (home hero, schedule, event card, poster, matchup card, Fight Week)", () => {
+  const read = (...p: string[]) => readFileSync(join(WEB, ...p), "utf8");
+  for (const [f, n] of [[["app", "page.tsx"], 1], [["app", "events", "page.tsx"], 1], [["app", "events", "[slug]", "page.tsx"], 1], [["components", "ui.tsx"], 3], [["components", "FightWeek.tsx"], 1]] as const) {
+    const src = read(...f);
+    assert.equal((src.match(/<VenueCue /g) || []).length, n, f.join("/"));
+  }
+  for (const f of [["app", "page.tsx"], ["app", "events", "page.tsx"], ["app", "events", "[slug]", "page.tsx"]]) assert.match(read(...f), /<KalshiBoard initial=\{[^}]+\} desk=\{pickDesk\(/, f.join("/"));
+});
+test("Polymarket-only bout (real Oct. 10 Allen v Duncan shape): standalone Market Pulse + compact cue, no Kalshi", async () => {
+  const { venueLines, venueChip } = await import("../vendor/kalshi/kalshi-market-ui.js");
+  const l = (mid: number) => ({ venue: "polymarket", match: "VENUE_ONLY", label: "PREDICTION MARKET", market_url: "https://polymarket.com/event/ufc-bre1-chr20-2026-10-10", mid_bp: mid, bid_bp: mid - 50, ask_bp: mid + 50, freshness: "live" });
+  const d = { canonical_event_id: "aabde22a-cbc0-467f-bffa-830f8eadfadb", contracts: [{ label: "Brendan Allen", venues: [], related: [], listed: [l(6150)] }, { label: "Christian Leroy Duncan", venues: [], related: [], listed: [l(3850)] }] };
+  const html = venueLines(d, { standalone: true });
+  assert.match(html, /Market Pulse/); assert.match(html, /Polymarket/); assert.match(html, /61\.5¢/); assert.ok(!/Kalshi/.test(html));
+  assert.match(venueChip(d), /MARKET<\/i> · POLYMARKET/);
 });
 test("UFC related market (pm-ufc gate wording): own price + exact fight reason, never a gap", async () => {
   const { venueLines } = await import("../vendor/kalshi/kalshi-market-ui.js");

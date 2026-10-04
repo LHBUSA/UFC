@@ -9,7 +9,7 @@
  * card becomes "How the market closed" (shared marketHistoryCard) in the same place.
  * No entry -> nothing rendered; a single empty or failed refresh keeps the last good card. */
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { __resetKalshiFlashes, venueLines, wireKalshi, type DeskEvent } from "@/vendor/kalshi/kalshi-market-ui.js";
+import { __resetKalshiFlashes, venueChip, venueLines, wireKalshi, type DeskEvent } from "@/vendor/kalshi/kalshi-market-ui.js";
 import { createKalshiClient, type KalshiClient } from "@/vendor/kalshi/kalshi-market-client.js";
 import { KALSHI_MARKETS_BASE, KALSHI_SPORT, kalshiCents, kalshiMoveCents, kalshiPollMs, kalshiPollState, sideMove, ufcFreshnessText, ufcKalshiCardHtml, ufcQuote, type KalshiEntry, type UfcClosedQuote, type UfcMove, type UfcRole } from "@/lib/kalshi";
 
@@ -85,23 +85,23 @@ function useDesk(id: string, entry: KalshiEntry | null, set: (d: DeskEvent | nul
   }, [id, state]);
 }
 
-/** Full card for one bout, directly under the faceoff with its lifecycle label.
- * `initial` comes from the server so it is in the first paint. `final`: the bout
- * has a result (the label says FIGHT FINAL while the market still trades). */
-export function KalshiMarketCard({ boutId, initial, completed = false, final = false }: { boutId: string; initial: KalshiEntry | null; completed?: boolean; final?: boolean }) {
+/** MARKET PULSE for one bout, directly under the faceoff. VENUE-NEUTRAL: the canonical bout is the parent, never
+ * Kalshi. The Kalshi card (lifecycle label + shared card) and the other venues (shared venueLines: Polymarket as a
+ * qualifying quote, a labelled related market, or the only listing) are computed INDEPENDENTLY; the section renders
+ * when either exists — Kalshi only, Polymarket only, both — and is absent when neither does. `initial` / `initialDesk`
+ * come from the server so they are in the first paint. `final`: the bout has a result. */
+export function KalshiMarketCard({ boutId, initial, initialDesk = null, completed = false, final = false }: { boutId: string; initial: KalshiEntry | null; initialDesk?: DeskEvent | null; completed?: boolean; final?: boolean }) {
   const [entry, setEntry] = useState<KalshiEntry | null>(initial);
-  const [desk, setDesk] = useState<DeskEvent | null>(null);
+  const [desk, setDesk] = useState<DeskEvent | null>(initialDesk);
   const ref = useRef<HTMLDivElement>(null);
-  usePoll(entry, () => loadEvent(boutId), setEntry, { once: completed });
+  usePoll(entry, () => loadEvent(boutId), setEntry, { once: completed && !initialDesk });
   useDesk(boutId, entry, setDesk);
   const html = useMemo(() => serverSafe(() => ufcKalshiCardHtml(entry, "fight-page", { final })), [entry, final]);
-  /* Other venues (shared venueLines): Polymarket under the Kalshi card only, as a qualifying quote or a labelled
-   * related market with its own price + reason (never compared). No second venue -> nothing. */
-  const venues = useMemo(() => (html ? venueLines(desk, { placement: "fight-page-venues" }) : ""), [html, desk]);
-  useEffect(() => { if (html && ref.current) wireKalshi(ref.current); }, [html, venues]);
-  if (!html) return null;
+  const venues = useMemo(() => venueLines(desk, { placement: "fight-page-venues", standalone: !html }), [html, desk]);
+  useEffect(() => { if ((html || venues) && ref.current) wireKalshi(ref.current); }, [html, venues]);
+  if (!html && !venues) return null;
   return (
-    <section className="ufc-kx ufc-kx--top" id="kalshi" aria-label="Kalshi prediction market">
+    <section className="ufc-kx ufc-kx--top" id="kalshi" data-market-pulse="" aria-label="Market Pulse: prediction markets">
       <div ref={ref} dangerouslySetInnerHTML={{ __html: html + venues }} />
     </section>
   );
@@ -120,8 +120,32 @@ export function KalshiMarketCard({ boutId, initial, completed = false, final = f
  * or failed refresh keeps the last good entry. */
 type Board = Record<string, KalshiEntry>;
 const BoardContext = createContext<Board | null>(null);
+/* Desk board (venue-neutral): every bout with a market on any venue, for compact venue cues (<VenueCue>). */
+type DeskBoard = Record<string, DeskEvent>;
+const DeskContext = createContext<DeskBoard | null>(null);
 
-export function KalshiBoard({ initial, children }: { initial: Board; children: React.ReactNode }) {
+export function KalshiBoard({ initial, desk: initialDesk = {}, children }: { initial: Board; desk?: DeskBoard; children: React.ReactNode }) {
+  const [desk, setDesk] = useState<DeskBoard>(initialDesk);
+  /* The desk board refreshes on the idle cadence (2 min): venue cues change slowly; a failed read keeps the last one. */
+  useEffect(() => {
+    let alive = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const tick = async () => {
+      if (typeof document === "undefined" || !document.hidden) {
+        const map = await client().loadDeskBoard();
+        if (!alive) return;
+        if (map.size || !Object.keys(initialDesk).length) setDesk(Object.fromEntries(map));
+      }
+      if (alive) timer = setTimeout(tick, client().pollMsFor("idle"));
+    };
+    tick();
+    return () => { alive = false; if (timer) clearTimeout(timer); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return <DeskContext.Provider value={desk}><KalshiBoardInner initial={initial}>{children}</KalshiBoardInner></DeskContext.Provider>;
+}
+
+function KalshiBoardInner({ initial, children }: { initial: Board; children: React.ReactNode }) {
   const [board, setBoard] = useState<Board>(initial);
   const misses = useRef<Record<string, number>>({});
   const pollMs = useMemo(() => {
@@ -159,6 +183,18 @@ export function KalshiBoard({ initial, children }: { initial: Board; children: R
     return () => { alive = false; if (timer) clearTimeout(timer); };
   }, [pollMs]);
   return <BoardContext.Provider value={board}>{children}</BoardContext.Provider>;
+}
+
+/** Compact venue cue for list / card surfaces ("MARKET · POLYMARKET  Allen 61.5¢ · Duncan 38.5¢"): every venue other
+ * than Kalshi with a current market on this bout (Kalshi keeps its own chip). Independent of Kalshi: shown whether or not
+ * Kalshi lists the bout. `result`: a finished bout shows no live venue price. */
+export function VenueCue({ boutId, initial = null, result = false, wrapClass = null }: { boutId: string; initial?: DeskEvent | null; result?: boolean; wrapClass?: string | null }) {
+  const desk = useContext(DeskContext);
+  const d = desk ? desk[boutId] ?? initial : initial;
+  const html = useMemo(() => (result ? "" : venueChip(d)), [d, result]);
+  if (!html) return null;
+  const cue = <span className="ufc-vc" data-ufc-vc={boutId} dangerouslySetInnerHTML={{ __html: html }} />;
+  return wrapClass ? <span className={wrapClass}>{cue}</span> : cue;
 }
 
 /** This bout's entry: the page board when mounted under <KalshiBoard>, else the server copy. */

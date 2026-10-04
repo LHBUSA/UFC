@@ -31,8 +31,8 @@ import { getRankingMap } from "@/lib/rankings";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { buildProofRail, type ProofCell } from "@/lib/proofRail";
 import { formatAmerican, getMarketsFor, marketProviderLive } from "@/lib/market";
-import { getKalshiBoard, slimBoard, ufcQuote, type KalshiEntry } from "@/lib/kalshi";
-import { KalshiBoard, KalshiChip } from "@/components/KalshiMarket";
+import { getKalshiBoard, getMarketDeskBoard, pickDesk, slimBoard, ufcQuote, type DeskEvent, type KalshiEntry } from "@/lib/kalshi";
+import { KalshiBoard, KalshiChip, VenueCue } from "@/components/KalshiMarket";
 
 export const revalidate = 300;
 
@@ -118,6 +118,8 @@ export default async function Home() {
    * headline matchups all take their bout from this one read; the browser
    * refresh shares one board request too (<KalshiBoard>). */
   const kalshiRead: Promise<Record<string, KalshiEntry>> = live.length ? getKalshiBoard() : Promise.resolve({});
+  /* Venue-neutral market cues (Polymarket, …): one desk read, independent of Kalshi. */
+  const deskRead: Promise<Record<string, DeskEvent>> = live.length ? getMarketDeskBoard() : Promise.resolve({});
   const [imgs, briefs, media, champs, contenders, dwcsCounts, dwcsReported, freshness, videos, mainMarket, kalshiAll] = await Promise.all([
     getImagesForFighters([
       ...bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]),
@@ -135,6 +137,7 @@ export default async function Home() {
     mainMarketPromise,
     kalshiRead,
   ]);
+  const deskAll = await deskRead;
   const kalshi = slimBoard(Object.fromEntries(live.filter((b) => kalshiAll[b.id]).map((b) => [b.id, kalshiAll[b.id]])));
   /* Sportsbook ML shown in the hero? Without it, the Kalshi chip names the market favourite. */
   const heroBook = mainMarket?.a?.consensus != null || mainMarket?.b?.consensus != null;
@@ -157,7 +160,7 @@ export default async function Home() {
   const contenderById = new Map(contenders.map((f) => [f.id, f]));
 
   return (
-    <KalshiBoard initial={kalshi}>
+    <KalshiBoard initial={kalshi} desk={pickDesk(deskAll, [...live.map((b) => b.id), ...[...mains.values()].map((b) => b.id)])}>
       {/* ONE deliberate arena treatment, server-rendered.
           There is no switcher, no rotation, no timer and no post-hydration
           swap: the image is in the first byte of HTML and never changes. The
@@ -276,6 +279,7 @@ export default async function Home() {
                         </div>
                       </div>
                     </div>
+                    {mainEvent ? <VenueCue boutId={mainEvent.id} result={Boolean(mainEvent.result)} wrapClass="ufc-kc-row ufc-kc-row--start hero-vc" /> : null}
                   </>
                 ) : (
                   <div className="poster-faces" style={{ display: "grid", placeItems: "center" }}><div className="stack" style={{ alignItems: "center", textAlign: "center", padding: 24 }}><Octagon className="" /><div className="faint sm">Card announcement pending. Bouts appear the moment they are published.</div></div></div>

@@ -94,12 +94,36 @@ export function createKalshiClient({ base = 'https://propsports-markets.sales-fd
     return pending
   }
 
+  /**
+   * Desk board for the sport (GET /v1/market-desk?sport=): Map canonical id -> desk event, for compact venue cues on
+   * list surfaces. 30 s cache, one in-flight request; a failed read keeps the last good map (never cached as empty).
+   */
+  let deskBoard = { at: 0, byEvent: new Map(), pending: null }
+  async function loadDeskBoard({ force = false } = {}) {
+    if (!force && Date.now() - deskBoard.at < DESK_TTL_MS) return deskBoard.byEvent
+    if (deskBoard.pending) return deskBoard.pending
+    deskBoard.pending = (async () => {
+      try {
+        const res = await fetchImpl(`${root}/v1/market-desk?sport=${encodeURIComponent(sport)}`, { headers: { accept: 'application/json' } })
+        if (!res.ok) throw new Error(`desk board ${res.status}`)
+        const body = await res.json()
+        const byEvent = new Map((body?.events || []).map((e) => [String(e.canonical_event_id), e]))
+        deskBoard = { at: Date.now(), byEvent, pending: null }
+      } catch {
+        deskBoard = { at: 0, byEvent: deskBoard.byEvent, pending: null }
+      }
+      return deskBoard.byEvent
+    })()
+    return deskBoard.pending
+  }
+  const deskFor = (eventId) => deskBoard.byEvent.get(String(eventId)) || null
+
   /** state: 'live' | 'pregame' | anything else (idle). */
   function pollMsFor(state) {
     return state === 'live' ? POLL_MS.live : state === 'pregame' ? POLL_MS.pregame : POLL_MS.idle
   }
 
-  return { loadBoard, forEvent, loadEvent, loadDesk, pollMsFor, sport }
+  return { loadBoard, forEvent, loadEvent, loadDesk, loadDeskBoard, deskFor, pollMsFor, sport }
 }
 
 /** Network Market Tape (all sports): GET /v1/market-tape. Failures resolve null (never cached as empty). */

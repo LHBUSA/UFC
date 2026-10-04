@@ -8,6 +8,9 @@ export interface KalshiClient {
   loadEvent(eventId: string, opts?: { force?: boolean }): Promise<KalshiEntry | null>;
   /** Multi-venue desk event for one canonical bout (GET /v1/market-desk?sport=&event=); null when none. */
   loadDesk(eventId: string, opts?: { force?: boolean }): Promise<DeskEvent | null>;
+  /** Desk board for the sport (GET /v1/market-desk?sport=): canonical id -> desk event. */
+  loadDeskBoard(opts?: { force?: boolean }): Promise<Map<string, DeskEvent>>;
+  deskFor(eventId: string): DeskEvent | null;
   pollMsFor(state: string): number;
 }
 export function createKalshiClient(opts: { base?: string; sport: string; fetchImpl?: typeof fetch }): KalshiClient;

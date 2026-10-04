@@ -2,7 +2,7 @@ import Link from "next/link";
 import { MarketInline } from "@/components/Market";
 import type { BoutMarket, MarketState } from "@/lib/market";
 import { marketStateFor } from "@/lib/market";
-import { KalshiBoutLine, KalshiChip } from "@/components/KalshiMarket";
+import { KalshiBoutLine, KalshiChip, VenueCue } from "@/components/KalshiMarket";
 import { ufcQuote, type KalshiEntry, type UfcMove } from "@/lib/kalshi";
 import type { Article, Bout, Event, Fighter, PortraitSet } from "@/lib/db";
 import { eventSlug, fighterSlug, matchupSlug } from "@/lib/slug";
@@ -159,6 +159,7 @@ export function EventCard({ e, main, imgs, bouts, kalshi }: { e: Event; main?: B
         ) : <div className="me faint">{bouts ? `${bouts} bouts announced` : "Card announcement pending"}</div>}
         {/* Public Kalshi line for the featured fight (inside this link: no nested anchor). */}
         {main && kalshiShows(kalshi, Boolean(main.result)) ? <div className="ufc-kc-row ufc-kc-row--start"><KalshiChip boutId={main.id} initial={kalshi ?? null} names={{ a: main.fighter_a.name, b: main.fighter_b.name }} variant="pair" result={Boolean(main.result)} placement="event-card" /></div> : null}
+        {main ? <VenueCue boutId={main.id} result={Boolean(main.result)} wrapClass="ufc-kc-row ufc-kc-row--start" /> : null}
         <div className="meta">
           <span>{fmtDate(e.event_date)}</span>
           <span className="truncate">{cityLine(e) || "Venue TBA"}</span>
@@ -176,6 +177,7 @@ export function EventRow({ e, main, bouts, kalshi }: { e: Event; main?: Bout | n
         <div className="t">{e.name}</div>
         <div className="l">{main ? (w ? `${w.name} def. ${w.id === main.fighter_a.id ? main.fighter_b.name : main.fighter_a.name}` : `${main.fighter_a.name} vs ${main.fighter_b.name}`) : locationLine(e) || "Venue TBA"}{bouts ? ` · ${bouts} bouts` : ""}</div>
         {main && kalshiShows(kalshi, Boolean(main.result)) ? <div className="ufc-kc-row ufc-kc-row--start"><KalshiChip boutId={main.id} initial={kalshi ?? null} names={{ a: main.fighter_a.name, b: main.fighter_b.name }} variant="pair" result={Boolean(main.result)} placement="schedule-row" /></div> : null}
+        {main ? <VenueCue boutId={main.id} result={Boolean(main.result)} wrapClass="ufc-kc-row ufc-kc-row--start" /> : null}
       </div>
       <div className="s"><span className="tag">{eventStatusLabel(e)}</span></div>
     </Link>
@@ -335,6 +337,7 @@ export function MatchupCard({ b, e, imgs, ranks, access, kalshi, move }: { b: Bo
       {/* Public Kalshi prediction-market line, directly under the matchup identity;
           linked to the market on Kalshi. Not the Pro sportsbook market. */}
       {b.status !== "cancelled" && kalshiShows(kalshi, Boolean(r)) ? <div className="ufc-kc-row"><KalshiChip boutId={b.id} initial={kalshi ?? null} names={{ a: b.fighter_a.name, b: b.fighter_b.name }} variant="named" result={Boolean(r)} move={move} link placement="matchup-card" /></div> : null}
+      {b.status !== "cancelled" ? <VenueCue boutId={b.id} result={Boolean(r)} wrapClass="ufc-kc-row" /> : null}
       <TaleOfTheTape a={b.fighter_a} b={b.fighter_b} at={e.event_date} />
       {r ? (
         <div className="well mt-4">

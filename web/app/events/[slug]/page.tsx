@@ -34,8 +34,8 @@ import { CardIntelligence } from "@/components/CardIntelligence";
 import { WhereTheyWent } from "@/components/Dwcs";
 import { contenderIdentity } from "@/lib/contenderIdentity";
 import { eventResultsDescription } from "@/lib/seo";
-import { getKalshiBoard, slimBoard, ufcQuote } from "@/lib/kalshi";
-import { KalshiBoard, KalshiChip } from "@/components/KalshiMarket";
+import { getKalshiBoard, getMarketDeskBoard, pickDesk, slimBoard, ufcQuote } from "@/lib/kalshi";
+import { KalshiBoard, KalshiChip, VenueCue } from "@/components/KalshiMarket";
 
 export const revalidate = 300;
 
@@ -135,7 +135,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
    * whole card, bounded wait. The board keeps events completed in the last
    * 7 days, so a finished card read within that window gets each bout's
    * market close line on its result row. */
-  const kalshiRaw = !live.length || (done && (d == null || d < -8)) ? {} : await getKalshiBoard();
+  const [kalshiRaw, deskAll] = !live.length || (done && (d == null || d < -8)) ? [{}, {}] : await Promise.all([getKalshiBoard(), getMarketDeskBoard()]);
   /* Only this card's bouts, slimmed to what the chips read; <KalshiBoard> keeps
    * them fresh with one shared board request per refresh. */
   const kalshiBoard = slimBoard(Object.fromEntries(live.filter((b) => kalshiRaw[b.id]).map((b) => [b.id, kalshiRaw[b.id]])));
@@ -154,7 +154,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   ]);
 
   return (
-    <KalshiBoard initial={kalshiBoard}>
+    <KalshiBoard initial={kalshiBoard} desk={pickDesk(deskAll, live.map((b) => b.id))}>
     <div className="wrap page">
       <Breadcrumbs items={dwcs ? (() => {
         const id = contenderIdentity(e.name, e.event_date);
@@ -183,6 +183,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             </div>
             {/* Main event: public Kalshi line under the name plate, linked to the market. */}
             {posterKalshi && <div className="ufc-kc-row ufc-kc-poster"><KalshiChip boutId={main.id} initial={kalshiBoard[main.id] ?? null} names={{ a: main.fighter_a.name, b: main.fighter_b.name }} variant="named" result={Boolean(main.result)} link placement="event-poster" /></div>}
+            {main ? <VenueCue boutId={main.id} result={Boolean(main.result)} wrapClass="ufc-kc-row ufc-kc-poster" /> : null}
           </>
         ) : null}
         <div className="poster-foot">

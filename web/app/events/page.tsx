@@ -9,8 +9,8 @@ import { eventSlug } from "@/lib/slug";
 import { daysUntil, eventBrand, eventHeadline, eventStatusLabel, fmtDate, fmtDateTime, locationLine, weightClassLabel, winnerOf, METHOD_SHORT } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import { UFC_OFFICIAL } from "@/lib/heritage";
-import { getKalshiBoard, slimBoard, ufcQuote, type KalshiEntry } from "@/lib/kalshi";
-import { KalshiBoard, KalshiChip } from "@/components/KalshiMarket";
+import { getKalshiBoard, getMarketDeskBoard, pickDesk, slimBoard, ufcQuote, type KalshiEntry } from "@/lib/kalshi";
+import { KalshiBoard, KalshiChip, VenueCue } from "@/components/KalshiMarket";
 
 export const revalidate = 300;
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ function ScheduleRow({ e, main, imgs, bouts, kalshi }: { e: Event; main?: Bout |
         {main ? (
           <>
             <Avatar f={main.fighter_a} img={imgs.get(main.fighter_a.id)} size={34} /><Avatar f={main.fighter_b} img={imgs.get(main.fighter_b.id)} size={34} />
-            <span className="txt">{w ? <><b>{w.name}</b> def. {w.id === main.fighter_a.id ? main.fighter_b.name : main.fighter_a.name}{main.result ? ` · ${METHOD_SHORT[main.result.method] || main.result.method}${main.result.round ? ` R${main.result.round}` : ""}` : ""}</> : <><b>{main.fighter_a.name}</b> vs <b>{main.fighter_b.name}</b></>}<small>{weightClassLabel(main.weight_class, main.is_womens)}{main.is_title ? " title" : ""} main event{bouts ? ` · ${bouts} bouts` : ""}</small>{kalshiRowShows(kalshi, Boolean(main.result)) ? <span className="ufc-kc-row ufc-kc-row--start"><KalshiChip boutId={main.id} initial={kalshi ?? null} names={{ a: main.fighter_a.name, b: main.fighter_b.name }} variant="pair" result={Boolean(main.result)} placement="schedule-row" /></span> : null}</span>
+            <span className="txt">{w ? <><b>{w.name}</b> def. {w.id === main.fighter_a.id ? main.fighter_b.name : main.fighter_a.name}{main.result ? ` · ${METHOD_SHORT[main.result.method] || main.result.method}${main.result.round ? ` R${main.result.round}` : ""}` : ""}</> : <><b>{main.fighter_a.name}</b> vs <b>{main.fighter_b.name}</b></>}<small>{weightClassLabel(main.weight_class, main.is_womens)}{main.is_title ? " title" : ""} main event{bouts ? ` · ${bouts} bouts` : ""}</small>{kalshiRowShows(kalshi, Boolean(main.result)) ? <span className="ufc-kc-row ufc-kc-row--start"><KalshiChip boutId={main.id} initial={kalshi ?? null} names={{ a: main.fighter_a.name, b: main.fighter_b.name }} variant="pair" result={Boolean(main.result)} placement="schedule-row" /></span> : null}<VenueCue boutId={main.id} result={Boolean(main.result)} wrapClass="ufc-kc-row ufc-kc-row--start" /></span>
           </>
         ) : <span className="txt faint">{bouts ? `${bouts} bouts announced` : "Card announcement pending"}</span>}
       </div>
@@ -62,9 +62,10 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   /* Kalshi prediction-market board: PUBLIC, ONE read for the page, matched to each
    * card's main event (the board holds upcoming bouts and those completed in the
    * last 7 days, so a fresh result row gets its closed / settled line). */
-  const [imgs, kalshiRaw] = await Promise.all([
+  const [imgs, kalshiRaw, deskAll] = await Promise.all([
     getImagesForFighters([...mains.values()].flatMap((b) => [b.fighter_a.id, b.fighter_b.id])),
     getKalshiBoard(),
+    getMarketDeskBoard(),
   ]);
   const kalshi = slimBoard(Object.fromEntries([...mains.values()].filter((b) => kalshiRaw[b.id]).map((b) => [b.id, kalshiRaw[b.id]])));
   const kx = (e: Event) => { const m = mains.get(e.id); return m ? kalshi[m.id] ?? null : null; };
@@ -77,7 +78,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
   const syncAt = freshness?.finished_at || freshness?.started_at || null;
 
   return (
-    <KalshiBoard initial={kalshi}>
+    <KalshiBoard initial={kalshi} desk={pickDesk(deskAll, [...mains.values()].map((b) => b.id))}>
     <div className="wrap page">
       <PageHead crumbs={[{ name: "Schedule" }]} eyebrow="Live UFC calendar · results archive" title="UFC schedule & results" lede="Every announced UFC card month by month with date, location, status and the featured fight; Contender Series on its own track; and a year-by-year results archive that measures its own historical coverage instead of pretending old cards are complete." />
 

@@ -15,8 +15,8 @@ import { SITE } from "@/lib/site";
 import { ProPreview } from "@/components/ProPreview";
 import { AllAccessMini } from "@/components/Membership";
 import { eventSnapshot, watchForNote } from "@/lib/fightWeekSnapshot";
-import { ufcQuote, type KalshiEntry, type UfcMove } from "@/lib/kalshi";
-import { KalshiBoard, KalshiChip } from "@/components/KalshiMarket";
+import { ufcQuote, type DeskEvent, type KalshiEntry, type UfcMove } from "@/lib/kalshi";
+import { KalshiBoard, KalshiChip, VenueCue } from "@/components/KalshiMarket";
 
 /* Fight Week — Pregame Desk as a product surface, presented as a premium
  * editorial intelligence brief.
@@ -36,12 +36,19 @@ type Portraits = Map<string, PortraitSet>;
 /* Public Kalshi prediction-market layer for the card (one board read + one
  * market-tape read per page, made by the route): the price line sits beside the
  * matchup identity; movement is the tape's stored "since first observed" delta. */
-export type FightWeekKalshi = { board: Record<string, KalshiEntry>; moves: Record<string, UfcMove> };
+export type FightWeekKalshi = { board: Record<string, KalshiEntry>; moves: Record<string, UfcMove>; desk?: Record<string, DeskEvent> };
+/* Market line per bout, VENUE-NEUTRAL: the Kalshi chip when Kalshi lists the bout, and the venue cue (Polymarket, …)
+ * whenever another venue does — each independent of the other. */
 function KxLine({ bout, kx, start = false }: { bout: Bout; kx?: FightWeekKalshi | null; start?: boolean }) {
+  if (bout.status === "cancelled") return null;
   const entry = kx?.board[bout.id] ?? null;
   const q = ufcQuote(entry);
-  if (!q || bout.status === "cancelled" || (q.kind === "open" && bout.result)) return null;
-  return <div className={`ufc-kc-row fw-kc${start ? " ufc-kc-row--start" : ""}`}><KalshiChip boutId={bout.id} initial={entry} names={{ a: bout.fighter_a.name, b: bout.fighter_b.name }} variant="named" result={Boolean(bout.result)} move={kx?.moves[bout.id] ?? null} link placement="fight-week" /></div>;
+  const showK = Boolean(q && !(q.kind === "open" && bout.result));
+  const row = `ufc-kc-row fw-kc${start ? " ufc-kc-row--start" : ""}`;
+  return <>
+    {showK ? <div className={row}><KalshiChip boutId={bout.id} initial={entry} names={{ a: bout.fighter_a.name, b: bout.fighter_b.name }} variant="named" result={Boolean(bout.result)} move={kx?.moves[bout.id] ?? null} link placement="fight-week" /></div> : null}
+    <VenueCue boutId={bout.id} initial={kx?.desk?.[bout.id] ?? null} result={Boolean(bout.result)} wrapClass={row} />
+  </>;
 }
 const lastName = (f: { name: string }) => f.name.split(" ").slice(-1)[0] || f.name;
 
@@ -347,7 +354,7 @@ export function FightWeekPage({ packet, archive, locked = null, kx = null }: { p
   const snapshot = eventSnapshot({ event, stored: packet.broadcast, bouts: live.length, updated, done });
 
   return (
-    <KalshiBoard initial={kx?.board ?? {}}>
+    <KalshiBoard initial={kx?.board ?? {}} desk={kx?.desk ?? {}}>
     <div className="wrap fw-page fw-flagship">
       {archive && <Breadcrumbs items={crumbs} />}
 

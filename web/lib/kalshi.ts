@@ -73,6 +73,24 @@ export async function getKalshiBoard({ fetchImpl = fetch as FetchLike, waitMs = 
   return out;
 }
 
+/* ── MARKET DESK (venue-neutral; propsports-markets 4303a38) ──────────────────
+ * The canonical bout is the parent, never Kalshi: a bout with a Polymarket market and
+ * no Kalshi market is a desk event too. Server reads put it in the first paint. */
+export type DeskEvent = { canonical_event_id: string; contracts: Record<string, unknown>[]; [k: string]: unknown };
+/** The multi-venue desk event for one bout, or null (none, slow, failed, display switch off). */
+export async function getMarketDesk(boutId: string, { fetchImpl = fetch as FetchLike, waitMs = KALSHI_SERVER_WAIT_MS } = {}): Promise<DeskEvent | null> {
+  if (!boutId) return null;
+  const body = await readJson(`${KALSHI_MARKETS_BASE}/v1/market-desk?sport=${KALSHI_SPORT}&event=${encodeURIComponent(boutId)}`, fetchImpl, waitMs);
+  return (body?.events || []).find((e: DeskEvent) => String(e.canonical_event_id) === String(boutId)) ?? null;
+}
+/** Every UFC desk event keyed by bout uuid (compact venue cues on list surfaces); empty on failure. */
+export async function getMarketDeskBoard({ fetchImpl = fetch as FetchLike, waitMs = KALSHI_SERVER_WAIT_MS } = {}): Promise<Record<string, DeskEvent>> {
+  const body = await readJson(`${KALSHI_MARKETS_BASE}/v1/market-desk?sport=${KALSHI_SPORT}`, fetchImpl, waitMs);
+  const out: Record<string, DeskEvent> = {};
+  for (const e of body?.events || []) if (e?.canonical_event_id) out[String(e.canonical_event_id)] = e;
+  return out;
+}
+
 /** Poll state. A settled market never changes again; a closed one only waits
  * for the venue's settlement; otherwise the API event state decides. */
 export function kalshiPollState(entry: KalshiEntry | null | undefined): "live" | "pregame" | "closed" | "settled" | "idle" {
@@ -330,12 +348,15 @@ export function slimBoard(board: Record<string, KalshiEntry>): Record<string, Ka
 
 /** One board read (+ optionally one market-tape read) for a page, narrowed to its
  * bouts and slimmed for the client. Failures resolve to empty maps. */
-export async function getKalshiForBouts(boutIds: string[], { moves = false }: { moves?: boolean } = {}): Promise<{ board: Record<string, KalshiEntry>; moves: Record<string, UfcMove> }> {
-  if (!boutIds.length) return { board: {}, moves: {} };
-  const [raw, mv] = await Promise.all([getKalshiBoard(), moves ? getKalshiMoves() : Promise.resolve({} as Record<string, UfcMove>)]);
+export async function getKalshiForBouts(boutIds: string[], { moves = false }: { moves?: boolean } = {}): Promise<{ board: Record<string, KalshiEntry>; moves: Record<string, UfcMove>; desk: Record<string, DeskEvent> }> {
+  if (!boutIds.length) return { board: {}, moves: {}, desk: {} };
+  const [raw, mv, deskAll] = await Promise.all([getKalshiBoard(), moves ? getKalshiMoves() : Promise.resolve({} as Record<string, UfcMove>), getMarketDeskBoard()]);
   const ids = boutIds.filter((id) => raw[id]);
   return {
     board: slimBoard(Object.fromEntries(ids.map((id) => [id, raw[id]]))),
     moves: Object.fromEntries(ids.filter((id) => mv[id]).map((id) => [id, mv[id]])),
+    desk: pickDesk(deskAll, boutIds),
   };
 }
+/** Only these bouts' desk events (venue cues are independent of Kalshi: every bout with any venue). */
+export const pickDesk = (all: Record<string, DeskEvent>, boutIds: string[]): Record<string, DeskEvent> => Object.fromEntries(boutIds.filter((id) => all[id]).map((id) => [id, all[id]]));

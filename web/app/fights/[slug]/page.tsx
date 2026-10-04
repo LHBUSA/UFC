@@ -22,7 +22,7 @@ import { BoutWeighIns } from "@/components/WeighInBits";
 import { BoutStatusAlert } from "@/components/StatusBits";
 import { MarketSection } from "@/components/Market";
 import { KalshiMarketCard } from "@/components/KalshiMarket";
-import { getAlgoVsMarketEvent, getKalshiEvent } from "@/lib/kalshi";
+import { getAlgoVsMarketEvent, getKalshiEvent, getMarketDesk } from "@/lib/kalshi";
 import { AlgoVsMarketFight } from "@/components/AlgoVsMarket";
 import { OfficialScorecards } from "@/components/Scorecard";
 import { buildBoutScorecard, wentToTheJudges } from "@/lib/judgeScoring";
@@ -138,6 +138,8 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
    * completed bouts too: a closed or settled market keeps "How the market
    * closed" on the page (pricing never disappears when the fight ends). */
   const kalshiRead = b.status !== "cancelled" ? getKalshiEvent(b.id) : Promise.resolve(null);
+  /* Venue-neutral Market Pulse: the multi-venue desk is read independently of Kalshi (Polymarket-only bouts render). */
+  const deskRead = b.status !== "cancelled" ? getMarketDesk(b.id) : Promise.resolve(null);
   /* Algo vs Market (PBE pick vs market at PBE lock): public, read alongside; the API returns a pending call as LOCKED with no selection. */
   const avmRead = b.status !== "cancelled" ? getAlgoVsMarketEvent(b.id) : Promise.resolve(null);
   const [imgs, rounds, articles, histA, histB, statusByBout, weighInsByBout, fightTotals] = await Promise.all([
@@ -181,7 +183,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
     ])
     : [new Map(), false, new Set<string>()] as const;
   const market = markets.get(b.id);
-  const [kalshi, avm] = await Promise.all([kalshiRead, avmRead]);
+  const [kalshi, avm, desk] = await Promise.all([kalshiRead, avmRead, deskRead]);
   const marketState = marketStateFor(market, {
     eventDate: e.event_date, hasResult: Boolean(r), providerLive,
     unresolved: unresolved.has(b.id),
@@ -287,7 +289,7 @@ export default async function FightPage({ params }: { params: Promise<{ slug: st
           Mounted for every bout that is not cancelled, completed ones included.
           Renders nothing without an entry; a completed bout with none is
           checked once. */}
-      {(kalshi || b.status !== "cancelled") && <KalshiMarketCard boutId={b.id} initial={kalshi} completed={Boolean(r)} final={Boolean(r)} />}
+      {(kalshi || desk || b.status !== "cancelled") && <KalshiMarketCard boutId={b.id} initial={kalshi} initialDesk={desk} completed={Boolean(r)} final={Boolean(r)} />}
       <AlgoVsMarketFight payload={avm} a={b.fighter_a.name} b={b.fighter_b.name} />
 
       {!r && <BoutWeighIns weighIns={boutWeighIns} cornerA={{ id: b.fighter_a.id, name: b.fighter_a.name }} cornerB={{ id: b.fighter_b.id, name: b.fighter_b.name }} ranks={ranks} division={boutDivision} />}
