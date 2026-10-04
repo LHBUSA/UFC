@@ -12,6 +12,10 @@ export interface KalshiOutcome {
   best_yes_ask_bp?: number | null;
   last_price_bp?: number | null;
   displayable?: boolean;
+  /** card gate (propbetedge-workers 64ca257): open, traded, at least one real side; independent of Mid-market */
+  renderable?: boolean;
+  /** exactly one effective side at the $0 / $1 boundary: no Mid-market */
+  one_sided?: boolean;
   [k: string]: unknown;
 }
 export interface KalshiBlock {
@@ -21,6 +25,9 @@ export interface KalshiBlock {
   freshness?: string;
   age_seconds?: number | null;
   outcomes: KalshiOutcome[];
+  /** every outcome has a two-sided Mid-market */
+  mid_available?: boolean;
+  book?: "one_sided" | "two_sided";
   [k: string]: unknown;
 }
 export interface KalshiEntry {

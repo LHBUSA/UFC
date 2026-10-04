@@ -280,9 +280,9 @@ test("no Kalshi API host in web code", () => {
   assert.deepEqual(hits, []);
 });
 
-/* ── vendored files unchanged (canonical client propbetedge-workers e1d4284: venue cards) ── */
+/* ── vendored files unchanged (canonical client propbetedge-workers 64ca257: one-sided book keeps the card) ── */
 const VENDORED: Record<string, string> = {
-  "kalshi-market-ui.js": "c4989c79ed3824c92363780d08d966ab752a5e65347af1693a8b22afc6fd7e29",
+  "kalshi-market-ui.js": "639f834c27bffed519d37eea4066d3b31e5699f7215d6ea5c07e23c2591ccc48",
   "kalshi-market-ui.css": "df81df5650cc66d0bcea37c2808eaf783522ad9f921449e954f590d4ad9a2c60",
   "kalshi-market-client.js": "bbab54f78382f336a149b18f332bc54abe0b9c471ada3dd8ef0d67e5e5706301",
   "README.md": "a80e4ac5d8733bde8afc0c13c281242babff8b1acd083974741f677b7af5a480",
@@ -613,4 +613,25 @@ test("live venue refresh: own 30 s desk cadence (independent of Kalshi), forced 
   assert.match(src, /client\(\)\.loadDesk\(id, \{ force: true \}\)/);
   assert.match(src, /timer = setTimeout\(tick, DESK_POLL_MS\)/);
   assert.match(src, /const t = setInterval\(\(\) => tickVenueAges\(ref\.current\), VENUE_AGE_TICK_MS\);\s+return \(\) => clearInterval\(t\);/);
+});
+
+/* ── network P0 2026-10-04: one-sided book at the $0/$1 boundary keeps the full card (vendored 64ca257) ── */
+test("99/1 one-sided book: full Kalshi card with truthful Bid/Ask/Last, no Mid-market, link kept; compact line absent", () => {
+  const e = entry() as any;
+  const side = (o: any, bid: number | null, ask: number | null, last: number) => ({ ...o, best_yes_bid_bp: bid, best_yes_ask_bp: ask, last_price_bp: last, mid_bp: null, spread_bp: null, displayable: false, renderable: true, one_sided: true });
+  e.kalshi.outcomes = [side(e.kalshi.outcomes[0], 9900, null, 9900), side(e.kalshi.outcomes[1], null, 100, 100)];
+  e.kalshi.mid_available = false; e.kalshi.book = "one_sided";
+  const html = ufcKalshiCardHtml(e as KalshiEntry);
+  assert.ok(html.includes(e.kalshi.market_url), "Kalshi link kept");
+  const panels = html.split('class="kx__panel"').slice(1);
+  assert.equal(panels.length, 2);
+  assert.match(panels[0], /<dt>Bid<\/dt><dd>99¢<\/dd>[\s\S]*<dt>Ask<\/dt><dd>—<\/dd>[\s\S]*<dt>Last<\/dt><dd>99¢<\/dd>/);
+  assert.match(panels[1], /<dt>Bid<\/dt><dd>—<\/dd>[\s\S]*<dt>Ask<\/dt><dd>1¢<\/dd>[\s\S]*<dt>Last<\/dt><dd>1¢<\/dd>/);
+  assert.ok(html.includes("Mid-market unavailable at this observation · one-sided book"));
+  assert.ok(!/kx__pxl">Mid-market</.test(html) && !/99\.5¢|0\.5¢/.test(html), "no invented midpoint");
+  assert.equal(ufcKalshiLineHtml(e as KalshiEntry), "", "compact line needs a valid Mid-market");
+  assert.equal(ufcQuote(e as KalshiEntry), null, "compact quote needs a valid Mid-market");
+  const old = entry() as any;
+  old.kalshi.outcomes = e.kalshi.outcomes.map(({ renderable, ...x }: any) => x);
+  assert.equal(ufcKalshiCardHtml(old as KalshiEntry), "", "an older API block without renderable fails closed");
 });
