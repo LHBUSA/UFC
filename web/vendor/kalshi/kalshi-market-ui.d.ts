@@ -48,6 +48,8 @@ export function venueLines(deskEvent: DeskEvent | null | undefined, opts?: { pla
 export function deskVenues(deskEvent: DeskEvent | null | undefined): string[];
 /** Compact venue cue for list / card surfaces; '' when none. */
 export function venueChip(deskEvent: DeskEvent | null | undefined): string;
+/** Re-render "Updated Xs ago" on venue cards in place. */
+export function tickVenueAges(root?: ParentNode | null): void;
 export function __resetKalshiFlashes(): void;
 /* ALGO vs MARKET (canonical ad6187a): /v1/algo-vs-market/:sport and /v1/algo-vs-market/event/:sport/:id. */
 export interface AvmComparison {

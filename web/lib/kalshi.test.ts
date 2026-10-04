@@ -280,10 +280,10 @@ test("no Kalshi API host in web code", () => {
   assert.deepEqual(hits, []);
 });
 
-/* ── vendored files unchanged (canonical client propbetedge-workers 4303a38: venue-neutral desk client) ── */
+/* ── vendored files unchanged (canonical client propbetedge-workers b1e8183: venue cards + movement) ── */
 const VENDORED: Record<string, string> = {
-  "kalshi-market-ui.js": "54609730281182c3a7d2ba704edb6a9ffe544aae8d9f47f6cab4f65515102375",
-  "kalshi-market-ui.css": "96dca895400c7b76c76e490dd8e945e8cf3af2f22aa1fd97f5d329dc333ba30f",
+  "kalshi-market-ui.js": "adc0aee41638d8fd949f1632c19d81fd7e4a107d2dffbf5c19334dd2cc815229",
+  "kalshi-market-ui.css": "df81df5650cc66d0bcea37c2808eaf783522ad9f921449e954f590d4ad9a2c60",
   "kalshi-market-client.js": "bbab54f78382f336a149b18f332bc54abe0b9c471ada3dd8ef0d67e5e5706301",
   "README.md": "a80e4ac5d8733bde8afc0c13c281242babff8b1acd083974741f677b7af5a480",
 };
@@ -589,7 +589,7 @@ test("Polymarket-only bout (real Oct. 10 Allen v Duncan shape): standalone Marke
   const l = (mid: number) => ({ venue: "polymarket", match: "VENUE_ONLY", label: "PREDICTION MARKET", market_url: "https://polymarket.com/event/ufc-bre1-chr20-2026-10-10", mid_bp: mid, bid_bp: mid - 50, ask_bp: mid + 50, freshness: "live" });
   const d = { canonical_event_id: "aabde22a-cbc0-467f-bffa-830f8eadfadb", contracts: [{ label: "Brendan Allen", venues: [], related: [], listed: [l(6150)] }, { label: "Christian Leroy Duncan", venues: [], related: [], listed: [l(3850)] }] };
   const html = venueLines(d, { standalone: true });
-  assert.match(html, /Market Pulse/); assert.match(html, /Polymarket/); assert.match(html, /61\.5¢/); assert.ok(!/Kalshi/.test(html));
+  assert.match(html, /Market Pulse/); assert.match(html, /Polymarket/); assert.match(html, /61\.5¢/); assert.ok(!/Kalshi/.test(html)); assert.match(html, /class="ic kx kx--venue kx--polymarket"/);
   assert.match(venueChip(d), /MARKET<\/i> · POLYMARKET/);
 });
 test("UFC related market (pm-ufc gate wording): own price + exact fight reason, never a gap", async () => {
@@ -606,4 +606,11 @@ test("bout rows: KalshiBoutLine is venue-neutral and mounted without a Kalshi pr
   assert.match(src, /<VenueCue boutId=\{boutId\} result=\{result\} wrapClass="ufc-kx-line" \/>/);
   const ui = readFileSync(join(WEB, "components", "ui.tsx"), "utf8");
   assert.match(ui, /\{!off \? <KalshiBoutLine boutId=\{b\.id\} initial=\{kalshi \?\? null\}/);
+});
+test("live venue refresh: own 30 s desk cadence (independent of Kalshi), forced re-read, freshness ticks every 10 s, cleaned up", () => {
+  const src = readFileSync(join(WEB, "components", "KalshiMarket.tsx"), "utf8");
+  assert.match(src, /export const DESK_POLL_MS = 30_000;/);
+  assert.match(src, /client\(\)\.loadDesk\(id, \{ force: true \}\)/);
+  assert.match(src, /timer = setTimeout\(tick, DESK_POLL_MS\)/);
+  assert.match(src, /const t = setInterval\(\(\) => tickVenueAges\(ref\.current\), VENUE_AGE_TICK_MS\);\s+return \(\) => clearInterval\(t\);/);
 });

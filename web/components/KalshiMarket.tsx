@@ -9,7 +9,7 @@
  * card becomes "How the market closed" (shared marketHistoryCard) in the same place.
  * No entry -> nothing rendered; a single empty or failed refresh keeps the last good card. */
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { __resetKalshiFlashes, venueChip, venueLines, wireKalshi, type DeskEvent } from "@/vendor/kalshi/kalshi-market-ui.js";
+import { __resetKalshiFlashes, tickVenueAges, venueChip, venueLines, wireKalshi, type DeskEvent } from "@/vendor/kalshi/kalshi-market-ui.js";
 import { createKalshiClient, type KalshiClient } from "@/vendor/kalshi/kalshi-market-client.js";
 import { KALSHI_MARKETS_BASE, KALSHI_SPORT, kalshiCents, kalshiMoveCents, kalshiPollMs, kalshiPollState, sideMove, ufcFreshnessText, ufcKalshiCardHtml, ufcQuote, type KalshiEntry, type UfcClosedQuote, type UfcMove, type UfcRole } from "@/lib/kalshi";
 
@@ -66,8 +66,11 @@ function usePoll(entry: KalshiEntry | null, load: () => Promise<KalshiEntry | nu
   }, [state]);
 }
 
-/* Other venues: the multi-venue desk is read in the browser after mount (never blocks the server render), then on
- * the card's own cadence; a failed read keeps the last good desk (shared client). A settled market stops it. */
+/* Venue desk (Polymarket, …): read in the browser after mount (the server copy is the first paint), then on its OWN
+ * 30 s cadence while visible — independent of Kalshi's state (a venue never waits on another venue). A failed read keeps
+ * the last good desk (shared client). Stops only when the Kalshi market for this bout is settled AND no desk exists. */
+export const DESK_POLL_MS = 30_000;
+export const VENUE_AGE_TICK_MS = 10_000;
 function useDesk(id: string, entry: KalshiEntry | null, set: (d: DeskEvent | null) => void) {
   const state = kalshiPollState(entry);
   useEffect(() => {
@@ -75,9 +78,8 @@ function useDesk(id: string, entry: KalshiEntry | null, set: (d: DeskEvent | nul
     let alive = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const tick = async () => {
-      if (typeof document === "undefined" || !document.hidden) { const d = await client().loadDesk(id); if (alive) set(d); }
-      const ms = kalshiPollMs(state, (s) => client().pollMsFor(s));
-      if (alive && ms != null) timer = setTimeout(tick, ms);
+      if (typeof document === "undefined" || !document.hidden) { const d = await client().loadDesk(id, { force: true }); if (alive) set(d); }
+      if (alive) timer = setTimeout(tick, DESK_POLL_MS);
     };
     tick();
     return () => { alive = false; if (timer) clearTimeout(timer); };
@@ -99,6 +101,12 @@ export function KalshiMarketCard({ boutId, initial, initialDesk = null, complete
   const html = useMemo(() => serverSafe(() => ufcKalshiCardHtml(entry, "fight-page", { final })), [entry, final]);
   const venues = useMemo(() => venueLines(desk, { placement: "fight-page-venues", standalone: !html }), [html, desk]);
   useEffect(() => { if ((html || venues) && ref.current) wireKalshi(ref.current); }, [html, venues]);
+  /* "Updated Xs ago" on the venue cards re-renders in place every 10 s (no rebuild). */
+  useEffect(() => {
+    if (!venues) return;
+    const t = setInterval(() => tickVenueAges(ref.current), VENUE_AGE_TICK_MS);
+    return () => clearInterval(t);
+  }, [venues]);
   if (!html && !venues) return null;
   return (
     <section className="ufc-kx ufc-kx--top" id="kalshi" data-market-pulse="" aria-label="Market Pulse: prediction markets">

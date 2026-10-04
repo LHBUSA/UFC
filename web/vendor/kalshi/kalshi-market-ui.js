@@ -383,36 +383,98 @@ export function marketModule(entry, opts = {}) {
 const VENUE_NAME = { polymarket: 'Polymarket', kalshi: 'Kalshi' }
 const vName = (v) => VENUE_NAME[v] || String(v || '')
 function vPrice(q) {
-  if (q?.mid_bp != null) return { text: centsLabel(q.mid_bp, { fixed: true }), label: 'Mid-market' }
-  if (q?.bid_bp != null && q?.ask_bp != null) return { text: `${centsLabel(q.bid_bp)} / ${centsLabel(q.ask_bp)}`, label: 'bid / ask' }
+  if (q?.mid_bp != null) return { text: centsLabel(q.mid_bp, { fixed: true }), label: 'Mid-market', bp: q.mid_bp }
+  if (q?.bid_bp != null && q?.ask_bp != null) return { text: `${centsLabel(q.bid_bp)} / ${centsLabel(q.ask_bp)}`, label: 'Bid / ask', bp: null }
   return null
 }
-const vFresh = (f) => (f === 'live' ? 'Live' : f === 'delayed' ? 'Delayed' : '')
+// Relationship to OUR canonical contract (and to Kalshi when Kalshi lists it): one consistent vocabulary.
+const REL = {
+  EXACT_MATCH: { tag: 'Exact market', sub: 'Same contract rules as Kalshi' },
+  COMPARABLE_EXCEPT_EXCEPTIONS: { tag: 'Comparable market', sub: 'Comparable to Kalshi except edge cases' },
+  related: { tag: null, sub: 'Related market — not compared' },
+  listed: { tag: 'Prediction market', sub: 'Only venue with a market here' },
+}
+const secondsSince = (iso) => { const t = Date.parse(iso || ''); return Number.isFinite(t) ? Math.max(0, (Date.now() - t) / 1000) : null }
+function venueBadge(fresh, observedAt) {
+  const age = ageLabel(secondsSince(observedAt))
+  if (fresh === 'live') return `<span class="kx__st kx__st--live" data-kx-age-of="${esc(observedAt || '')}"><span class="kx__pulse" aria-hidden="true"></span>Updated ${esc(age)}</span>`
+  if (fresh === 'delayed') return `<span class="kx__st kx__st--delayed" data-kx-age-of="${esc(observedAt || '')}">Delayed · Updated ${esc(age)}</span>`
+  return ''
+}
+function venuePanel(row, { placement, venue, url }) {
+  const { c, v } = row
+  const px = vPrice(v)
+  const mv = v.movement || null
+  const dir = px?.bp != null ? direction(`${placement}|${venue}`, v.outcome_id || c.label, px.bp) : ''
+  const spark = mv?.points?.length >= 2 ? sparkline(mv.points) : ''
+  const gap = row.gap != null ? `<span class="kx-v__gap">Gap ${esc(String(row.gap))} pts vs Kalshi</span>` : ''
+  return `<div class="kx__panel">
+    <div class="kx__who"><b>${esc(c.label || '')}</b><small>${esc(c.label || '')} wins · YES</small></div>
+    <a class="kx__price" href="${esc(url)}" target="_blank" rel="noopener noreferrer" data-kx-click data-kx-placement="${esc(placement)}"><span class="kx__px mono${dir}">${esc(px.text)}</span><span class="kx__pxl">${esc(px.label)}</span></a>
+    <div class="kx__move">${deltaChip(mv)}${spark}${gap}</div>
+    <dl class="kx__book mono">
+      <div><dt>Bid</dt><dd>${esc(centsLabel(v.bid_bp) ?? '—')}</dd></div>
+      <div><dt>Ask</dt><dd>${esc(centsLabel(v.ask_bp) ?? '—')}</dd></div>
+    </dl>
+  </div>`
+}
 //  - listed[] (VENUE_ONLY): the only venue with a market on our contract — its own price, labelled, never compared.
+/**
+ * Venue cards (Polymarket, …) for one desk event — first-class siblings of kalshiCard, built on the SAME card structure
+ * (Market Pulse brand, two-sided panels, Mid-market, movement since first observed + sparkline of OUR stored
+ * observations, bid / ask, freshness badge, venue CTA) plus a relationship tag and, for related markets, a contained
+ * rules note (one scannable line + the precise detail). { standalone: true } when no Kalshi card is on the page: the
+ * card then carries the Market Pulse brand itself. Stale / unpriced quotes are omitted; nothing -> ''.
+ */
 export function venueLines(deskEvent, { placement = 'venues', standalone = false } = {}) {
-  const groups = new Map() // `${venue}|${kind}` -> { venue, label, reason, url, rows: [] }
+  const groups = new Map() // `${venue}|${kind}` -> card
   for (const c of deskEvent?.contracts || []) {
-    const quotes = (c.venues || []).filter((v) => v.venue !== 'kalshi' && v.freshness && v.freshness !== 'stale').map((v) => ({ v, kind: v.match, label: v.match === 'EXACT_MATCH' ? 'SAME RULES' : 'COMPARABLE', reason: v.disclosure || null }))
-    const rel = (c.related || []).filter((r) => r.freshness && r.freshness !== 'stale').map((r) => ({ v: r, kind: 'related', label: r.label || 'RELATED MARKET', reason: r.reason || null }))
-    const lst = (c.listed || []).filter((r) => r.venue !== 'kalshi' && r.freshness && r.freshness !== 'stale').map((r) => ({ v: r, kind: 'listed', label: r.label || 'PREDICTION MARKET', reason: null }))
-    for (const { v, kind, label, reason } of [...quotes, ...rel, ...lst]) {
-      const px = vPrice(v)
-      if (!px || !v.market_url) continue
+    const quotes = (c.venues || []).filter((v) => v.venue !== 'kalshi' && v.freshness && v.freshness !== 'stale').map((v) => ({ v, kind: v.match }))
+    const rel = (c.related || []).filter((r) => r.freshness && r.freshness !== 'stale').map((r) => ({ v: r, kind: 'related' }))
+    const lst = (c.listed || []).filter((r) => r.venue !== 'kalshi' && r.freshness && r.freshness !== 'stale').map((r) => ({ v: r, kind: 'listed' }))
+    for (const { v, kind } of [...quotes, ...rel, ...lst]) {
+      if (!vPrice(v) || !v.market_url) continue
       const k = `${v.venue}|${kind}`
-      const g = groups.get(k) || { venue: v.venue, kind, label, reason, url: v.market_url, fresh: v.freshness, rows: [] }
-      const gap = kind !== 'related' && kind !== 'listed' && c.comparison?.match_class === v.match && c.comparison.venue_gap_pts != null ? ` · gap ${Math.round(c.comparison.venue_gap_pts)} pts vs Kalshi` : ''
-      g.rows.push(`<span class="kx-v__o"><span class="kx-v__n">${esc(c.label || '')}</span><b class="mono">${esc(px.text)}</b><small>${esc(px.label)}${esc(gap)}</small></span>`)
+      const g = groups.get(k) || { venue: v.venue, kind, url: v.market_url, label: v.label || null, summary: v.summary || null, reason: v.reason || null, disclosure: v.disclosure || null, fresh: v.freshness, observedAt: v.observed_at || null, rows: [] }
+      if (v.freshness === 'delayed') g.fresh = 'delayed' // the card is only as fresh as its least fresh quote
+      if (v.observed_at && (!g.observedAt || v.observed_at < g.observedAt)) g.observedAt = v.observed_at
+      const gap = kind !== 'related' && kind !== 'listed' && c.comparison?.match_class === v.match && c.comparison.venue_gap_pts != null ? Math.round(c.comparison.venue_gap_pts) : null
+      g.rows.push({ c, v, gap })
       groups.set(k, g)
     }
   }
   if (!groups.size) return ''
-  const blocks = [...groups.values()].map((g) => `<div class="kx-v__g kx-v__g--${g.kind === 'related' ? 'rel' : 'q'}" data-venue="${esc(g.venue)}" data-match="${esc(g.kind)}">
-      <div class="kx-v__h"><a href="${esc(g.url)}" target="_blank" rel="noopener noreferrer" data-kx-click data-kx-placement="${esc(placement)}">${esc(vName(g.venue))}</a><i class="kx-v__tag">${esc(g.label)}</i>${vFresh(g.fresh) ? `<span class="kx-v__f">${esc(vFresh(g.fresh))}</span>` : ''}</div>
-      <div class="kx-v__os">${g.rows.join('')}</div>
-      ${g.reason ? `<p class="kx-v__r">${esc(g.reason)}${g.kind === 'related' ? '. Shown at its own price; not compared.' : ''}</p>` : ''}
-    </div>`).join('')
-  const head = standalone ? '<p class="kx-v__hd"><b>Market Pulse</b><span>Prediction market</span></p>' : ''
-  return `<section class="kx-v${standalone ? ' kx-v--solo' : ''}" data-kx-venues aria-label="Prediction-market venues">${head}${blocks}<p class="kx-v__ft">Prediction-market prices on each venue's own book · not sportsbook odds or a PropBetEdge model</p></section>`
+  const cards = [...groups.values()].map((g) => {
+    const rel = REL[g.kind] || REL.related
+    const tag = g.kind === 'related' ? (g.label || 'RELATED MARKET · RULES DIFFER') : rel.tag
+    const live = g.fresh === 'live'
+    const sub = `${live ? 'Live prediction market' : 'Prediction market'} · ${vName(g.venue)}`
+    const note = g.kind === 'related'
+      ? `<div class="kx-v__rules" role="note"><b>${esc(g.summary || 'Settlement rules differ between venues')}</b><small>${esc(g.reason || '')}${g.reason ? '. ' : ''}Shown at its own price; not compared.</small></div>`
+      : g.kind === 'COMPARABLE_EXCEPT_EXCEPTIONS' && g.disclosure
+        ? `<div class="kx-v__rules kx-v__rules--cmp" role="note"><b>Comparable except edge cases</b><small>${esc(g.disclosure)}</small></div>`
+        : g.kind === 'listed' ? `<p class="kx-v__solo">Only venue with a market on this ${g.rows.length === 2 ? 'contest' : 'event'} right now · not compared</p>` : ''
+    return `<section class="ic kx kx--venue kx--${esc(g.venue)}" data-kx-venue="${esc(g.venue)}" data-match="${esc(g.kind)}" aria-label="${esc(vName(g.venue))} prediction market">
+    <header class="kx__hd">
+      <div class="kx__brand"><span class="kx__name">${esc(standalone ? 'Market Pulse' : vName(g.venue))}</span><span class="kx__sub">${esc(sub)}</span></div>
+      ${venueBadge(g.fresh, g.observedAt)}
+    </header>
+    <p class="kx-v__rel kx-v__rel--${esc(g.kind === 'related' ? 'related' : g.kind === 'listed' ? 'listed' : g.kind === 'EXACT_MATCH' ? 'exact' : 'comparable')}"><span>${esc(tag)}</span></p>
+    <div class="kx__grid" style="--kx-cols:${g.rows.length}">${g.rows.map((r) => venuePanel(r, { placement, venue: g.venue, url: g.url })).join('')}</div>
+    ${note}
+    <footer class="kx__ft"><span>${esc(vName(g.venue))} · Prediction market data</span><a class="kx__cta" href="${esc(g.url)}" target="_blank" rel="noopener noreferrer" data-kx-click data-kx-placement="${esc(placement)}">View market on ${esc(vName(g.venue))} ↗</a></footer>
+  </section>`
+  }).join('')
+  return `<div class="kx-v${standalone ? ' kx-v--solo' : ''}" data-kx-venues>${cards}<p class="kx-v__ft">Prediction-market prices on each venue's own book · not sportsbook odds or a PropBetEdge model</p></div>`
+}
+
+/** Re-render every "Updated Xs ago" inside `root` from its observed time (call on a timer; no DOM rebuild). */
+export function tickVenueAges(root) {
+  for (const el of root?.querySelectorAll?.('[data-kx-age-of]') || []) {
+    const age = ageLabel(secondsSince(el.dataset.kxAgeOf))
+    const t = el.lastChild
+    if (t && t.nodeType === 3) { const next = el.classList.contains('kx__st--delayed') ? `Delayed · Updated ${age}` : `Updated ${age}`; if (t.textContent !== next) t.textContent = next }
+  }
 }
 
 /** Venues of a desk event with a current, priced market (other than Kalshi), e.g. ['polymarket']. */
