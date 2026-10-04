@@ -72,10 +72,10 @@ test("browser code reads same-origin only; the route is exact", () => {
   assert.ok(existsSync(join(WEB, "app", "api", "markets", "v1", "article-market", "ufc", "[id]", "route.ts")));
 });
 
-/* vendored unchanged: propbetedge-workers 9d887f3 (workers/propsports-markets/client) */
+/* vendored unchanged: propbetedge-workers 8d3b73f (workers/propsports-markets/client) */
 const VENDORED: Record<string, string> = {
-  "article-market-ui.js": "6d9e875beb080ed84e5b4806c41392c1990402b91b2dc40528f4d0bb53e4d3c6",
-  "article-market-ui.css": "cfe70d8ca4cb90715e28ff73d71ece09d1066f86e3b317e08c49a1058c888737",
+  "article-market-ui.js": "2149e2854142657a554ef119533680c77657f0d2b1ea8406fe4de711e4fbe635",
+  "article-market-ui.css": "60c223f6afbe32059ea272aeaff648759c254f3494106c41822afaf328c7aa4e",
 };
 test("vendored article-market files are byte-identical to the pinned canonical client", () => {
   for (const [name, sha] of Object.entries(VENDORED)) {

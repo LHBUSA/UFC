@@ -1,6 +1,6 @@
 /* Type declarations for the vendored, unchanged article-market-ui.js (contract article-market/1,
  * packet post_event_market_result/1). This file is ours; article-market-ui.js / .css beside it are
- * byte-identical copies of propbetedge-workers/workers/propsports-markets/client/ at 9d887f3
+ * byte-identical copies of propbetedge-workers/workers/propsports-markets/client/ at 8d3b73f
  * (enforced by lib/articleMarket.test.ts). */
 export interface ArticleMarketPayload {
   contract: string;
