@@ -406,7 +406,7 @@ function venuePanel(row, { placement, venue, url }) {
   const px = vPrice(v)
   const mv = v.movement || null
   const dir = px?.bp != null ? direction(`${placement}|${venue}`, v.outcome_id || c.label, px.bp) : ''
-  const spark = mv?.points?.length >= 2 ? sparkline(mv.points) : ''
+  const spark = mv?.points?.length >= 3 ? sparkline(mv.points) : '' // a line needs >= 3 real observations; less says less
   const gap = row.gap != null ? `<span class="kx-v__gap">Gap ${esc(String(row.gap))} pts vs Kalshi</span>` : ''
   return `<div class="kx__panel">
     <div class="kx__who"><b>${esc(c.label || '')}</b><small>${esc(c.label || '')} wins · YES</small></div>
@@ -448,7 +448,7 @@ export function venueLines(deskEvent, { placement = 'venues', standalone = false
     const rel = REL[g.kind] || REL.related
     const tag = g.kind === 'related' ? (g.label || 'RELATED MARKET · RULES DIFFER') : rel.tag
     const live = g.fresh === 'live'
-    const sub = `${live ? 'Live prediction market' : 'Prediction market'} · ${vName(g.venue)}`
+    const sub = `${live ? 'Live prediction market' : 'Prediction market'}${standalone ? ` · ${vName(g.venue)}` : ''}`
     const note = g.kind === 'related'
       ? `<div class="kx-v__rules" role="note"><b>${esc(g.summary || 'Settlement rules differ between venues')}</b><small>${esc(g.reason || '')}${g.reason ? '. ' : ''}Shown at its own price; not compared.</small></div>`
       : g.kind === 'COMPARABLE_EXCEPT_EXCEPTIONS' && g.disclosure
@@ -462,10 +462,10 @@ export function venueLines(deskEvent, { placement = 'venues', standalone = false
     <p class="kx-v__rel kx-v__rel--${esc(g.kind === 'related' ? 'related' : g.kind === 'listed' ? 'listed' : g.kind === 'EXACT_MATCH' ? 'exact' : 'comparable')}"><span>${esc(tag)}</span></p>
     <div class="kx__grid" style="--kx-cols:${g.rows.length}">${g.rows.map((r) => venuePanel(r, { placement, venue: g.venue, url: g.url })).join('')}</div>
     ${note}
-    <footer class="kx__ft"><span>${esc(vName(g.venue))} · Prediction market data</span><a class="kx__cta" href="${esc(g.url)}" target="_blank" rel="noopener noreferrer" data-kx-click data-kx-placement="${esc(placement)}">View market on ${esc(vName(g.venue))} ↗</a></footer>
+    <footer class="kx__ft"><span>${esc(vName(g.venue))} · Prediction market data · not sportsbook odds or a PropBetEdge model</span><a class="kx__cta" href="${esc(g.url)}" target="_blank" rel="noopener noreferrer" data-kx-click data-kx-placement="${esc(placement)}">View market on ${esc(vName(g.venue))} ↗</a></footer>
   </section>`
   }).join('')
-  return `<div class="kx-v${standalone ? ' kx-v--solo' : ''}" data-kx-venues>${cards}<p class="kx-v__ft">Prediction-market prices on each venue's own book · not sportsbook odds or a PropBetEdge model</p></div>`
+  return `<div class="kx-v${standalone ? ' kx-v--solo' : ''}" data-kx-venues>${cards}</div>`
 }
 
 /** Re-render every "Updated Xs ago" inside `root` from its observed time (call on a timer; no DOM rebuild). */
