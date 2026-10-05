@@ -27,6 +27,7 @@
  *   GET  /health        unauthenticated, no side effects
  *   POST /admin/run     run now (?dry=true to parse and link but write nothing)
  *   POST /admin/dna     Fight DNA now (?fighter=, ?as_of=, ?force=true, ?dry=true)
+ *   POST /admin/dna-context  Fight DNA division context now (?as_of=, ?dry=true); also runs after every full build
  *
  * Service-binding RPC (not reachable from the internet, so no token):
  *   DnaTrigger.refreshFightDna({ reason, bouts })
@@ -40,13 +41,14 @@ import { main as ingestRankings } from '../../../scripts/rankings/ingest_ranking
 
 import { buildFightDna } from '../../../scripts/dna/build_fight_dna.mjs';
 import { dnaGuardDecision } from './dnaGuard.js';
+import { contextExists, writeDivisionContext } from './divisionContext.js';
 
 const DNA_CRON = '17 7 * * *';
 /* Hourly completion guard: resumes today's Fight DNA build when no success is recorded (src/dnaGuard.js). */
 const DNA_GUARD_CRON = '47 * * * *';
 const WORKER = 'ufc-intelligence';
-const VERSION = 'v0.2.0';
-const LANES = ['rankings', 'fight_dna'];
+const VERSION = 'v0.3.0';
+const LANES = ['rankings', 'fight_dna', 'dna_division_context'];
 
 const health = { last_run_at: null, last_status: null, last_lane: null, last_result: null, last_error: null };
 
@@ -128,7 +130,7 @@ export default {
           SUPABASE_SERVICE_ROLE_KEY: Boolean(env.SUPABASE_SERVICE_ROLE_KEY),
           ADMIN_TRIGGER_TOKEN: Boolean(env.ADMIN_TRIGGER_TOKEN),
         },
-        writes: 'ufc_rankings, ufc_fighter_dna_snapshots, ufc_fighter_bout_features, ufc_fighter_stance_splits, ufc_dna_build_runs, the ufc-media storage bucket (rankings/*.json), ufc_ingest_runs.',
+        writes: 'ufc_rankings, ufc_fighter_dna_snapshots, ufc_fighter_bout_features, ufc_fighter_stance_splits, ufc_dna_build_runs, the ufc-media storage bucket (rankings/*.json), the private ufc-internal bucket (dna/division-context/*.json), ufc_ingest_runs.',
         crons: { rankings: env.CRON_DESCRIPTION || '25 11 * * *', fight_dna: DNA_CRON, fight_dna_guard: DNA_GUARD_CRON },
         fight_dna: {
           replaces: 'fight-dna-build.yml cron "17 7 * * *", previously run on a GitHub runner',
@@ -160,6 +162,11 @@ export default {
           resume: url.searchParams.get('resume') === 'true',
         })),
       });
+    }
+    if (url.pathname === '/admin/dna-context') {
+      const asOf = url.searchParams.get('as_of') || new Date().toISOString().slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(asOf)) return json({ error: 'bad_as_of' }, 400);
+      return json({ service: WORKER, version: VERSION, ...(await runDivisionContext(env, { asOf, dry: url.searchParams.get('dry') === 'true', invoked: 'manual' })) });
     }
     return json({ error: 'not_found', service: WORKER, version: VERSION }, 404);
   },
@@ -290,12 +297,55 @@ async function runFightDna(env, { dry = false, invoked = 'cron', asOf = null, fi
     health.last_status = summary && summary.ok === false ? 'skipped' : 'ok';
     health.last_error = null;
     console.log(`[${WORKER}] fight_dna ${JSON.stringify({ as_of: summary && summary.as_of, snapshots: summary && summary.snapshots })}`);
-    return { lane: 'fight_dna', status: 'ok', dry, invoked, fingerprint, ...summary };
+    /* Division context follows a whole-population build only. Its own ledger row; it can never fail this lane. */
+    let divisionContext = null;
+    if (!dry && !fighterId && summary && summary.ok === true && summary.as_of) {
+      divisionContext = await runDivisionContext(env, { asOf: summary.as_of, invoked: `after_build:${invoked}` });
+    }
+    return { lane: 'fight_dna', status: 'ok', dry, invoked, fingerprint, ...summary, division_context: divisionContext && divisionContext.status };
   } catch (e) {
     health.last_status = 'failed';
     health.last_error = String((e && e.message) || e).slice(0, 300);
     console.error(`[${WORKER}] fight_dna failed: ${health.last_error}`);
     return { lane: 'fight_dna', status: 'failed', error: health.last_error };
+  }
+}
+
+/* --- Fight DNA division context (src/divisionContext.js) ------------------ */
+/* Catch-up: today's DNA succeeded but its division context is missing (a failed or skipped after-build step). Max 3 tries a day. */
+async function guardDivisionContext(env, today) {
+  try {
+    if (await contextExists(env, today)) return 'present';
+    const key = `dna:context_attempts:${today}`;
+    let tries = 0;
+    try { tries = Number((env.INTEL_STATE && (await env.INTEL_STATE.get(key))) || 0); } catch { /* treated as 0 */ }
+    if (tries >= 3) return 'exhausted';
+    try { if (env.INTEL_STATE) await env.INTEL_STATE.put(key, String(tries + 1), { expirationTtl: 172800 }); } catch { /* best effort */ }
+    return (await runDivisionContext(env, { asOf: today, invoked: 'guard:missing' })).status;
+  } catch (e) {
+    console.error(`[${WORKER}] dna_division_context guard: ${String(e.message).slice(0, 200)}`);
+    return 'error';
+  }
+}
+
+async function runDivisionContext(env, { asOf, dry = false, invoked = 'manual' } = {}) {
+  let runId = null;
+  if (!dry) {
+    try { runId = await openRun(env, 'dna_division_context', invoked); } catch (e) {
+      console.error(`[${WORKER}] dna_division_context ledger open failed: ${String(e.message).slice(0, 200)}`);
+      return { lane: 'dna_division_context', status: 'ledger_open_failed' };
+    }
+  }
+  try {
+    const result = await writeDivisionContext(env, asOf, { dry });
+    console.log(`[${WORKER}] dna_division_context ${JSON.stringify(result)}`);
+    await closeRun(env, runId, 'success', { lane: 'dna_division_context', invoked, ...result });
+    return { lane: 'dna_division_context', status: 'success', ...result };
+  } catch (e) {
+    const error = String((e && e.message) || e).slice(0, 300);
+    console.error(`[${WORKER}] dna_division_context failed: ${error}`);
+    await closeRun(env, runId, 'failed', { lane: 'dna_division_context', invoked, as_of: asOf, error });
+    return { lane: 'dna_division_context', status: 'failed', error };
   }
 }
 
@@ -375,6 +425,7 @@ async function runDnaGuard(env) {
     return { lane: 'fight_dna_guard', status: 'unreadable' };
   }
   const d = dnaGuardDecision({ nowIso, runs, attempts });
+  if (d.action === 'none' && d.reason === 'success_recorded') return { lane: 'fight_dna_guard', ...d, division_context: await guardDivisionContext(env, today) };
   if (d.action === 'none') return { lane: 'fight_dna_guard', ...d };
   if (d.action === 'exhausted') {
     health.last_status = 'dna_guard_exhausted';

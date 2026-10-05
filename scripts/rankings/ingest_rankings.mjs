@@ -75,6 +75,9 @@ const EXPECTED = [
   ...WOMEN.map((k) => ({ key: k, label: `Women's ${LABELS[k]}`, is_womens: true, is_p4p: false })),
 ];
 const divId = (d) => `${d.is_womens ? 'W' : 'M'}:${d.key}`;
+/* Shared with the Fight DNA division-context lane (workers/ufc-intelligence/src/divisionContext.js),
+ * so both use the official ranked divisions and the same keys. */
+export const DIVISIONS = EXPECTED.filter((d) => !d.is_p4p).map((d) => ({ id: divId(d), key: d.key, label: d.label, is_womens: d.is_womens }));
 const MIN_ENTRIES = 10; // UFC publishes 15; anything under 10 means the parse slipped
 const MAX_ENTRIES = 16;
 
