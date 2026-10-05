@@ -33,7 +33,6 @@ import { buildProofRail, type ProofCell } from "@/lib/proofRail";
 import { formatAmerican, getMarketsFor, marketProviderLive } from "@/lib/market";
 import { getKalshiBoard, getMarketDeskBoard, pickDesk, slimBoard, ufcQuote, type DeskEvent, type KalshiEntry } from "@/lib/kalshi";
 import { KalshiBoard, KalshiChip, VenueCue } from "@/components/KalshiMarket";
-import { pickVariant } from "@/lib/variants";
 
 export const revalidate = 300;
 
@@ -236,10 +235,9 @@ export default async function Home() {
                     <div className="poster-faces">
                       {[mainEvent.fighter_a, mainEvent.fighter_b].map((f, i) => {
                         const img = imgs.get(f.id);
-                        const art = pickVariant(img, "desk", img ? framing.get(img.id) ?? null : null);
                         return (
-                          <div className={"face " + (i ? "b" : "a")} data-art-mode={art?.mode || "fallback"} key={f.id}>
-                            {art ? <img src={art.src} alt="" width={art.width} height={art.height} style={{ objectPosition: art.objectPosition }} fetchPriority="high" decoding="async" /> : (
+                          <div className={"face " + (i ? "b" : "a")} key={f.id}>
+                            {img ? <img src={img.card} alt="" width={800} height={1000} fetchPriority="high" decoding="async" /> : (
                               <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}><Avatar f={f} size={120} /></div>
                             )}
                           </div>
