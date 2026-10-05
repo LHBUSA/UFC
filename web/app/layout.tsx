@@ -142,7 +142,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${mono.variable}`}>
       <body style={{ ["--pbe-font-ui" as string]: "var(--font-inter), Inter, sans-serif", ["--pbe-font-display" as string]: "var(--font-playfair), Georgia, serif", ["--pbe-font-data" as string]: "var(--font-mono), Menlo, monospace" } as React.CSSProperties}>
-        <script src="/privacy-consent-v1.js" data-pbe-surface="ufc"></script>
         <NetworkAnalytics surface="ufc" />
         <PreferredSourceMount />
         <a className="skip" href="#main">Skip to content</a>
