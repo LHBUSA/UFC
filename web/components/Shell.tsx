@@ -5,7 +5,7 @@ import { Logo, Mark } from "./Brand";
 import { StoreCartButton } from "./store/StoreCartButton";
 import { SITE } from "@/lib/site";
 import { CURRENT_SPORT, NETWORK, NETWORK_PRODUCTS } from "@/lib/network";
-import { ALL_ACCESS_URL } from "@/lib/pbe-membership.js";
+import { LOCAL_ALL_ACCESS_PATH, memberHref } from "@/lib/accountSurface";
 import { UFC_OFFICIAL } from "@/lib/heritage";
 import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { getUfcAccess } from "@/lib/access";
@@ -46,7 +46,7 @@ export async function Header() {
           {/* Signed-in members see their shared membership badge (UFC PRO ACTIVE /
               ALL ACCESS ACTIVE / OWNER) as the account door; "Go Pro" is sold only
               to a reader the server says has nothing yet. */}
-          {access.signedIn ? <MembershipBadge m={access.membership} href={access.source === "network" ? ALL_ACCESS_URL : "/account"} className="account-btn" title="Account" /> : <Link href="/login" className="btn account-btn">Sign in</Link>}
+          {access.signedIn ? <MembershipBadge m={access.membership} href={memberHref(access.membership.state, access.source)} className="account-btn" title="Account" /> : <Link href="/login" className="btn account-btn">Sign in</Link>}
           {access.membership.show_purchase_cta && <Link href="/pro" className="btn gold">Go Pro</Link>}
           <label htmlFor="mnav-toggle" className="menu-btn" aria-label="Open menu"><span /><span /><span /></label>
         </div>
@@ -56,7 +56,7 @@ export async function Header() {
         <div className="mnav-foot">
           <StoreCartButton mobile />
           {next && <Link href={nextHref} className="btn">{nextLabel} · {fmtDate(next.event_date, { month: "short", day: "numeric" })}</Link>}
-          {access.signedIn ? <MembershipBadge m={access.membership} href={access.source === "network" ? ALL_ACCESS_URL : "/account"} title="Account" /> : <Link href="/login" className="btn">Sign in</Link>}
+          {access.signedIn ? <MembershipBadge m={access.membership} href={memberHref(access.membership.state, access.source)} title="Account" /> : <Link href="/login" className="btn">Sign in</Link>}
           {access.membership.show_purchase_cta && <Link href="/pro" className="btn gold">Go Pro</Link>}
         </div>
       </MobileNav>
@@ -119,8 +119,8 @@ export function Footer() {
             </div>
             <div className="col" data-ufc-footer-group="propbetedge">
               <h4>PropBetEdge</h4>
-              <a href={ALL_ACCESS_URL} className="ftr-aa-link" rel="noopener" data-ufc-footer-all-access="">All Access</a>
-              <a href={ALL_ACCESS_URL} rel="noopener" data-ufc-footer-all-access-included="">What&apos;s included</a>
+              <Link href={LOCAL_ALL_ACCESS_PATH} className="ftr-aa-link" data-ufc-footer-all-access="">All Access</Link>
+              <Link href={LOCAL_ALL_ACCESS_PATH} data-ufc-footer-all-access-included="">What&apos;s included</Link>
               <a href={NETWORK.news.href}>{NETWORK.news.label}</a>
               <a href={NETWORK.learn.href}>{NETWORK.learn.label}</a>
               <Link href={NETWORK.store.href}>{NETWORK.store.label}</Link>

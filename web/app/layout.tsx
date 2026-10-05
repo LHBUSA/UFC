@@ -10,6 +10,7 @@ import "./heritage.css";
 import "./expansion.css";
 import "./fightweek.css";
 import "./fightdna.css";
+import "./account-shell.css";
 import "./depth.css";
 import "./judges.css";
 import "./roundanalysis.css";

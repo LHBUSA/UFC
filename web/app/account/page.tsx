@@ -6,9 +6,9 @@ import { getUfcAccessWithBilling } from "@/lib/access";
 import { PRO_OFFER } from "@/lib/proOffer";
 import { getCustomerOrders } from "@/lib/store/customer-orders";
 import { formatPrice } from "@/lib/store/types";
-import { Mark } from "@/components/Brand";
-import { planText } from "@/lib/pbe-membership.js";
-import { AllAccessActive, AllAccessHero, ManageLink, MembershipBadge, NetworkLink, NetworkRow } from "@/components/Membership";
+import { AllAccessActive } from "@/components/Membership";
+import { AccessCheckPanel, CapabilityGrid, MemberActions, NetworkExpansion, SignOut, Story, VerifiedCard } from "@/components/AccountShell";
+import { LOCAL_ALL_ACCESS_PATH, accountView, designation } from "@/lib/accountSurface";
 
 export const metadata: Metadata = { title: "UFC Account", description: "Your PropBetEdge UFC access, entitlements and store orders.", robots: { index: false, follow: false } };
 
@@ -20,7 +20,11 @@ function orderStatus(status: "paid" | "in_production" | "cancelled"): string {
 
 export default async function AccountPage() {
   const [account, access] = await Promise.all([getCurrentAccount(), getUfcAccessWithBilling()]);
-  if (!account || !access.signedIn) redirect("/login?next=/account");
+  if (!account) redirect("/login?next=/account");
+  /* A known account whose billing check did not answer is the access-check
+   * state, never a bounce to sign-in or a sales screen. */
+  const view = accountView({ signedIn: access.signedIn, pro: access.pro, ledger: access.ledger, membership: access.membership, hasAccount: true });
+  if (view === "signed_out") redirect("/login?next=/account");
   const [orders] = await Promise.all([
     getCustomerOrders(account.email, 20).catch((error) => {
       console.error("[account] order history", String((error as Error)?.message || error).slice(0, 180));
@@ -35,54 +39,66 @@ export default async function AccountPage() {
   const fmtDay = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
   const accessThrough = sub?.current_period_end ? fmtDay(sub.current_period_end) : null;
 
+  const d = designation(m.state);
+  const member = view === "sport_pro" || view === "all_access" || view === "owner";
+  const period = m.state === "owner" ? null : accessThrough ? `${sub?.cancel_at_period_end ? "Access through" : "Current period through"} ${accessThrough}${sportPrice && m.state === "sport_pro" ? ` · ${sportPrice}` : ""}` : null;
+  const story = view === "all_access"
+    ? { eyebrow: "UFC · Platinum Member", title: <>Your full UFC desk<br /><em>is unlocked.</em></>, copy: "PropBetEdge All Access covers this account: every UFC Pro surface here, and the rest of the network on the same membership." }
+    : view === "owner"
+      ? { eyebrow: "UFC · Verified Owner", title: <>Owner access<br /><em>is active.</em></>, copy: "Verified server-side from your emailed sign-in link. Every UFC Pro surface is open, with no subscription required." }
+      : view === "sport_pro"
+        ? { eyebrow: "UFC Pro · Verified", title: <>Every fighter<br /><em>leaves a pattern.</em></>, copy: "Fight DNA, PBE Algo and the Fight Simulator read each fight from the stored record. Every part of that desk is open on this account." }
+        : view === "check"
+          ? { eyebrow: "UFC · Access check", title: <>Your access<br /><em>is protected.</em></>, copy: "While verification is unavailable, nothing about your membership changes, and public UFC intelligence keeps working." }
+          : { eyebrow: "PropBetEdge UFC · Account", title: <>Every fighter<br /><em>leaves a pattern.</em></>, copy: "Fight DNA, PBE Algo and the Fight Simulator are the UFC desk. Your account is ready for access." };
+
   return (
     <div className="wrap page account-page">
-      <div className="account-hero card hi">
-        <div className="account-mark"><Mark size={44} /></div>
-        <div>
-          <div className="eyebrow">PropBetEdge UFC account</div>
-          <h1 className="serif">{account.display_name || account.email}</h1>
-          <p className="dim sm">{account.email}</p>
-        </div>
-        <MembershipBadge m={m} className="account-plan" />
-      </div>
+      <div className="acs-shell">
+        <Story view={view} eyebrow={story.eyebrow} title={story.title} copy={story.copy} />
+        <div className="acs-panel" data-acs-view={view}>
+          {view === "check" && <AccessCheckPanel email={account.email} retryHref="/account" />}
 
-      <div className="grid-3 mt-5">
-        <div className="card">
-          <div className="eyebrow dim">Access</div>
-          <div className="account-value">{m.state === "owner" ? "Owner · unlimited" : m.state === "all_access" ? "All Access active" : m.state === "sport_pro" ? "UFC Pro active" : "Free"}</div>
-          {m.state === "owner" ? <p className="faint sm">No expiry and no usage cap.</p>
-            : m.show_manage && sub ? (
-              <dl className="billing-rows">
-                <dt>Plan</dt><dd>{m.state === "all_access" ? planText(m) : sportPrice ? `${planText(m)} · ${sportPrice}` : planText(m)}</dd>
-                <dt>Status</dt><dd>{sub.cancel_at_period_end ? "Active · cancels at period end" : "Active"}</dd>
-                {accessThrough && <><dt>{sub.cancel_at_period_end ? "Access through" : "Renews"}</dt><dd>{accessThrough}</dd></>}
-              </dl>
-            )
-            : sub ? <p className="faint sm">Your UFC Pro subscription is {sub.status === "past_due" ? "past due: update your payment method to restore access" : sub.status === "canceled" ? "canceled" : `not active (${sub.status})`}.</p>
-            : access.ledger === "unavailable" ? <p className="faint sm">Billing status could not be checked just now. Refresh in a moment.</p>
-            : <p className="faint sm">Upgrade any time.</p>}
-          <div className="row mt-3">
-            {/* Manage billing follows the shared rule: UFC Pro and All Access
-                members manage a subscription; the owner has none. A lapsed
-                subscription (entitled:false) still gets the portal to fix it. */}
-            {m.show_manage ? <ManageLink m={m} label="Manage billing" className="btn" />
-              : m.state === "free" && sub ? <a href={PRO_OFFER.customerPortalLoginUrl} className="btn" target="_blank" rel="noopener noreferrer">Manage billing ↗</a> : null}
-            {m.show_purchase_cta && <Link href="/pro" className="btn gold">{sub ? "Resubscribe" : "Unlock UFC Pro"}</Link>}
-          </div>
-          <div className="pbe-mbr-panel mt-4">
-            <AllAccessActive m={m} />
-            <div className="pbe-mbr-links"><NetworkLink m={m} /></div>
-            <NetworkRow current="ufc" />
-          </div>
-        </div>
-        <div className="card"><div className="eyebrow dim">Role</div><div className="account-value">{account.role === "owner" ? "Owner" : account.role === "admin" ? "Admin" : "Member"}</div><p className="faint sm">Server-side entitlement; never inferred from the browser.</p></div>
-        <div className="card"><div className="eyebrow dim">Session</div><div className="account-value">Secure</div><p className="faint sm">Passwordless session established with an HttpOnly cookie.</p></div>
-      </div>
+          {member && d && (
+            <div className="acs-panel-body">
+              <span className="acs-eyebrow is-member">{d.eyebrow}</span>
+              <h2 className="acs-head is-member">{view === "owner" ? "Owner access is active." : view === "all_access" ? <>Your full UFC desk<br />is unlocked.</> : "You're in."}</h2>
+              <p className="acs-lede">{view === "all_access"
+                ? "Your PropBetEdge All Access membership unlocks the full network — 10 sports plus PropBetEdge Predictions. UFC is one of them."
+                : view === "owner" ? "Every UFC Pro surface is unlocked on this verified owner account."
+                : "Your UFC Pro desk is live: Fight DNA, PBE Algo, PBE Picks, the Fight Simulator and fight-page market intelligence."}</p>
+              <VerifiedCard m={m} email={account.email} period={period} />
+              {view === "all_access" && <AllAccessActive m={m} />}
+              <CapabilityGrid unlocked title="Unlocked on this account" />
+              <MemberActions m={m} refreshHref="/account" />
+              {view === "sport_pro" && m.show_all_access_upgrade && <NetworkExpansion />}
+              {view === "all_access" && <Link href={LOCAL_ALL_ACCESS_PATH} className="acs-btn">Your network · launch any desk →</Link>}
+              <p className="acs-secure is-member">◆ {d.status} · verified by PropBetEdge{view === "owner" ? " · no subscription required" : ""}</p>
+            </div>
+          )}
 
-      {/* UFC Pro members see the network umbrella as an optional upgrade; All
-          Access members and the owner are never sold anything here. */}
-      {m.show_all_access_upgrade && <div className="mt-5"><AllAccessHero m={m} variant="panel" email={m.email} /></div>}
+          {view === "signed_in" && (
+            <div className="acs-panel-body">
+              <div className="acs-identity"><i />SIGNED IN<b>{account.email}</b></div>
+              <span className="acs-eyebrow">Account ready</span>
+              <h2 className="acs-head">Your account is ready.</h2>
+              <p className="acs-lede">{sub
+                ? sub.status === "past_due" ? "Your UFC Pro payment is past due: update your payment method to restore access."
+                  : sub.status === "canceled" ? "Your UFC Pro subscription has ended. Choose your access to continue."
+                  : "No active UFC access is attached to this email yet."
+                : "No active UFC access is attached to this email yet."}</p>
+              <CapabilityGrid unlocked={false} title="What membership contains on UFC" />
+              <div className="acs-actions">
+                <Link href={LOCAL_ALL_ACCESS_PATH} className="acs-cta">View All Access</Link>
+                <Link href="/pro" className="acs-btn">UFC Pro options</Link>
+                {sub && <a href={PRO_OFFER.customerPortalLoginUrl} className="acs-btn" target="_blank" rel="noopener noreferrer">Manage billing ↗</a>}
+                <Link href="/account" className="acs-btn" prefetch={false}>Refresh access</Link>
+                <SignOut />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
       <section id="orders" className="card mt-5">
         <div className="between" style={{ gap: 18, alignItems: "flex-start" }}>
@@ -125,12 +141,6 @@ export default async function AccountPage() {
         )}
       </section>
 
-      <div className="card mt-5 between">
-        <div><div className="eyebrow">Fight room</div><h2 className="serif" style={{ marginTop: 6 }}>Your access is ready.</h2><p className="dim sm mt-2">Fight DNA, cards, fighters and newsroom surfaces remain evidence-first. An entitlement never manufactures model output that has not been produced.</p></div>
-        <div className="row"><Link href="/events" className="btn gold">Open fight cards</Link><Link href="/fighters" className="btn">Fighter DNA</Link></div>
-      </div>
-
-      <form action="/api/auth/logout" method="post" className="mt-5"><button type="submit" className="btn ghost">Sign out</button></form>
     </div>
   );
 }

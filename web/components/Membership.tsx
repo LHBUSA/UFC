@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ALL_ACCESS_OFFER, ALL_ACCESS_URL, MANAGE_URL, NETWORK, STATES, membershipLabel, type Membership } from "@/lib/pbe-membership.js";
+import { ALL_ACCESS_OFFER, MANAGE_URL, NETWORK, STATES, membershipLabel, type Membership } from "@/lib/pbe-membership.js";
+import { LOCAL_ALL_ACCESS_PATH, badgeLabel } from "@/lib/accountSurface";
 import { ALL_ACCESS_ACTIVE_LINE, ALL_ACCESS_DIVIDER, ALL_ACCESS_FUTURE_LINE, ALL_ACCESS_SPORTS_LINE, ALL_ACCESS_VALUE_LINE, allAccessHeroModel, promoParts } from "@/lib/allAccessHero";
 
 /* React renderings of the shared PropBetEdge membership contract
@@ -16,7 +17,8 @@ function stateOf(m: Membership | null | undefined): Membership["state"] {
 export function MembershipBadge({ m, href, className = "", title }: { m: Membership | null | undefined; href?: string; className?: string; title?: string }) {
   const state = stateOf(m);
   const cls = `pbe-mbr-badge is-${state}${className ? ` ${className}` : ""}`;
-  const label = membershipLabel(state, m?.sport || "ufc");
+  /* Presentation designation (◆ PLATINUM for all_access); the contract state is untouched. */
+  const label = badgeLabel(state) ?? membershipLabel(state, m?.sport || "ufc");
   if (href) return <Link href={href} className={cls} data-pbe-membership={state} title={title}>{label}</Link>;
   return <span className={cls} data-pbe-membership={state} title={title}>{label}</span>;
 }
@@ -40,7 +42,7 @@ export function AllAccessCard({ m, compact = false }: { m: Membership | null | u
       <p className="pbe-mbr-aa-promo">Launch offer: {ALL_ACCESS_OFFER.promoLine}</p>
       <div className="pbe-mbr-aa-actions">
         <a className="pbe-mbr-aa-cta" href={ALL_ACCESS_OFFER.checkoutUrl} rel="noopener" data-pbe-placement="all_access_checkout">Get All Access →</a>
-        <a className="pbe-mbr-aa-learn" href={ALL_ACCESS_URL} rel="noopener">What&apos;s included</a>
+        <Link className="pbe-mbr-aa-learn" href={LOCAL_ALL_ACCESS_PATH}>What&apos;s included</Link>
       </div>
     </aside>
   );
@@ -101,7 +103,7 @@ export function AllAccessHero({ m, variant = "surface", email = null }: { m: Mem
       <p className="ufc-aa-promo">Launch offer: {promo.before}<b className="ufc-aa-code">{promo.code}</b>{promo.after}</p>
       <div className="ufc-aa-actions">
         <a className="ufc-aa-cta" href={checkout} rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access-cta="checkout">{model.ctaLabel}</a>
-        <a className="ufc-aa-learn" href={model.learnUrl} rel="noopener" data-ufc-all-access-cta="learn">{model.learnLabel}</a>
+        <Link className="ufc-aa-learn" href={model.learnUrl} data-ufc-all-access-cta="learn">{model.learnLabel}</Link>
       </div>
     </aside>
   );
@@ -126,7 +128,7 @@ export function AllAccessMini({ m = null, className = "" }: { m?: Membership | n
 /** What an ALL ACCESS ACTIVE account already has: navigation, never an upsell. */
 export function AllAccessActive({ m }: { m: Membership | null | undefined }) {
   if (stateOf(m) !== "all_access") return null;
-  return <p className="ufc-aa-active" data-ufc-all-access="active"><b>ALL ACCESS ACTIVE</b><span>{ALL_ACCESS_ACTIVE_LINE}</span></p>;
+  return <p className="ufc-aa-active" data-ufc-all-access="active"><b>◆ PLATINUM MEMBER</b><span>PropBetEdge All Access · active · {ALL_ACCESS_ACTIVE_LINE}</span></p>;
 }
 
 /** Restrained network row: every PropBetEdge sport, the current one marked. */
@@ -142,5 +144,5 @@ export function NetworkRow({ current = "ufc" }: { current?: string }) {
 
 /** The one All Access / network link every account panel carries. */
 export function NetworkLink({ m }: { m: Membership | null | undefined }) {
-  return <a className="pbe-mbr-network-link" href={ALL_ACCESS_URL} rel="noopener">{stateOf(m) === "all_access" ? "Your network" : "PropBetEdge All Access"}</a>;
+  return <Link className="pbe-mbr-network-link" href={LOCAL_ALL_ACCESS_PATH}>{stateOf(m) === "all_access" ? "Your network" : "PropBetEdge All Access"}</Link>;
 }

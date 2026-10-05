@@ -168,7 +168,7 @@ test("the session route returns the browser-safe membership object and nothing l
 test("UI reads the derived flags, never re-derives from plan names or prices", () => {
   const shell = read("components/Shell.tsx");
   /* 6c4629e: a network-auth session's account door is the shared account surface; a local UFC session keeps /account. */
-  assert.equal((shell.match(/<MembershipBadge m=\{access\.membership\} href=\{access\.source === "network" \? ALL_ACCESS_URL : "\/account"\}/g) || []).length, 2, "header and drawer route the badge by session source");
+  assert.equal((shell.match(/<MembershipBadge m=\{access\.membership\} href=\{memberHref\(access\.membership\.state, access\.source\)\}/g) || []).length, 2, "header and drawer route the badge by session source");
   assert.equal((shell.match(/access\.membership\.show_purchase_cta && <Link href="\/pro" className="btn gold">Go Pro<\/Link>/g) || []).length, 2, "header and drawer both gate Go Pro on show_purchase_cta");
   assert.doesNotMatch(shell, /access\.tier === "owner" \? "Owner" : access\.pro \? "Pro"/);
   /* Owner decision: the header and drawer carry no All Access item; the footer does. */
@@ -177,13 +177,14 @@ test("UI reads the derived flags, never re-derives from plan names or prices", (
   assert.match(shell, /data-ufc-footer-all-access-included=""/);
   assert.doesNotMatch(read("lib/site.ts"), /place: "network"/);
   const acct = read("app/account/page.tsx");
-  assert.match(acct, /<MembershipBadge m=\{m\} className="account-plan" \/>/);
-  assert.match(acct, /m\.show_purchase_cta && <Link href="\/pro"/);
-  /* All Access first (lib/allAccessHero.test.ts pins the order and the copy):
-   * the account page offers UFC Pro members the UPGRADE TO ALL ACCESS hero. */
-  assert.match(acct, /m\.show_all_access_upgrade && <div className="mt-5"><AllAccessHero m=\{m\} variant="panel" email=\{m\.email\} \/><\/div>/);
-  assert.match(acct, /<NetworkRow current="ufc" \/>/);
-  assert.match(acct, /planText\(m\)/);
+  /* Premium account shell (2026-10-05): the view and designation come from the
+   * server verdict; the account page never links a checkout itself. */
+  assert.match(acct, /const view = accountView\(\{ signedIn: access\.signedIn, pro: access\.pro, ledger: access\.ledger, membership: access\.membership, hasAccount: true \}\);/);
+  assert.match(acct, /const d = designation\(m\.state\);/);
+  assert.match(acct, /<VerifiedCard m=\{m\}/);
+  assert.match(acct, /<MemberActions m=\{m\} refreshHref="\/account" \/>/);
+  assert.match(acct, /view === "sport_pro" && m\.show_all_access_upgrade && <NetworkExpansion \/>/);
+  assert.doesNotMatch(acct, /buy\.stripe|checkoutUrl|ALL_ACCESS_CHECKOUT_URL|>Free</, "no checkout and no FREE label on the account page");
   const plans = read("components/ui.tsx");
   assert.match(plans, /membership\.state === "all_access" \|\| membership\.state === "owner"/);
   assert.match(plans, /<AllAccessHero m=\{membership\} variant="surface" email=\{email\} \/>/);

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { SITE } from "@/lib/site";
-import { Mark } from "@/components/Brand";
 import { LoginForm } from "@/components/LoginForm";
 import { getUfcAccess } from "@/lib/access";
+import { getCurrentAccount } from "@/lib/auth";
+import { CapabilityGrid, Story } from "@/components/AccountShell";
+import { LOCAL_ALL_ACCESS_PATH } from "@/lib/accountSurface";
 
 export const metadata: Metadata = {
   title: "Sign in to UFC Fight Intelligence",
@@ -14,43 +15,41 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
-  const access = await getUfcAccess();
-  if (access.signedIn) redirect("/account");
+  const [access, account] = await Promise.all([getUfcAccess(), getCurrentAccount().catch(() => null)]);
+  /* Signed in, or a known account whose billing check did not answer (the
+   * account page shows the access-check state): never ask them to sign in again. */
+  if (access.signedIn || (account && access.ledger === "unavailable")) redirect("/account");
   const params = await searchParams;
   const next = params.next?.startsWith("/") && !params.next.startsWith("//") ? params.next : "/account";
   const error = params.error;
 
   return (
     <div className="wrap page login-page">
-      <div className="login-shell">
-        <div className="login-brand-panel">
-          <div className="login-mark"><Mark size={58} /></div>
-          <div className="eyebrow">PropBetEdge UFC · Secure access</div>
-          <h1 className="serif">One identity. Your fight room.</h1>
-          <p className="dim">Sign in by email to carry your UFC account, Pro entitlement and future Fight DNA tools across the product without another password to remember.</p>
-          <div className="login-points">
-            <span><b>30-day session</b><small>HttpOnly secure browser session</small></span>
-            <span><b>Passwordless</b><small>One-use link delivered by Resend</small></span>
-            <span><b>Network-ready</b><small>Built on the same PropBetEdge access pattern</small></span>
-          </div>
-        </div>
-        <div className="login-card card hi">
-          <div className="eyebrow dim">Member access</div>
-          <h2 className="serif">Sign in to PropBetEdge UFC</h2>
-          <p className="dim sm">UFC accounts are for active UFC Pro subscribers: use the email from your Stripe checkout. Everything free on PropBetEdge UFC needs no account.</p>
+      <div className="acs-shell">
+        <Story
+          view="signed_out"
+          eyebrow="PropBetEdge UFC · Member access"
+          title={<>Every fighter<br /><em>leaves a pattern.</em></>}
+          copy="Fight DNA, PBE Algo, the Fight Simulator and fight-page market intelligence: the UFC desk, one secure link away."
+        />
+        <div className="acs-panel" data-acs-view="signed_out">
+          <div className="acs-panel-body">
+          <span className="acs-eyebrow">Verified member access</span>
+          <h2 className="acs-head">Welcome back.</h2>
+          <p className="acs-lede">Sign in with the email attached to your UFC Pro or PropBetEdge All Access membership. Everything free on PropBetEdge UFC needs no account.</p>
           {error && (
             <div className="login-status error" role="alert">
               {error === "expired" ? "That sign-in link has expired or was already used. Request a fresh one below." : error === "not_authorized" ? "That sign-in link can no longer be used. UFC accounts require an active UFC Pro subscription." : "Secure sign-in is temporarily unavailable. Please request a fresh link."}
             </div>
           )}
           <LoginForm next={next} />
-          <div className="login-divider"><span>PropBetEdge network</span></div>
-          <div className="login-network">
-            <a href={SITE.parent}>PropBetEdge</a>
-            <a href={SITE.network.nfl}>NFL</a>
-            <a href={SITE.network.mlb}>MLB</a>
+          <ul className="login-trust">
+            <li><b>Passwordless secure access.</b> No password required.</li>
+            <li>A single-use link goes to the address on your membership.</li>
+          </ul>
+          <p className="acs-lede">Need access? <Link href={LOCAL_ALL_ACCESS_PATH}>View PropBetEdge All Access</Link> · <Link href="/pro">UFC Pro</Link></p>
+          <CapabilityGrid unlocked={false} title="What membership contains on UFC" />
           </div>
-          <p className="faint label">The same parent network, specialized products. UFC access is managed independently so no entitlement is assumed across sports.</p>
         </div>
       </div>
       <div className="login-foot"><Link href="/pro">See UFC Pro →</Link><span>·</span><Link href="/about">Editorial &amp; data methodology →</Link></div>

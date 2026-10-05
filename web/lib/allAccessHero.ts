@@ -19,7 +19,8 @@
  * shared/network/pbe-network.js): its sports are counted as sports, its
  * products (PropBetEdge Predictions) are shown as included intelligence and
  * are never counted as a sport. */
-import { ALL_ACCESS_OFFER, ALL_ACCESS_URL, STATES, type Membership, type MembershipState } from "./pbe-membership.js";
+import { ALL_ACCESS_OFFER, STATES, type Membership, type MembershipState } from "./pbe-membership.js";
+import { LOCAL_ALL_ACCESS_PATH } from "./accountSurface.ts";
 import family from "./family.json" with { type: "json" };
 
 type FamilyEntry = { key: string; label: string; name: string; url: string };
@@ -134,7 +135,7 @@ export function allAccessHeroModel(m: Membership | null | undefined): AllAccessH
     promoLine: ALL_ACCESS_OFFER.promoLine,
     promoCode: ALL_ACCESS_OFFER.promoCode,
     checkoutUrl: ALL_ACCESS_OFFER.checkoutUrl,
-    learnUrl: ALL_ACCESS_URL,
+    learnUrl: LOCAL_ALL_ACCESS_PATH,
     ctaLabel: "GET ALL ACCESS",
     learnLabel: "WHAT'S INCLUDED",
   };

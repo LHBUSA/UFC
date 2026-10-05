@@ -17,6 +17,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ALL_ACCESS_OFFER, ALL_ACCESS_URL, deriveMembership, type Membership } from "./pbe-membership.js";
+import { LOCAL_ALL_ACCESS_PATH } from "./accountSurface.ts";
 import { ALL_ACCESS_BADGE, ALL_ACCESS_CAPABILITIES, ALL_ACCESS_DIVIDER, ALL_ACCESS_PREDICTIONS, ALL_ACCESS_SPORTS, ALL_ACCESS_SPORTS_LINE, ALL_ACCESS_SPORT_COUNT, ALL_ACCESS_VALUE_LINE, allAccessHeroModel, promoParts, shouldRenderAllAccessHero } from "./allAccessHero.ts";
 import { NAV } from "./site.ts";
 
@@ -25,7 +26,8 @@ register("../scripts/test-tsx-hooks.mjs", import.meta.url);
 const WEB = join(fileURLToPath(new URL(".", import.meta.url)), "..");
 const read = (rel: string) => readFileSync(join(WEB, rel), "utf8");
 const STRIPE_ALL_ACCESS = "https://buy.stripe.com/8x2eVdgmOaqy4pv8Ez7wA0N";
-const LEARN = "https://propbetedge.ai/pro";
+/* Owner 2026-10-05: WHAT'S INCLUDED stays on the sport site (native /all-access). */
+const LEARN = "/all-access";
 
 const free = deriveMembership({ sport: "ufc", entitled: false });
 const sportPro = deriveMembership({ sport: "ufc", entitled: true, accessSource: "sport", plan: "monthly", email: "pro@example.com" });
@@ -54,7 +56,8 @@ test("model: every commercial fact is the shared contract's, verbatim", () => {
   assert.equal(m.checkoutUrl, STRIPE_ALL_ACCESS);
   assert.equal(m.checkoutUrl, ALL_ACCESS_OFFER.checkoutUrl);
   assert.equal(m.learnUrl, LEARN);
-  assert.equal(m.learnUrl, ALL_ACCESS_URL);
+  assert.equal(m.learnUrl, LOCAL_ALL_ACCESS_PATH);
+  assert.notEqual(m.learnUrl, ALL_ACCESS_URL, "informational All Access links never leave the sport site");
   assert.equal(m.price, "$29/month");
   assert.deepEqual([m.amount, m.cadence], ["$29", "month"]);
   assert.equal(m.promoCode, "THEEDGE25");
@@ -107,7 +110,7 @@ test("no customer-facing UFC source still carries the stale eight-sport offer", 
 
 test("active All Access account: navigation line, never an upsell; others get nothing from it", async () => {
   const { M, html } = await render();
-  assert.equal(html(M.AllAccessActive, { m: allAccess }), '<p class="ufc-aa-active" data-ufc-all-access="active"><b>ALL ACCESS ACTIVE</b><span>10 sports + Predictions included</span></p>');
+  assert.equal(html(M.AllAccessActive, { m: allAccess }), '<p class="ufc-aa-active" data-ufc-all-access="active"><b>◆ PLATINUM MEMBER</b><span>PropBetEdge All Access · active · 10 sports + Predictions included</span></p>');
   for (const m of [free, sportPro, owner]) assert.equal(html(M.AllAccessActive, { m }), "", m.state);
   assert.doesNotMatch(html(M.AllAccessActive, { m: allAccess }), /buy\.stripe|GET ALL ACCESS/);
   assert.match(read("app/account/page.tsx"), /<AllAccessActive m=\{m\} \/>/);
@@ -144,7 +147,7 @@ test("hero HTML (free): identity, $29/month, THEEDGE25 chip, exact Stripe checko
   assert.doesNotMatch(out, /MLB · NFL · NBA · NHL · WNBA · UFC · Tennis · Soccer(?! ·)/, "the stale eight-sport list is gone");
   assert.match(out, /<p class="ufc-aa-promo">Launch offer: 25% off while active with code <b class="ufc-aa-code">THEEDGE25<\/b><\/p>/);
   assert.match(out, new RegExp(`<a class="ufc-aa-cta" href="${STRIPE_ALL_ACCESS.replace(/[.\/]/g, "\\$&")}" rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access-cta="checkout">GET ALL ACCESS</a>`));
-  assert.match(out, /<a class="ufc-aa-learn" href="https:\/\/propbetedge\.ai\/pro" rel="noopener" data-ufc-all-access-cta="learn">WHAT(&#x27;|')S INCLUDED<\/a>/);
+  assert.match(out, /<a class="ufc-aa-learn" data-ufc-all-access-cta="learn" href="\/all-access">WHAT(&#x27;|')S INCLUDED<\/a>/);
   assert.doesNotMatch(out, /Labs|computational/i);
   assert.equal((out.match(/buy\.stripe\.com/g) || []).length, 1, "exactly one Stripe link, the All Access one");
   /* the signed-in email rides along so the grant lands on the reader's account */
@@ -216,7 +219,7 @@ test("every page that mounts a purchase surface leads with All Access", () => {
   const pro = read("app/pro/page.tsx");
   assert.match(pro, /<ProPlans email=\{account\?\.email \?\? null\} membership=\{membership\} \/>\}\s*\{\/\*[^]*?\*\/\}\s*\{active && <div className="mt-4"><AllAccessHero m=\{membership\} variant="panel" email=\{account\?\.email \?\? null\} \/><\/div>\}/);
   assert.match(read("app/page.tsx"), /<ProPlans membership=\{access\.membership\} \/>/);
-  assert.match(read("app/account/page.tsx"), /m\.show_all_access_upgrade && <div className="mt-5"><AllAccessHero m=\{m\} variant="panel" email=\{m\.email\} \/><\/div>/);
+  assert.match(read("app/account/page.tsx"), /view === "sport_pro" && m\.show_all_access_upgrade && <NetworkExpansion \/>/);
   /* locked-module preview: the mini entry precedes the single-sport unlock */
   const preview = read("components/ProPreview.tsx");
   assert.ok(preview.indexOf("<AllAccessMini />") < preview.indexOf('className="btn gold pro-preview-cta">Unlock UFC Pro'), "ProPreview: All Access before Unlock UFC Pro");
@@ -255,14 +258,14 @@ test("Shell: no ALL ACCESS button in the header or the drawer; footer still carr
   assert.doesNotMatch(shell, /hdr-aa|mnav-aa|data-ufc-all-access="nav/);
   assert.doesNotMatch(shell, /allAccessNav|showAllAccess/);
   const footer = shell.slice(shell.indexOf("export function Footer"));
-  assert.match(footer, /<a href=\{ALL_ACCESS_URL\} className="ftr-aa-link" rel="noopener" data-ufc-footer-all-access="">All Access<\/a>/);
-  assert.match(footer, /<a href=\{ALL_ACCESS_URL\} rel="noopener" data-ufc-footer-all-access-included="">What&apos;s included<\/a>/);
+  assert.match(footer, /<Link href=\{LOCAL_ALL_ACCESS_PATH\} className="ftr-aa-link" data-ufc-footer-all-access="">All Access<\/Link>/);
+  assert.match(footer, /<Link href=\{LOCAL_ALL_ACCESS_PATH\} data-ufc-footer-all-access-included="">What&apos;s included<\/Link>/);
   assert.doesNotMatch(read("components/NavLinks.tsx"), /propbetedge\.ai\/pro|All Access/);
   const css = read("app/all-access.css");
   assert.doesNotMatch(css, /\.hdr-aa|\.mnav-aa/);
   /* the commercial surfaces are untouched */
   assert.match(read("app/pro/page.tsx"), /<ProPlans email=\{account\?\.email \?\? null\} membership=\{membership\} \/>/);
   assert.match(read("components/ui.tsx"), /<AllAccessHero m=\{membership\} variant="surface" email=\{email\} \/>/);
-  assert.match(read("app/account/page.tsx"), /m\.show_all_access_upgrade && <div className="mt-5"><AllAccessHero m=\{m\} variant="panel" email=\{m\.email\} \/><\/div>/);
+  assert.match(read("app/account/page.tsx"), /view === "sport_pro" && m\.show_all_access_upgrade && <NetworkExpansion \/>/);
 });
 

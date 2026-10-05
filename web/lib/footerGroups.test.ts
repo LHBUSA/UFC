@@ -27,7 +27,7 @@ const EXPECTED: Record<string, { heading: string; hrefs: string[] }> = {
   editorial: { heading: "Editorial", hrefs: ["/news", "/#notable-voices", "/about", "/methodology", "/feed.xml", "`mailto:${SITE.contact}`"] },
   developers: { heading: "Developers", hrefs: ["SITE.ufcApi", "SITE.ufcApiDocs"] },
   "official-ufc": { heading: "Official UFC", hrefs: ["UFC_OFFICIAL.home", "UFC_OFFICIAL.athletes", "UFC_OFFICIAL.rankings", "UFC_OFFICIAL.hallOfFame", "UFC_OFFICIAL.fightPass", "UFC_OFFICIAL.store"] },
-  propbetedge: { heading: "PropBetEdge", hrefs: ["ALL_ACCESS_URL", "ALL_ACCESS_URL", "NETWORK.news.href", "NETWORK.learn.href", "NETWORK.store.href"] },
+  propbetedge: { heading: "PropBetEdge", hrefs: ["LOCAL_ALL_ACCESS_PATH", "LOCAL_ALL_ACCESS_PATH", "NETWORK.news.href", "NETWORK.learn.href", "NETWORK.store.href"] },
   account: { heading: "Account", hrefs: ["/account", "/pro", "SITE.billingPortal", "https://propbetedge.ai/support"] },
   community: { heading: "Community", hrefs: ["NETWORK.discord", "SITE.xUrl"] },
   "company-legal": { heading: "Company &amp; Legal", hrefs: ["https://propbetedge.ai/about", "https://propbetedge.ai/privacy", "https://propbetedge.ai/terms", "https://propbetedge.ai/legal"] },
@@ -47,13 +47,13 @@ for (const [key, exp] of Object.entries(EXPECTED)) {
 }
 
 test("no destination is placed in two directory groups (except All Access + What's included, same URL by design)", () => {
-  const all = Object.values(groups).flatMap((g) => g.hrefs).filter((h) => h !== "ALL_ACCESS_URL");
+  const all = Object.values(groups).flatMap((g) => g.hrefs).filter((h) => h !== "LOCAL_ALL_ACCESS_PATH");
   assert.equal(new Set(all).size, all.length);
 });
 
 test("trust/legal group carries no billing, social or commerce links", () => {
   const body = groups["company-legal"].body;
-  for (const bad of ["billingPortal", "discord", "xUrl", "store", "ALL_ACCESS_URL"]) assert.ok(!body.includes(bad), bad);
+  for (const bad of ["billingPortal", "discord", "xUrl", "store", "LOCAL_ALL_ACCESS_PATH", "ALL_ACCESS_URL"]) assert.ok(!body.includes(bad), bad);
 });
 
 test("billing and social links never sit in the PropBetEdge group or the Preferred Source band", () => {
