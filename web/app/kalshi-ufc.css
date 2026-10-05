@@ -63,8 +63,32 @@ a.ufc-kc:focus-visible { outline: 2px solid var(--ufc-kc-ink); outline-offset: 2
 
 /* Homepage hero: under each fighter's record / ML chip, same pill geometry as the
    gold ML chip so the two layers line up and read as different layers. */
-.hero .hero-feature .ufc-kc--hero { display: flex; width: fit-content; margin-top: 4px; padding: 4px 7px; gap: 0 6px; background: rgba(13, 11, 8, .74); font: 800 10px/1 var(--pbe-font-data); letter-spacing: .045em; text-transform: uppercase; white-space: nowrap; }
-.hero .hero-feature .poster-names .b .ufc-kc--hero { margin-left: auto; }
+.hero .hero-feature .ufc-kc--hero { display: flex; justify-content: center; width: 100%; min-height: 28px; margin: 0; padding: 6px 8px; gap: 0 6px; border-radius: 7px; background: rgba(13, 11, 8, .78); font: 800 10px/1 var(--pbe-font-data); letter-spacing: .045em; text-transform: uppercase; white-space: nowrap; }
+.hero .hero-feature .poster-names .b .ufc-kc--hero { margin-left: 0; }
+.hero .hero-feature .hero-vc {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding: 8px var(--s-5) 10px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(212,175,55,.12);
+  background: rgba(8,7,6,.58);
+}
+.hero .hero-feature .hero-vc .ufc-vc { width: 100%; min-width: 0; }
+.hero .hero-feature .hero-vc .kx-vchip {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 6px;
+  text-align: center;
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+.hero .hero-feature .hero-vc .kx-vchip__px { display: inline-flex; gap: 6px; align-items: baseline; }
 
 /* Bout rows: the pair chip sits centred on the row's own full-width line (above). */
 .bout .ufc-kx-line .ufc-kc { justify-content: center; }
@@ -92,4 +116,10 @@ a.ufc-kc:focus-visible { outline: 2px solid var(--ufc-kc-ink); outline-offset: 2
   .ufc-kc--named > .ufc-kc__b { grid-column: 1; grid-row: 1; }
   .ufc-kc--named > .ufc-kc__sep, .ufc-kc--named > .kx__pulse { display: none; }
   .ufc-kc--named .ufc-kc__side { overflow: hidden; text-overflow: ellipsis; }
+}
+
+@media (max-width: 560px) {
+  .hero .hero-feature .hero-vc { padding-inline: 14px; }
+  .hero .hero-feature .hero-vc .kx-vchip { flex-wrap: wrap; row-gap: 3px; }
+  .hero .hero-feature .hero-vc .kx-vchip__px { flex-basis: 100%; justify-content: center; }
 }
