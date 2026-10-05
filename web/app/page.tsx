@@ -33,6 +33,7 @@ import { buildProofRail, type ProofCell } from "@/lib/proofRail";
 import { formatAmerican, getMarketsFor, marketProviderLive } from "@/lib/market";
 import { getKalshiBoard, getMarketDeskBoard, pickDesk, slimBoard, ufcQuote, type DeskEvent, type KalshiEntry } from "@/lib/kalshi";
 import { KalshiBoard, KalshiChip, VenueCue } from "@/components/KalshiMarket";
+import { pickVariant } from "@/lib/variants";
 
 export const revalidate = 300;
 
@@ -139,8 +140,6 @@ export default async function Home() {
   ]);
   const deskAll = await deskRead;
   const kalshi = slimBoard(Object.fromEntries(live.filter((b) => kalshiAll[b.id]).map((b) => [b.id, kalshiAll[b.id]])));
-  /* Sportsbook ML shown in the hero? Without it, the Kalshi chip names the market favourite. */
-  const heroBook = mainMarket?.a?.consensus != null || mainMarket?.b?.consensus != null;
   /* Hero chip only for a current usable quote (open, displayable, Mid-market,
    * not stale) or a closed / settled market's stored result; a quote that goes
    * stale after first paint says so in place ("Quote not current"), never live. */
@@ -237,9 +236,10 @@ export default async function Home() {
                     <div className="poster-faces">
                       {[mainEvent.fighter_a, mainEvent.fighter_b].map((f, i) => {
                         const img = imgs.get(f.id);
+                        const art = pickVariant(img, "desk", img ? framing.get(img.id) ?? null : null);
                         return (
-                          <div className={`face ${i ? "b" : "a"}`} key={f.id}>
-                            {img ? <img src={img.card} alt="" width={800} height={1000} fetchPriority="high" decoding="async" /> : (
+                          <div className={"face " + (i ? "b" : "a")} data-art-mode={art?.mode || "fallback"} key={f.id}>
+                            {art ? <img src={art.src} alt="" width={art.width} height={art.height} style={{ objectPosition: art.objectPosition }} fetchPriority="high" decoding="async" /> : (
                               <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}><Avatar f={f} size={120} /></div>
                             )}
                           </div>
@@ -250,36 +250,31 @@ export default async function Home() {
                     <div className="poster-names">
                       <div className="a">
                         <div className="n">{mainEvent.fighter_a.name}</div>
-                        <div className="r">
-                          <span className="hero-record">{fmtRecord(mainEvent.fighter_a)}</span>
-                          {mainMarket?.a?.consensus != null && (
-                            <span
-                              className="hero-moneyline"
-                              title={`${mainMarket.stale ? "Last observed" : "Consensus"} moneyline · ${mainMarket.bookCount} book${mainMarket.bookCount === 1 ? "" : "s"}`}
-                            >
-                              ML {formatAmerican(mainMarket.a.consensus)}
-                            </span>
-                          )}
-                          {heroKalshi && <KalshiChip boutId={mainEvent.id} initial={kalshi[mainEvent.id] ?? null} names={{ a: mainEvent.fighter_a.name, b: mainEvent.fighter_b.name }} variant="hero" side="a" favLabel={!heroBook} result={Boolean(mainEvent.result)} placement="hero" />}
-                        </div>
+                        <div className="r"><span className="hero-record">{fmtRecord(mainEvent.fighter_a)}</span></div>
                       </div>
                       <div className="b">
                         <div className="n">{mainEvent.fighter_b.name}</div>
-                        <div className="r">
-                          <span className="hero-record">{fmtRecord(mainEvent.fighter_b)}</span>
-                          {mainMarket?.b?.consensus != null && (
-                            <span
-                              className="hero-moneyline"
-                              title={`${mainMarket.stale ? "Last observed" : "Consensus"} moneyline · ${mainMarket.bookCount} book${mainMarket.bookCount === 1 ? "" : "s"}`}
-                            >
-                              ML {formatAmerican(mainMarket.b.consensus)}
-                            </span>
-                          )}
-                          {heroKalshi && <KalshiChip boutId={mainEvent.id} initial={kalshi[mainEvent.id] ?? null} names={{ a: mainEvent.fighter_a.name, b: mainEvent.fighter_b.name }} variant="hero" side="b" favLabel={!heroBook} result={Boolean(mainEvent.result)} placement="hero" />}
-                        </div>
+                        <div className="r"><span className="hero-record">{fmtRecord(mainEvent.fighter_b)}</span></div>
                       </div>
                     </div>
-                    {mainEvent ? <VenueCue boutId={mainEvent.id} result={Boolean(mainEvent.result)} wrapClass="ufc-kc-row hero-vc" /> : null}
+                    {(mainMarket?.a?.consensus != null || mainMarket?.b?.consensus != null) && (
+                      <div className="hero-book-rail" aria-label="Sportsbook consensus moneyline">
+                        <div className="hero-market-head">
+                          <span>Sportsbook consensus</span>
+                          <small>{mainMarket.stale ? "Last observed" : <>{mainMarket.bookCount} book{mainMarket.bookCount === 1 ? "" : "s"}</>}</small>
+                        </div>
+                        <div className="hero-market-grid">
+                          <span className="hero-market-side a"><small>{mainEvent.fighter_a.name.split(" ").slice(-1)[0]}</small><b>{formatAmerican(mainMarket?.a?.consensus)}</b></span>
+                          <span className="hero-market-side b"><small>{mainEvent.fighter_b.name.split(" ").slice(-1)[0]}</small><b>{formatAmerican(mainMarket?.b?.consensus)}</b></span>
+                        </div>
+                      </div>
+                    )}
+                    {heroKalshi && (
+                      <div className="hero-kalshi-rail">
+                        <KalshiChip boutId={mainEvent.id} initial={kalshi[mainEvent.id] ?? null} names={{ a: mainEvent.fighter_a.name, b: mainEvent.fighter_b.name }} variant="pair" result={Boolean(mainEvent.result)} placement="hero" />
+                      </div>
+                    )}
+                    {mainEvent ? <VenueCue boutId={mainEvent.id} result={Boolean(mainEvent.result)} wrapClass="ufc-kc-row hero-vc" variant="hero" /> : null}
                   </>
                 ) : (
                   <div className="poster-faces" style={{ display: "grid", placeItems: "center" }}><div className="stack" style={{ alignItems: "center", textAlign: "center", padding: 24 }}><Octagon className="" /><div className="faint sm">Card announcement pending. Bouts appear the moment they are published.</div></div></div>
