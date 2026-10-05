@@ -119,11 +119,12 @@ export function AllAccessMini({ m = null, className = "" }: { m?: Membership | n
   const model = allAccessHeroModel(m);
   if (!model) return null;
   return (
-    /* A compact promo is information, not the purchase: it opens the local
-     * All Access page; only an explicit GET / UPGRADE button goes to Stripe. */
-    <Link className={`ufc-aa-mini${className ? ` ${className}` : ""}`} href={LOCAL_ALL_ACCESS_PATH} data-pbe-placement="all_access_mini" data-ufc-all-access="mini">
+    /* Owner link policy (2026-10-05): the ALL ACCESS promo is a purchase action
+     * and keeps the canonical All Access Stripe Payment Link. Only purely
+     * informational links (What's included, network) open the local page. */
+    <a className={`ufc-aa-mini${className ? ` ${className}` : ""}`} href={model.checkoutUrl} rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access="mini">
       <span>{model.title}</span><b>{model.price}</b><i>{model.miniLine}</i>
-    </Link>
+    </a>
   );
 }
 

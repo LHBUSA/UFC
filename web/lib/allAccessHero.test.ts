@@ -179,11 +179,10 @@ test("hero / divider / mini HTML (all_access, owner): nothing renders — no CTA
   assert.equal(html(M.AllAccessDivider, {}), '<div class="ufc-aa-divider" role="separator" aria-label="ONLY WANT UFC?" data-ufc-all-access="divider"><span>ONLY WANT UFC?</span></div>');
 });
 
-test("mini HTML: one gold line to the local All Access page (never Stripe), the price", async () => {
+test("mini HTML: one gold line, the canonical Stripe checkout (owner link policy), the price", async () => {
   const { M, html } = await render();
   const out = html(M.AllAccessMini, { className: "fw-rail-aa" });
-  assert.equal(out, `<a class="ufc-aa-mini fw-rail-aa" data-pbe-placement="all_access_mini" data-ufc-all-access="mini" href="/all-access"><span>ALL ACCESS</span><b>$29/month</b><i>10 sports + Predictions →</i></a>`);
-  assert.doesNotMatch(out, /buy\.stripe/, "a compact promo never opens Stripe");
+  assert.equal(out, `<a class="ufc-aa-mini fw-rail-aa" href="${STRIPE_ALL_ACCESS}" rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access="mini"><span>ALL ACCESS</span><b>$29/month</b><i>10 sports + Predictions →</i></a>`);
   assert.match(html(M.AllAccessMini, { m: sportPro }), /<span>UPGRADE TO ALL ACCESS<\/span>/);
 });
 
