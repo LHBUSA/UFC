@@ -34,6 +34,7 @@ export const DISPLAY_ESPN_PREFERRED: ReadonlyMap<string, string> = new Map([
    * media record: an interview screenshot in a hallway, legally reusable and
    * not a fighter portrait. */
   ["13eebfea-dbd0-4110-a41a-200b8a73051d", "2560746"], // Alexandre Pantoja
+  ["ba405ece-13e8-409e-997f-fb0557035f21", "4025699"], // Brendan Allen
 ]);
 
 /** Does this fighter prefer the verified ESPN portrait, by canonical id AND ESPN id? */
