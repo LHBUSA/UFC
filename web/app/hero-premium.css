@@ -462,24 +462,6 @@
   min-height: 28px;
 }
 
-/* Art-directed fighter media. Tight photography is fitted rather than zoomed;
-   provider headshots stay staged instead of being cover-cropped. */
-.hero .hero-feature .poster-faces .face[data-art-mode="fitted"] img {
-  object-fit: contain;
-  object-position: center top !important;
-  transform: scale(.9);
-  transform-origin: center top;
-}
-.hero .hero-feature .poster-faces .face[data-art-mode="badge"] {
-  background: radial-gradient(circle at 50% 42%, rgba(114,72,153,.34), transparent 58%), #151117;
-}
-.hero .hero-feature .poster-faces .face[data-art-mode="badge"] img {
-  object-fit: contain;
-  object-position: center bottom !important;
-  padding: 14px 8px 0;
-  filter: saturate(.92) contrast(1.04);
-}
-
 /* The VS mark sits between the two portraits, so it must clear the plate too. */
 .hero .hero-feature .poster-faces .vs { padding-bottom: 92px; }
 
