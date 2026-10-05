@@ -56,7 +56,7 @@ export type UfcAccess = {
   tier: AccessTier;
   pro: boolean;
   signedIn: boolean;
-  source: "owner" | "stripe" | null;
+  source: "owner" | "stripe" | "network" | null;
   /** The ledger subscription behind a Stripe grant, for the account page. */
   subscription: LedgerSubscription | null;
   /** The shared PropBetEdge membership state (FREE / UFC PRO ACTIVE / ALL
