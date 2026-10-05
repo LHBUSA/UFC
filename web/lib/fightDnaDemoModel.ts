@@ -23,6 +23,26 @@ export const MIN_STAT_ROUNDS = 20;
 export const MIN_ROUND_PROFILE = 3;
 /* Upper bound on DNA reads per homepage render. */
 export const MAX_DNA_READS = 3;
+/* The featured fighter rotates on a fixed calendar: every ROTATION_DAYS from the
+ * epoch a new window starts, and within a window the pick never changes unless the
+ * fighter stops qualifying. Stats inside the window still refresh daily. */
+export const ROTATION_DAYS = 21;
+export const ROTATION_EPOCH = "2026-10-05";
+const DAY = 86_400_000;
+
+export function rotationWindow(nowMs: number): { index: number; start: string; end: string } {
+  const epoch = Date.parse(`${ROTATION_EPOCH}T00:00:00Z`);
+  const index = Math.floor((nowMs - epoch) / (ROTATION_DAYS * DAY));
+  const start = epoch + index * ROTATION_DAYS * DAY;
+  return { index, start: new Date(start).toISOString().slice(0, 10), end: new Date(start + (ROTATION_DAYS - 1) * DAY).toISOString().slice(0, 10) };
+}
+
+/* FNV-1a: a stable, dependency-free order for (window, fighter). */
+function fnv1a(str: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return h >>> 0;
+}
 
 const CORE_METRICS = ["sig_landed_per_min", "sig_accuracy", "sig_defense", "sig_diff_per_min", "td_attempts_per_15", "td_accuracy"] as const;
 
@@ -40,16 +60,18 @@ export function snapshotQualifies(s: DnaSnapshot | null | undefined): boolean {
   return has(s.finish_profile?.finish_rate);
 }
 
-/* Candidates in the caller's order (main event, then champions in rankings
- * order), de-duplicated, keeping only those with a qualifying portrait. The
- * order is the whole selection rule: same data in, same fighter out. */
-export function orderCandidates(cands: DemoCandidate[], portraits: Map<string, DemoPortrait>): DemoCandidate[] {
+/* The rotation pool (champions and ranked contenders), de-duplicated, keeping
+ * only those with a qualifying portrait, in a per-window hash order. Same data
+ * and same window in, same fighter out; a new window reshuffles the pool. */
+export function orderCandidates(cands: DemoCandidate[], portraits: Map<string, DemoPortrait>, windowIndex: number): DemoCandidate[] {
   const seen = new Set<string>();
-  return cands.filter((c) => {
-    if (!c.id || seen.has(c.id)) return false;
-    seen.add(c.id);
-    return portraitQualifies(portraits.get(c.id));
-  });
+  return cands
+    .filter((c) => {
+      if (!c.id || seen.has(c.id)) return false;
+      seen.add(c.id);
+      return portraitQualifies(portraits.get(c.id));
+    })
+    .sort((a, b) => fnv1a(`${windowIndex}:${a.id}`) - fnv1a(`${windowIndex}:${b.id}`) || (a.id < b.id ? -1 : 1));
 }
 
 export type Tile = { key: string; label: string; metric: MetricObject; signed?: boolean };
@@ -60,10 +82,12 @@ export type StanceRow = { stance: string; record: RecordObj; tdLanded: MetricObj
 export type DemoView = {
   asOf: string; version: number; coverage: string;
   completedBouts: number; statRounds: number; observedSeconds: number;
-  striking: Tile[]; target: ShareBar[];
+  striking: Tile[]; target: ShareBar[]; position: ShareBar[];
   grappling: Tile[]; stanceTd: StanceRow[];
   rounds: RoundPoint[]; roundDeltas: Tile[];
   finish: { rate: MetricObject; wins: number; ko: number | null; sub: number | null; decision: number | null; medianSeconds: MetricObject | null; byRound: Array<[string, number]> } | null;
+  /* Losses by stoppage, by round (stored buckets). */
+  finishedByRound: Array<[string, number]>;
   stances: StanceRow[];
 };
 
@@ -104,8 +128,12 @@ export function buildDemoView(s: DnaSnapshot): DemoView {
   const rp = s.round_profile || {};
   const fp = s.finish_profile || {};
 
-  const target = ([["head_attack_share", "Head"], ["body_attack_share", "Body"], ["leg_attack_share", "Legs"]] as const)
-    .flatMap(([key, label]) => (has(m[key]) ? [{ key, label, value: m[key].value as number }] : []));
+  const shares = (spec: ReadonlyArray<readonly [string, string]>): ShareBar[] => {
+    const out = spec.flatMap(([key, label]) => (has(m[key]) ? [{ key, label, value: m[key].value as number }] : []));
+    return out.length === spec.length ? out : [];
+  };
+  const target = shares([["head_attack_share", "Head"], ["body_attack_share", "Body"], ["leg_attack_share", "Legs"]]);
+  const position = shares([["distance_attack_share", "Distance"], ["clinch_attack_share", "Clinch"], ["ground_attack_share", "Ground"]]);
 
   let finish: DemoView["finish"] = null;
   const fr = fp.finish_rate;
@@ -121,12 +149,13 @@ export function buildDemoView(s: DnaSnapshot): DemoView {
     asOf: s.as_of_date, version: s.definition_version, coverage: s.coverage_status,
     completedBouts: s.sample_completed_bouts, statRounds: s.sample_rounds, observedSeconds: s.sample_seconds,
     striking: tiles(m, [["sig_landed_per_min", "Sig. strikes landed / min"], ["sig_accuracy", "Sig. strike accuracy"], ["sig_defense", "Sig. strike defense"], ["sig_diff_per_min", "Strike differential / min", true]]),
-    target: target.length === 3 ? target : [],
+    target, position,
     grappling: tiles(m, [["td_attempts_per_15", "TD attempts / 15 min"], ["td_accuracy", "TD accuracy"], ["control_share", "Control time share"], ["sub_attempts_per_15", "Sub attempts / 15 min"]]),
     stanceTd: stances.filter((r) => r.tdLanded && r.statBouts > 0),
     rounds: roundSeries(s),
     roundDeltas: tiles(rp as Record<string, MetricObject | undefined>, [["pace_retention_r3_vs_r1", "R3 pace vs R1"], ["defensive_drift_r3_vs_r1", "R3 vs R1 strikes absorbed", true], ["championship_round_delta", "Rds 4–5 vs 1–3 pace", true]]),
     finish,
+    finishedByRound: buckets(fp.finished_by_round_distribution),
     stances,
   };
 }

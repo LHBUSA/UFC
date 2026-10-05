@@ -13,6 +13,8 @@ import { fmtMetric, fmtRecord, sampleLine, STANCE_LABEL } from "@/lib/dna";
 import { Octagon } from "./ui";
 import { Explain, ExplainToggle, DeeperDetail } from "./Explain";
 import { CONFIDENCE_EXPLAINER, FAMILY, GLOSSARY, PBE_DERIVED_EXPLAINER, SAMPLE_EXPLAINER, lookup, quickRead } from "@/lib/dnaGlossary";
+import { buildDemoView } from "@/lib/fightDnaDemoModel";
+import { DnaCard, DnaDeltas, FinishDonut, PairedRoundChart, RoundCounts, RoundPaceChart, SplitBar, StanceColumns, StanceRings, finishParts } from "./dnaViz";
 
 const LEARN = "/learn/fight-dna";
 
@@ -246,6 +248,52 @@ function Tiles({ items, primary = false }: { items: Items; primary?: boolean }) 
 
 const count = (items: Items) => items.filter(([m]) => hasMetric(m)).length;
 
+/* ---- visual deck: the profile at a glance ---------------------------------
+ * The same stored snapshot as the expert grid below, drawn as charts. A card
+ * renders only when its data exists; the grid keeps every tile, sample and
+ * explainer, so nothing an expert relies on moves out of reach. */
+function DnaDeck({ s }: { s: DnaSnapshot }) {
+  const v = buildDemoView(s);
+  const f = v.finish;
+  const finishes = f ? f.byRound.reduce((n, [, c]) => n + c, 0) : 0;
+  const shape = v.target.length > 0 || v.position.length > 0;
+  const rounds = v.rounds.length > 0;
+  const ends = Boolean(f) || v.finishedByRound.some(([, n]) => n > 0);
+  const stance = v.stances.length > 0;
+  if (!shape && !rounds && !ends && !stance) return null;
+  return (
+    <div className="dv-deck" aria-label="Fight DNA at a glance">
+      {shape && (
+        <DnaCard kind="strike" title="Striking shape" lede="Where the significant strikes go, and where they are thrown from. Shares of this fighter's own attempts.">
+          <SplitBar caption="Targets" items={v.target} />
+          <SplitBar caption="Positions" items={v.position} />
+        </DnaCard>
+      )}
+      {rounds && (
+        <DnaCard kind="round" title="Round by round" lede="Output and damage taken per minute in each round reached.">
+          <RoundPaceChart rounds={v.rounds} />
+          <DnaDeltas items={v.roundDeltas} />
+          <p className="dv-note">Rounds never reached are left out, never counted as zero. Faded bars rest on a small sample.</p>
+        </DnaCard>
+      )}
+      {ends && (
+        <DnaCard kind="finish" title="How fights end" lede="How the wins ended, when the finishes landed, and when stoppage losses came.">
+          {f && <FinishDonut parts={finishParts(f)} rate={f.rate.value as number} wins={f.wins} />}
+          {f && finishes > 0 && <RoundCounts caption="Finish wins by round" buckets={f.byRound} />}
+          <RoundCounts caption="Stoppage losses by round" buckets={v.finishedByRound} tone="crimson" />
+          {f?.medianSeconds && <DnaDeltas items={[{ key: "median", label: "Median finish, elapsed", text: fmtMetric(f.medianSeconds) }]} />}
+        </DnaCard>
+      )}
+      {stance && (
+        <DnaCard kind="stance" title="Opponent stance" lede="Results, and takedown output, against each listed opponent stance. Historical split, not causation.">
+          <StanceRings caption="Record by opponent stance" rows={v.stances} />
+          <StanceColumns caption="Takedowns landed / 15 min" rows={v.stanceTd} />
+        </DnaCard>
+      )}
+    </div>
+  );
+}
+
 /* ---- fighter page section ------------------------------------------------ */
 export function FightDnaSection({ dna, fighterName }: { dna: FighterDna; fighterName: string }) {
   const s = dna.snapshot;
@@ -282,6 +330,7 @@ export function FightDnaSection({ dna, fighterName }: { dna: FighterDna; fighter
 
       <Coverage s={s} />
       <QuickRead s={s} />
+      <DnaDeck s={s} />
 
       <div className="dna-grid" id="dna-detail">
         <div className="dna-card wide">
@@ -414,6 +463,43 @@ function pairRows(dna: MatchupDna): PairRow[] {
   });
 }
 
+/* ---- matchup at a glance: both stored profiles drawn side by side ---------
+ * Each side is the fighter's own as-of snapshot from the matchup payload; the
+ * deck compares shapes, it does not score the fight. */
+function MatchupDeck({ dna }: { dna: MatchupDna }) {
+  const [fa, fb] = dna.fighters;
+  if (!dna.a || !dna.b) return null;
+  const va = buildDemoView(dna.a as DnaSnapshot), vb = buildDemoView(dna.b as DnaSnapshot);
+  const pace = va.rounds.length > 0 && vb.rounds.length > 0;
+  const shape = (va.target.length > 0 && vb.target.length > 0) || (va.position.length > 0 && vb.position.length > 0);
+  const ends = Boolean(va.finish && vb.finish);
+  if (!pace && !shape && !ends) return null;
+  return (
+    <div className="dv-deck three mt-4" aria-label="Matchup DNA at a glance">
+      {pace && (
+        <DnaCard kind="round" title="Pace, round by round" lede="Significant strikes landed per minute in each round each fighter has reached.">
+          <PairedRoundChart a={{ name: fa.name, rounds: va.rounds }} b={{ name: fb.name, rounds: vb.rounds }} />
+          <p className="dv-note">Missing rounds have no bar. Faded bars rest on a small sample.</p>
+        </DnaCard>
+      )}
+      {shape && (
+        <DnaCard kind="strike" title="Striking shape" lede="Where each fighter's significant strikes go and where they are thrown from.">
+          {va.target.length > 0 && vb.target.length > 0 && <><SplitBar caption={`${fa.name} · targets`} items={va.target} /><SplitBar caption={`${fb.name} · targets`} items={vb.target} /></>}
+          {va.position.length > 0 && vb.position.length > 0 && <><SplitBar caption={`${fa.name} · positions`} items={va.position} /><SplitBar caption={`${fb.name} · positions`} items={vb.position} /></>}
+        </DnaCard>
+      )}
+      {ends && (
+        <DnaCard kind="finish" title="How their wins end" lede="Each fighter's wins split by method, with the finish rate at the centre.">
+          <div className="dv-pair">
+            <div><span className="dv-who">{fa.name}</span><FinishDonut parts={finishParts(va.finish!)} rate={va.finish!.rate.value as number} wins={va.finish!.wins} /></div>
+            <div><span className="dv-who">{fb.name}</span><FinishDonut parts={finishParts(vb.finish!)} rate={vb.finish!.rate.value as number} wins={vb.finish!.wins} /></div>
+          </div>
+        </DnaCard>
+      )}
+    </div>
+  );
+}
+
 /* ---- matchup ---- */
 export function DnaMatchup({ dna }: { dna: MatchupDna }) {
   const [fa, fb] = dna.fighters;
@@ -452,6 +538,7 @@ export function DnaMatchup({ dna }: { dna: MatchupDna }) {
           </div>
         </div>
       )}
+      <MatchupDeck dna={dna} />
       {comps.length > 0 && (
         <div className="dna-card mt-4">
           <div className="dna-card-head"><div className="dna-fam"><h4>Supported paired profile</h4><p className="dna-sub">Each fighter&apos;s stored metric side by side, with its own sample and confidence. Bars compare magnitude only.</p></div><span className="faint label">{fa.name} · left · {fb.name} · right</span></div>

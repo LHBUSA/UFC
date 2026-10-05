@@ -2,7 +2,7 @@
  * from the stored snapshot, and missing data is omitted rather than invented. */
 import test from "node:test";
 import assert from "node:assert/strict";
-import { MIN_PORTRAIT_SOURCE_HEIGHT, buildDemoView, orderCandidates, portraitQualifies, snapshotQualifies, type DemoPortrait } from "./fightDnaDemoModel.ts";
+import { MIN_PORTRAIT_SOURCE_HEIGHT, ROTATION_DAYS, buildDemoView, orderCandidates, portraitQualifies, rotationWindow, snapshotQualifies, type DemoPortrait } from "./fightDnaDemoModel.ts";
 import type { DnaSnapshot, MetricObject } from "./dna";
 
 const mo = (value: number | null, unit: string, extra: Partial<MetricObject> = {}): MetricObject => ({ value, unit, confidence: "high", ...extra });
@@ -49,13 +49,23 @@ test("a portrait qualifies only when stored first-party and tall enough for the 
   assert.ok(!portraitQualifies(null));
 });
 
-test("selection is deterministic: caller order, de-duplicated, portrait-gated", () => {
-  const cands = [{ id: "allen", context: "Main event" }, { id: "duncan", context: "Main event" }, { id: "van", context: "Flyweight champion" }, { id: "volk", context: "Featherweight champion" }, { id: "allen", context: "dupe" }, { id: "gaethje", context: "Lightweight champion" }];
-  const portraits = new Map([["allen", portrait(470)], ["van", portrait(null)], ["volk", portrait(1300)], ["gaethje", portrait(1613)]]);
-  const a = orderCandidates(cands, portraits).map((c) => c.id);
-  const b = orderCandidates(cands, portraits).map((c) => c.id);
-  assert.deepEqual(a, ["volk", "gaethje"]);
-  assert.deepEqual(a, b);
+test("rotation: one pick per 21-day window, stable inside it, portrait-gated and de-duplicated", () => {
+  const cands = [{ id: "allen", context: "#1 Middleweight" }, { id: "van", context: "Flyweight champion" }, { id: "volk", context: "Featherweight champion" }, { id: "volk", context: "dupe" }, { id: "gaethje", context: "Lightweight champion" }, { id: "makhachev", context: "Welterweight champion" }];
+  const portraits = new Map([["allen", portrait(470)], ["van", portrait(null)], ["volk", portrait(1300)], ["gaethje", portrait(1613)], ["makhachev", portrait(1080)]]);
+  const w0 = orderCandidates(cands, portraits, 0).map((c) => c.id);
+  assert.deepEqual([...w0].sort(), ["gaethje", "makhachev", "volk"], "low-res and unknown-size portraits never enter the pool; duplicates collapse");
+  assert.deepEqual(orderCandidates(cands, portraits, 0).map((c) => c.id), w0, "same window, same order");
+  assert.deepEqual(orderCandidates([...cands].reverse(), portraits, 0).map((c) => c.id), w0, "caller order does not matter inside a window");
+  const firsts = new Set(Array.from({ length: 12 }, (_, i) => orderCandidates(cands, portraits, i)[0].id));
+  assert.ok(firsts.size > 1, "the featured fighter changes across windows");
+});
+
+test("rotation windows are fixed 21-day calendar blocks from the epoch", () => {
+  assert.equal(ROTATION_DAYS, 21);
+  const t = (d: string) => Date.parse(`${d}T12:00:00Z`);
+  assert.deepEqual(rotationWindow(t("2026-10-05")), { index: 0, start: "2026-10-05", end: "2026-10-25" });
+  assert.deepEqual(rotationWindow(t("2026-10-25")), { index: 0, start: "2026-10-05", end: "2026-10-25" });
+  assert.deepEqual(rotationWindow(t("2026-10-26")), { index: 1, start: "2026-10-26", end: "2026-11-15" });
 });
 
 test("only a high-coverage snapshot with the core metrics qualifies", () => {
@@ -82,6 +92,9 @@ test("the view carries stored values only and omits what is missing", () => {
   assert.deepEqual(v.finish && { wins: v.finish.wins, ko: v.finish.ko, sub: v.finish.sub, dec: v.finish.decision }, { wins: 15, ko: 5, sub: 0, dec: 10 });
   assert.deepEqual(v.finish?.byRound, [["1", 0], ["2", 3], ["3", 1], ["4", 1], ["5", 0]]);
   assert.equal(v.completedBouts, 18);
+  /* No distance/clinch/ground shares in this snapshot: no position bar. Finished-by buckets absent: empty. */
+  assert.deepEqual(v.position, []);
+  assert.deepEqual(v.finishedByRound, []);
 });
 
 test("a missing grappling metric or target share is dropped, not zero-filled", () => {

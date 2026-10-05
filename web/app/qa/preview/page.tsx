@@ -12,6 +12,8 @@ import { eventSlug } from "@/lib/slug";
 import { OfficialVideoModule, type ContentPlan } from "@/components/plan";
 import { TrainingCorner, NewCampNote } from "@/components/TrainingCorner";
 import { trainingPayload, type StintRow } from "@/lib/training";
+import { getFighterDna, getMatchupDna } from "@/lib/dna";
+import { DnaMatchup, FightDnaSection } from "@/components/dna";
 
 /* Development-only visual QA fixtures for data-driven modules. This route
  * returns 404 on production and on any Vercel deployment; it exists so the
@@ -97,6 +99,10 @@ export default async function QaPreview() {
   const trainingEspnOnly = trainingPayload({ current: { fighter_id: "f-b", current_camp: { camp_id: "c3", name: "Kill Cliff FC", slug: "kill-cliff-fc", first_observed_at: "2026-09-26T22:00:00Z", last_confirmed_at: "2026-09-26T22:00:00Z", joined_on: null, certainty: "OBSERVED", evidence: [tEv({})] }, fighting_out_of: null, training_location: null, coaches: [], other_camps: [], updated_at: "2026-09-26T22:00:00Z" },
     stints: [{ ...tStints[0], fighter_id: "f-b", camp_id: "c3", camp_name: "Kill Cliff FC", is_current: true }], changes: [], lastBoutDate: null });
 
+  /* Fight DNA profile + matchup decks, rendered from the live API when local
+   * credentials exist (never on Vercel: the guard above 404s first). */
+  const qaFighter = "a312eb8b-7d22-4e20-92fe-3e8cdcba0fe7";
+  const [qaDna, qaMatch] = await Promise.all([getFighterDna(qaFighter).catch(() => null), getMatchupDna("ba405ece-13e8-409e-997f-fb0557035f21", "e1e5aab9-51a6-4d21-989e-5b25f313e408").catch(() => null)]);
   return (
     <div className="wrap page">
       <div className="eyebrow mb-4">QA fixtures · synthetic names · development only</div>
@@ -116,6 +122,8 @@ export default async function QaPreview() {
       <div id="qa-training-espn-only" className="mb-7"><TrainingCorner training={trainingEspnOnly} fighterName="Bravo Kane" /></div>
       <div id="qa-training-reported" className="mb-7"><TrainingCorner training={trainingReported} fighterName="Charlie Ortega" /></div>
       <section id="qa-belts" className="mb-7" style={{ display: "flex", gap: 40, alignItems: "end", flexWrap: "wrap" }}><ChampionshipBelt size="hero" label="Hero" /><ChampionshipBelt size="card" label="Card" /><ChampionshipBelt size="mini" label="Mini" /></section>
+      {qaDna?.status === "ok" && <div id="qa-dna-profile" className="mb-7"><FightDnaSection dna={qaDna.data} fighterName={qaDna.data.fighter.name} /></div>}
+      {qaMatch?.status === "ok" && <div id="qa-dna-matchup" className="mb-7"><DnaMatchup dna={qaMatch.data} /></div>}
     </div>
   );
 }

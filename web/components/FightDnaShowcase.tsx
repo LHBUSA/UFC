@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { FightDnaPortrait } from "@/components/FightDnaPortrait";
-import { fmtMetric, fmtRecord as fmtDnaRecord, STANCE_LABEL, type MetricObject } from "@/lib/dna";
+import { DnaCard, DnaDeltas, DnaTiles, FinishDonut, RoundPaceChart, SplitBar, StanceColumns, StanceRings, finishParts } from "@/components/dnaViz";
+import { fmtMetric } from "@/lib/dna";
 import { getFightDnaDemo, type FightDnaDemo } from "@/lib/fightDnaDemo";
-import type { DemoCandidate, RoundPoint, StanceRow, Tile } from "@/lib/fightDnaDemoModel";
+import type { DemoCandidate } from "@/lib/fightDnaDemoModel";
 import { fmtRecord as fmtFighterRecord } from "@/lib/format";
 import { fighterSlug } from "@/lib/slug";
 
@@ -26,24 +27,6 @@ const PIPELINE: Array<[string, string]> = [
 ];
 const PROOF = ["PBE Derived", "Source-backed", "Versioned", "As-of safe", "Provenance verified"];
 
-function signed(m: MetricObject): string {
-  const v = m.value as number;
-  const s = fmtMetric(m);
-  return v > 0 ? `+${s}` : s;
-}
-const isRatioDelta = (t: Tile) => t.key.startsWith("pace_retention");
-function tileValue(t: Tile): [string, string] {
-  const v = t.metric.value as number;
-  if (isRatioDelta(t)) { const p = Math.round((v - 1) * 100); return [`${p > 0 ? "+" : ""}${p}%`, ""]; }
-  const s = t.signed ? signed(t.metric) : fmtMetric(t.metric);
-  const unit = s.match(/(\/min|\/15)$/)?.[1] || "";
-  return [unit ? s.slice(0, -unit.length) : s, unit];
-}
-function tileTone(t: Tile): string | undefined {
-  /* Gold marks a gain in output; more strikes absorbed is never highlighted as good. */
-  if ((!t.signed && !isRatioDelta(t)) || t.key.startsWith("defensive_drift")) return undefined;
-  return (t.metric.value as number) > (isRatioDelta(t) ? 1 : 0) ? "up" : undefined;
-}
 function clock(sec: number): string {
   const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = Math.round(sec % 60);
   return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
@@ -52,176 +35,36 @@ function asOf(d: string): string {
   const t = Date.parse(`${d}T12:00:00Z`);
   return Number.isFinite(t) ? new Date(t).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }) : d;
 }
-const pct = (n: number) => `${Math.round(n * 100)}%`;
-const lowSample = (c: string) => c === "low" || c === "insufficient";
-const stanceName = (k: string) => STANCE_LABEL[k] || k;
-
-function Tiles({ items }: { items: Tile[] }) {
-  return <div className="fdna-tiles">{items.map((t) => { const [n, u] = tileValue(t); return <div className="fdna-tile" key={t.key}><b className={tileTone(t)}>{n}{u && <small>{u}</small>}</b><span>{t.label}</span></div>; })}</div>;
-}
-
-function Deltas({ items }: { items: Tile[] }) {
-  return <ul className="fdna-deltas">{items.map((t) => { const [n, u] = tileValue(t); return <li key={t.key}><span>{t.label}</span><b className={tileTone(t)}>{n}{u && <small>{u}</small>}</b></li>; })}</ul>;
-}
-
-type Kind = "strike" | "grapple" | "round" | "finish";
-function Icon({ kind }: { kind: Kind }) {
-  const p = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      {kind === "strike" && <><circle cx="12" cy="12" r="8" {...p} /><circle cx="12" cy="12" r="4" {...p} /><circle cx="12" cy="12" r=".9" fill="currentColor" /></>}
-      {kind === "grapple" && <><path d="M7 15c-2-2-2-5 0-7s5-2 7 0" {...p} /><path d="M17 9c2 2 2 5 0 7s-5 2-7 0" {...p} /></>}
-      {kind === "round" && <path d="M5 19v-7M10 19V7M15 19v-9M20 19V5" {...p} />}
-      {kind === "finish" && <><circle cx="12" cy="12" r="8" {...p} /><path d="M12 4a8 8 0 0 1 8 8h-8z" fill="currentColor" opacity=".55" /></>}
-    </svg>
-  );
-}
-
-function Card({ kind, title, lede, href, children }: { kind: Kind; title: string; lede: string; href: string; children: React.ReactNode }) {
-  return (
-    <article className="fdna-card">
-      <header><span className="ic"><Icon kind={kind} /></span><h3>{title}</h3></header>
-      <p className="lede">{lede}</p>
-      {children}
-      <Link href={href} className="fv">Full view →</Link>
-    </article>
-  );
-}
-
-function RoundChart({ rounds }: { rounds: RoundPoint[] }) {
-  const max = Math.max(...rounds.flatMap((r) => [r.landed, r.absorbed ?? 0]), 1);
-  const W = 260, H = 118, top = 16, base = 96, gw = W / rounds.length, bw = Math.min(16, gw / 3.2);
-  const y = (v: number) => base - (v / max) * (base - top);
-  return (
-    <figure className="fdna-roundchart">
-      <div className="fdna-legend"><span><i className="gold" />Sig. landed / min</span><span><i className="grey" />Absorbed / min</span></div>
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Significant strikes landed and absorbed per minute, by round">
-        <line x1="0" x2={W} y1={base + .5} y2={base + .5} className="axis" />
-        {rounds.map((r, i) => {
-          const cx = gw * i + gw / 2;
-          return (
-            <g key={r.round} className={lowSample(r.confidence) ? "faded" : undefined}>
-              <title>{`Round ${r.round}: ${r.landed.toFixed(2)} landed/min${r.absorbed != null ? `, ${r.absorbed.toFixed(2)} absorbed/min` : ""}${r.rounds != null ? ` · ${r.rounds} rounds observed` : ""} · ${r.confidence} confidence`}</title>
-              <rect x={cx - bw - 1} y={y(r.landed)} width={bw} height={base - y(r.landed)} rx="3" className="bar-gold" />
-              {r.absorbed != null && <rect x={cx + 1} y={y(r.absorbed)} width={bw} height={base - y(r.absorbed)} rx="3" className="bar-grey" />}
-              <text x={cx - bw / 2 - 1} y={y(r.landed) - 4} textAnchor="middle" className="val">{r.landed.toFixed(1)}</text>
-              <text x={cx} y={base + 12} textAnchor="middle" className="lab">R{r.round}</text>
-              {r.rounds != null && <text x={cx} y={base + 21} textAnchor="middle" className="n">{r.rounds} rd{r.rounds === 1 ? "" : "s"}</text>}
-            </g>
-          );
-        })}
-      </svg>
-    </figure>
-  );
-}
-
-type Part = { key: string; label: string; value: number; cls: string };
-function Donut({ parts, center }: { parts: Part[]; center: string }) {
-  const total = parts.reduce((s, p) => s + p.value, 0);
-  const shown = parts.filter((p) => p.value > 0);
-  const R = 40, C = 2 * Math.PI * R, gap = shown.length > 1 ? 2 : 0;
-  let off = 0;
-  return (
-    <svg className="fdna-donut" viewBox="0 0 104 104" role="img" aria-label={`Finish rate ${center}; ${parts.map((p) => `${p.label} ${p.value}`).join(", ")}`}>
-      <circle cx="52" cy="52" r={R} className="track" />
-      {total > 0 && shown.map((p) => {
-        const len = (p.value / total) * C;
-        const el = <circle key={p.key} cx="52" cy="52" r={R} className={p.cls} strokeDasharray={`${Math.max(len - gap, 0.5)} ${C}`} strokeDashoffset={-off} transform="rotate(-90 52 52)"><title>{`${p.label}: ${p.value} win${p.value === 1 ? "" : "s"}`}</title></circle>;
-        off += len;
-        return el;
-      })}
-      <text x="52" y="54" textAnchor="middle" className="c1">{center}</text>
-      <text x="52" y="66" textAnchor="middle" className="c2">FINISH RATE</text>
-    </svg>
-  );
-}
-
-function StanceRing({ row }: { row: StanceRow }) {
-  const r = row.record, n = r.w + r.l + r.d, apps = r.appearances ?? n;
-  const share = n > 0 ? r.w / n : 0;
-  const R = 17, C = 2 * Math.PI * R, small = apps < 3;
-  return (
-    <div className={`fdna-ring${small ? " faded" : ""}`} title={`vs ${stanceName(row.stance)}: ${fmtDnaRecord(r)} across ${apps} archived appearance${apps === 1 ? "" : "s"}`}>
-      <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r={R} className="track" />{n > 0 && r.w > 0 && <circle cx="22" cy="22" r={R} className="arc" strokeDasharray={`${share * C} ${C}`} transform="rotate(-90 22 22)" />}<text x="22" y="25.5" textAnchor="middle">{pct(share)}</text></svg>
-      <b>vs {stanceName(row.stance)}</b>
-      <span>{r.w}-{r.l}{r.d ? `-${r.d}` : ""}{small ? " · small sample" : ""}</span>
-    </div>
-  );
-}
+const shortDate = (d: string) => asOf(d).replace(/, \d{4}$/, "");
 
 function DemoCards({ demo, href }: { demo: FightDnaDemo; href: string }) {
   const v = demo.view;
-  const tdMax = Math.max(...v.stanceTd.map((r) => r.tdLanded!.value as number), 0.01);
   const f = v.finish;
-  const parts: Part[] = f ? ([
-    { key: "ko", label: "KO/TKO", value: f.ko, cls: "seg-gold" },
-    { key: "sub", label: "Submission", value: f.sub, cls: "seg-crimson" },
-    { key: "dec", label: "Decision", value: f.decision, cls: "seg-grey" },
-  ].filter((p) => p.value != null) as Part[]) : [];
   const finishes = f ? f.byRound.reduce((s, [, n]) => s + n, 0) : 0;
   const early = f ? f.byRound.filter(([r]) => Number(r) <= 3).reduce((s, [, n]) => s + n, 0) : 0;
-
   return (
     <div className="fdna-cards">
-      <Card kind="strike" title="Striking DNA" lede="Output, accuracy, defense and where the significant strikes are aimed." href={href}>
-        <Tiles items={v.striking} />
-        {v.target.length > 0 && (
-          <figure className="fdna-split">
-            <figcaption>Significant strike targets</figcaption>
-            <div className="bar" role="img" aria-label={v.target.map((t) => `${t.label} ${pct(t.value)}`).join(", ")}>{v.target.map((t, i) => <i key={t.key} className={`s${i}`} style={{ flexGrow: Math.max(t.value, 0.001) }} title={`${t.label}: ${pct(t.value)} of significant attempts`} />)}</div>
-            <div className="keys">{v.target.map((t, i) => <span key={t.key}><i className={`s${i}`} />{t.label} <b>{pct(t.value)}</b></span>)}</div>
-          </figure>
-        )}
-      </Card>
-
-      <Card kind="grapple" title="Grappling DNA" lede="Takedown pressure, success rate, control and submission activity." href={href}>
-        <Tiles items={v.grappling} />
-        {v.stanceTd.length > 0 && (
-          <figure className="fdna-cols">
-            <figcaption>Takedowns landed / 15 min by opponent stance</figcaption>
-            <div className="cols">
-              {v.stanceTd.map((r) => {
-                const val = r.tdLanded!.value as number;
-                return (
-                  <div key={r.stance} className={`col${lowSample(r.confidence) ? " faded" : ""}`} title={`vs ${stanceName(r.stance)}: ${val.toFixed(2)} takedowns landed per 15 min · ${r.statBouts} bout${r.statBouts === 1 ? "" : "s"} with stats · ${r.confidence} confidence`}>
-                    <b>{val.toFixed(2)}</b>
-                    <div className="track"><i style={{ height: `${Math.max((val / tdMax) * 100, 2)}%` }} /></div>
-                    <span>{stanceName(r.stance)}</span>
-                    <small>{r.statBouts} bout{r.statBouts === 1 ? "" : "s"}</small>
-                  </div>
-                );
-              })}
-            </div>
-          </figure>
-        )}
-      </Card>
-
-      <Card kind="round" title="Round DNA" lede="How output and damage taken change as the fight goes on." href={href}>
-        <RoundChart rounds={v.rounds} />
-        {v.roundDeltas.length > 0 && <Deltas items={v.roundDeltas} />}
-        <p className="fdna-note">Rounds a fighter never reached are left out, never counted as zero. Faded bars rest on a small sample.</p>
-      </Card>
-
-      <Card kind="finish" title="Finish + stance DNA" lede="How the wins end, when finishes land, and results by opponent stance." href={href}>
-        {f && (
-          <>
-            <div className="fdna-finish">
-              <Donut parts={parts} center={pct(f.rate.value as number)} />
-              <ul>{parts.map((p) => <li key={p.key}><i className={p.cls} />{p.label}<b>{p.value}</b><em>{pct(p.value / f.wins)}</em></li>)}</ul>
-            </div>
-            <ul className="fdna-deltas">
-              {f.medianSeconds && <li><span>Median finish, elapsed</span><b>{fmtMetric(f.medianSeconds)}</b></li>}
-              {finishes > 0 && <li><span>Finishes in R1–R3</span><b>{early} of {finishes}</b></li>}
-            </ul>
-          </>
-        )}
-        {v.stances.length > 0 && (
-          <figure className="fdna-rings">
-            <figcaption>Record by opponent stance</figcaption>
-            <div className="rings">{v.stances.map((r) => <StanceRing key={r.stance} row={r} />)}</div>
-          </figure>
-        )}
-      </Card>
+      <DnaCard kind="strike" title="Striking DNA" lede="Output, accuracy, defense and where the significant strikes are aimed." href={href}>
+        <DnaTiles items={v.striking} />
+        <SplitBar caption="Significant strike targets" items={v.target} />
+      </DnaCard>
+      <DnaCard kind="grapple" title="Grappling DNA" lede="Takedown pressure, success rate, control and submission activity." href={href}>
+        <DnaTiles items={v.grappling} />
+        <StanceColumns caption="Takedowns landed / 15 min by opponent stance" rows={v.stanceTd} />
+      </DnaCard>
+      <DnaCard kind="round" title="Round DNA" lede="How output and damage taken change as the fight goes on." href={href}>
+        <RoundPaceChart rounds={v.rounds} />
+        <DnaDeltas items={v.roundDeltas} />
+        <p className="dv-note">Rounds a fighter never reached are left out, never counted as zero. Faded bars rest on a small sample.</p>
+      </DnaCard>
+      <DnaCard kind="finish" title="Finish + stance DNA" lede="How the wins end, when finishes land, and results by opponent stance." href={href}>
+        {f && <FinishDonut parts={finishParts(f)} rate={f.rate.value as number} wins={f.wins} />}
+        {f && <DnaDeltas items={[
+          ...(f.medianSeconds ? [{ key: "median", label: "Median finish, elapsed", text: fmtMetric(f.medianSeconds) }] : []),
+          ...(finishes > 0 ? [{ key: "early", label: "Finishes in R1–R3", text: `${early} of ${finishes}` }] : []),
+        ]} />}
+        <StanceRings caption="Record by opponent stance" rows={v.stances} />
+      </DnaCard>
     </div>
   );
 }
@@ -242,7 +85,7 @@ export async function FightDnaShowcase({ candidates }: { candidates: DemoCandida
           <div className="fdna-photo">
             <FightDnaPortrait src={demo.image.src} alt={demo.fighter.name} />
             <div className="fdna-photo-copy">
-              <span className="k">Featured Fight DNA</span>
+              <span className="k">Featured Fight DNA · through {shortDate(demo.window.end)}</span>
               <h3>{first} {last && <em>{last}</em>}</h3>
               <p>{demo.context} · {fmtFighterRecord(demo.fighter)}</p>
               {demo.fighter.nickname && <p className="nick">“{demo.fighter.nickname}”</p>}
@@ -317,74 +160,6 @@ const CSS = `
 .fdna-coverage dd{margin:0;color:var(--pbe-paper);font:800 clamp(17px,1.55vw,22px)/1 var(--pbe-font-data);white-space:nowrap}
 .fdna-coverage dt{color:var(--pbe-faint);font:700 9px/1.25 var(--pbe-font-data);letter-spacing:.1em;text-transform:uppercase}
 .fdna-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:clamp(16px,2vw,24px)}
-.fdna-card{display:flex;flex-direction:column;gap:12px;min-width:0;padding:16px;border:1px solid var(--pbe-line);border-radius:14px;background:linear-gradient(180deg,rgba(255,245,220,.04),rgba(255,245,220,.012))}
-.fdna-card header{display:flex;align-items:center;gap:10px}
-.fdna-card .ic{flex:none;display:grid;place-items:center;width:30px;height:30px;border:1px solid rgba(212,175,55,.45);border-radius:8px;background:var(--pbe-gold-wash);color:var(--pbe-gold)}
-.fdna-card h3{flex:1;min-width:0;color:var(--pbe-gold);font:800 12px/1.2 var(--pbe-font-data);letter-spacing:.11em;text-transform:uppercase}
-.fdna-card .fv{margin-top:auto;align-self:flex-start;padding:8px 0 0;color:var(--pbe-gold);font:800 9.5px/1 var(--pbe-font-data);letter-spacing:.1em;text-transform:uppercase;text-decoration:none}
-.fdna-card .fv:hover,.fdna-card .fv:focus-visible{color:var(--pbe-gold-bright);text-decoration:underline;text-underline-offset:3px}
-.fdna-card .lede{color:var(--pbe-dim);font-size:13px;line-height:1.45}
-.fdna-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-.fdna-tile{padding:10px;border:1px solid var(--pbe-line-faint);border-radius:9px;background:rgba(20,17,13,.45);min-width:0}
-.fdna-tile b{display:block;color:var(--pbe-paper);font:800 19px/1 var(--pbe-font-data);white-space:nowrap}
-.fdna-tile b small,.fdna-deltas b small{margin-left:2px;color:var(--pbe-faint);font-size:10px;font-weight:700}
-.fdna-deltas{list-style:none;margin:0;padding:0;border-top:1px solid var(--pbe-line-faint)}
-.fdna-deltas li{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 0;border-bottom:1px solid var(--pbe-line-faint)}
-.fdna-deltas span{color:var(--pbe-faint);font:700 9px/1.3 var(--pbe-font-data);letter-spacing:.07em;text-transform:uppercase}
-.fdna-deltas b{flex:none;color:var(--pbe-paper);font:800 15px/1 var(--pbe-font-data);white-space:nowrap}
-.fdna-deltas b.up{color:var(--pbe-gold-bright)}
-.fdna-tile b.up{color:var(--pbe-gold-bright)}
-.fdna-tile span{display:block;margin-top:6px;color:var(--pbe-faint);font:700 8.5px/1.3 var(--pbe-font-data);letter-spacing:.07em;text-transform:uppercase}
-.fdna-card figure{margin:0}
-.fdna-card figcaption{color:var(--pbe-paper-2);font:800 9px/1.3 var(--pbe-font-data);letter-spacing:.1em;text-transform:uppercase}
-.fdna-split .bar{display:flex;gap:2px;height:12px;margin-top:9px;border-radius:4px;overflow:hidden}
-.fdna-split .bar i{display:block;min-width:3px}
-.fdna-split .s0{background:var(--pbe-gold)}.fdna-split .s1{background:rgba(212,175,55,.55)}.fdna-split .s2{background:rgba(212,175,55,.26)}
-.fdna-split .keys{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px}
-.fdna-split .keys span{display:inline-flex;align-items:center;gap:5px;color:var(--pbe-dim);font:700 10px/1 var(--pbe-font-data)}
-.fdna-split .keys i{width:8px;height:8px;border-radius:2px}
-.fdna-split .keys b{color:var(--pbe-paper)}
-.fdna-cols .cols{display:flex;gap:10px;margin-top:10px;height:118px}
-.fdna-cols .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
-.fdna-cols .col b{color:var(--pbe-paper);font:800 11px/1 var(--pbe-font-data)}
-.fdna-cols .track{flex:1;width:100%;max-width:44px;display:flex;align-items:flex-end;border-bottom:1px solid var(--pbe-line-strong)}
-.fdna-cols .track i{display:block;width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--pbe-gold-bright),rgba(212,175,55,.45))}
-.fdna-cols .col span{color:var(--pbe-dim);font:700 9.5px/1 var(--pbe-font-data)}
-.fdna-cols .col small{color:var(--pbe-faint);font:600 8.5px/1 var(--pbe-font-data)}
-.fdna-cols .col.faded .track i{background:repeating-linear-gradient(135deg,rgba(212,175,55,.45) 0 3px,rgba(212,175,55,.15) 3px 6px)}
-.fdna-legend{display:flex;flex-wrap:wrap;gap:4px 14px}
-.fdna-legend span{display:inline-flex;align-items:center;gap:6px;color:var(--pbe-dim);font:700 9.5px/1 var(--pbe-font-data)}
-.fdna-legend i{width:9px;height:9px;border-radius:2px}.fdna-legend i.gold{background:var(--pbe-gold)}.fdna-legend i.grey{background:#8f8778}
-.fdna-roundchart svg{display:block;width:100%;height:auto;margin-top:6px;overflow:visible}
-.fdna-roundchart .axis{stroke:var(--pbe-line-strong);stroke-width:1}
-.fdna-roundchart .bar-gold{fill:var(--pbe-gold)}.fdna-roundchart .bar-grey{fill:#8f8778}
-.fdna-roundchart .faded rect{opacity:.45}
-.fdna-roundchart .val{fill:var(--pbe-paper);font:700 8.5px var(--pbe-font-data)}
-.fdna-roundchart .lab{fill:var(--pbe-dim);font:700 8.5px var(--pbe-font-data)}
-.fdna-roundchart .n{fill:var(--pbe-faint);font:600 7px var(--pbe-font-data)}
-.fdna-note{color:var(--pbe-faint);font-size:11px;line-height:1.45}
-.fdna-finish{display:grid;grid-template-columns:104px minmax(0,1fr);gap:14px;align-items:center}
-.fdna-donut{width:104px;height:104px}
-.fdna-donut circle{fill:none;stroke-width:11}
-.fdna-donut .track{stroke:rgba(255,245,220,.07)}
-.fdna-donut .seg-gold{stroke:var(--pbe-gold)}.fdna-donut .seg-crimson{stroke:var(--pbe-crimson)}.fdna-donut .seg-grey{stroke:#7e7a72}
-.fdna-donut .c1{fill:var(--pbe-paper);font:800 19px var(--pbe-font-data)}
-.fdna-donut .c2{fill:var(--pbe-faint);font:700 6.5px var(--pbe-font-data);letter-spacing:.1em}
-.fdna-finish ul{list-style:none;margin:0;padding:0;display:grid;gap:7px;min-width:0}
-.fdna-finish li{display:flex;align-items:center;gap:7px;color:var(--pbe-dim);font:700 11px/1 var(--pbe-font-data)}
-.fdna-finish li i{flex:none;width:9px;height:9px;border-radius:50%}
-.fdna-finish li i.seg-gold{background:var(--pbe-gold)}.fdna-finish li i.seg-crimson{background:var(--pbe-crimson)}.fdna-finish li i.seg-grey{background:#7e7a72}
-.fdna-finish li b{margin-left:auto;color:var(--pbe-paper)}
-.fdna-finish li em{width:34px;text-align:right;color:var(--pbe-faint);font-style:normal}
-.fdna-rings .rings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
-.fdna-ring{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;min-width:0}
-.fdna-ring svg{width:52px;height:52px}
-.fdna-ring circle{fill:none;stroke-width:4}
-.fdna-ring .track{stroke:rgba(255,245,220,.08)}.fdna-ring .arc{stroke:var(--pbe-gold);stroke-linecap:round}
-.fdna-ring text{fill:var(--pbe-paper);font:800 9.5px var(--pbe-font-data)}
-.fdna-ring b{color:var(--pbe-paper-2);font:700 10px/1.2 var(--pbe-font-data)}
-.fdna-ring span{color:var(--pbe-faint);font:600 9.5px/1.2 var(--pbe-font-data)}
-.fdna-ring.faded svg{opacity:.55}
 .fdna-foot{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 24px;align-items:center;padding:16px clamp(16px,2vw,24px);border-top:1px solid rgba(212,175,55,.18);background:rgba(20,17,13,.5)}
 .fdna-pipe{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
 .fdna-pipe li{position:relative;display:flex;align-items:baseline;gap:7px;padding-right:16px;min-width:0}
@@ -397,5 +172,5 @@ const CSS = `
 @media(max-width:1180px){.fdna-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.fdna-foot{grid-template-columns:1fr}.fdna-ctas{justify-content:flex-start}}
 @media(max-width:900px){.fdna-hero{grid-template-columns:minmax(260px,40%) minmax(0,1fr)}.fdna-coverage{grid-template-columns:repeat(2,minmax(0,1fr))}.fdna-coverage div:nth-child(3){border-left:0}.fdna-coverage div:nth-child(n+3){border-top:1px solid var(--pbe-line)}.fdna-pipe{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:12px}.fdna-pipe li:nth-child(3):after{display:none}}
 @media(max-width:760px){.fdna-hero{grid-template-columns:1fr}.fdna-photo{min-height:440px;border-right:0;border-bottom:1px solid rgba(212,175,55,.18)}.fdna-cards{grid-template-columns:1fr}.fdna-topline{flex-direction:column-reverse;gap:12px}}
-@media(max-width:480px){.fdna{border-radius:16px}.fdna-photo{min-height:400px}.fdna-photo-copy{left:18px;right:18px;bottom:20px}.fdna-intro{padding:22px 18px}.fdna-intro h2{font-size:40px}.fdna-intro>p{font-size:14px}.fdna-cards{padding:12px}.fdna-pipe{grid-template-columns:1fr 1fr}.fdna-pipe li:after{display:none}.fdna-ctas .btn{flex:1 1 100%;justify-content:center;text-align:center}.fdna-finish{grid-template-columns:96px minmax(0,1fr)}.fdna-donut{width:96px;height:96px}}
+@media(max-width:480px){.fdna{border-radius:16px}.fdna-photo{min-height:400px}.fdna-photo-copy{left:18px;right:18px;bottom:20px}.fdna-intro{padding:22px 18px}.fdna-intro h2{font-size:40px}.fdna-intro>p{font-size:14px}.fdna-cards{padding:12px}.fdna-pipe{grid-template-columns:1fr 1fr}.fdna-pipe li:after{display:none}.fdna-ctas .btn{flex:1 1 100%;justify-content:center;text-align:center}}
 `;

@@ -10,13 +10,15 @@
 import "server-only";
 import { getFighterDna } from "@/lib/dna";
 import { getFightersByIds, getImageSourceSizes, getImagesForFighters, type Fighter } from "@/lib/db";
-import { MAX_DNA_READS, buildDemoView, orderCandidates, snapshotQualifies, type DemoCandidate, type DemoPortrait, type DemoView } from "@/lib/fightDnaDemoModel";
+import { MAX_DNA_READS, buildDemoView, orderCandidates, rotationWindow, snapshotQualifies, type DemoCandidate, type DemoPortrait, type DemoView } from "@/lib/fightDnaDemoModel";
 
 export type FightDnaDemo = {
   fighter: Pick<Fighter, "id" | "name" | "nickname" | "espn_athlete_id" | "ufcstats_id" | "record_w" | "record_l" | "record_d" | "record_nc">;
   context: string;
   image: { src: string; credit: string | null };
   view: DemoView;
+  /* The rotation window this pick belongs to (inclusive UTC dates). */
+  window: { start: string; end: string };
 };
 
 export async function getFightDnaDemo(candidates: DemoCandidate[]): Promise<FightDnaDemo | null> {
@@ -29,7 +31,8 @@ export async function getFightDnaDemo(candidates: DemoCandidate[]): Promise<Figh
     portraits.set(id, { src: p.card, firstParty: p.stored_first_party !== false && p.source_family !== "espn", sourceHeight: sizes.get(p.id)?.height ?? null });
   }
 
-  const ordered = orderCandidates(candidates, portraits).slice(0, MAX_DNA_READS);
+  const win = rotationWindow(Date.now());
+  const ordered = orderCandidates(candidates, portraits, win.index).slice(0, MAX_DNA_READS);
   for (const c of ordered) {
     const dna = await getFighterDna(c.id).catch(() => null);
     if (dna?.status !== "ok" || !snapshotQualifies(dna.data.snapshot)) continue;
@@ -41,6 +44,7 @@ export async function getFightDnaDemo(candidates: DemoCandidate[]): Promise<Figh
       context: c.context,
       image: { src: p.card, credit: p.attribution_text || null },
       view: buildDemoView(dna.data.snapshot),
+      window: { start: win.start, end: win.end },
     };
   }
   return null;

@@ -119,7 +119,7 @@ const METADATA_ONLY = [/const \[bouts, rounds, dna\] = await Promise\.all\(\[get
  * product, identical for every visitor, so it deliberately makes no access decision.
  * Its single read is pinned here and by the "Fight DNA public demo" test below. */
 const PUBLIC_DEMO_READS: Record<string, RegExp> = {
-  "lib/fightDnaDemo.ts": /const ordered = orderCandidates\(candidates, portraits\)\.slice\(0, MAX_DNA_READS\);\s*for \(const c of ordered\) \{\s*const dna = await getFighterDna\(c\.id\)\.catch\(\(\) => null\);/,
+  "lib/fightDnaDemo.ts": /const ordered = orderCandidates\(candidates, portraits, win\.index\)\.slice\(0, MAX_DNA_READS\);\s*for \(const c of ordered\) \{\s*const dna = await getFighterDna\(c\.id\)\.catch\(\(\) => null\);/,
 };
 
 test("every premium read site asks getUfcAccess first and carries a written guard", () => {

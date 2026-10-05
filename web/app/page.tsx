@@ -97,13 +97,13 @@ export default async function Home() {
   const contenderIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion).flatMap((x) => x.entries.slice(0, 3).map((e) => e.fighter_id)).filter(Boolean) as string[];
   const mains = await getMainEvents([...upcoming, ...recent, ...[dwcsNext, dwcsLast].filter(Boolean).map((e) => e!)].map((e) => e.id));
   const champIds = (rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion?.fighter_id).map((x) => x.champion!.fighter_id!);
-  /* Fight DNA public demo: the main event's fighters first, then the division
-   * champions in official rankings order. lib/fightDnaDemo.ts features the first
-   * one with a qualifying portrait and a high-coverage stored snapshot. */
-  const dnaDemoCandidates = [
-    ...(mainEvent ? [mainEvent.fighter_a, mainEvent.fighter_b].map((f) => ({ id: f.id, context: `${weightClassLabel(mainEvent.weight_class, mainEvent.is_womens)} · Main event` })) : []),
-    ...(rankings?.divisions || []).filter((x) => !x.is_p4p && x.champion?.fighter_id).map((x) => ({ id: x.champion!.fighter_id!, context: `${x.label} champion` })),
-  ];
+  /* Fight DNA public demo rotation pool: every division champion and the top five
+   * ranked contenders from the official rankings snapshot. lib/fightDnaDemo.ts picks
+   * one per 21-day window (qualifying portrait + high-coverage stored snapshot). */
+  const dnaDemoCandidates = (rankings?.divisions || []).filter((x) => !x.is_p4p).flatMap((x) => [
+    ...(x.champion?.fighter_id ? [{ id: x.champion.fighter_id, context: `${x.label} champion` }] : []),
+    ...x.entries.filter((e) => e.fighter_id && e.rank >= 1 && e.rank <= 5).map((e) => ({ id: e.fighter_id!, context: `#${e.rank} ${x.label}` })),
+  ]);
   /* Same official snapshot the homepage already loaded, indexed by fighter. */
   const ranks = await getRankingMap();
   const access = await getUfcAccess();
