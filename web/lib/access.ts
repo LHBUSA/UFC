@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { getCurrentAccount, revokeSessionByRaw, SESSION_COOKIE } from "@/lib/auth";
 import { readUfcEntitlement, ufcOwnerEmail } from "@/lib/entitlement";
 import { decideUfcAccess, needsLedger, FREE_SIGNED_OUT, type LedgerRead, type UfcAccess } from "@/lib/accessDecision";
+import { readMembership } from "@/lib/pbe-membership.js";
 
 /* Server entry point for every UFC access decision. See lib/accessDecision.ts
  * (paid-only rule) and lib/authPolicy.ts. Deduplicated per request.
@@ -13,12 +14,46 @@ import { decideUfcAccess, needsLedger, FREE_SIGNED_OUT, type LedgerRead, type Uf
  * billing Worker positively reports "not entitled", deleted on the spot. A
  * billing outage signs such a request out without deleting anything. */
 
+async function networkAccess(jar: Awaited<ReturnType<typeof cookies>>): Promise<UfcAccess | null> {
+  const token = jar.get("pbe_session")?.value;
+  if (!token) return null;
+  try {
+    const r = await fetch("https://auth.propbetedge.ai/membership?sport=ufc", {
+      headers: { cookie: `pbe_session=${token}`, accept: "application/json" },
+      cache: "no-store",
+      signal: AbortSignal.timeout(2500),
+    });
+    if (!r.ok) return null;
+    const body = await r.json();
+    const membership = readMembership(body?.membership, "ufc");
+    if (!body?.authenticated || !membership.entitled || !["all_access", "owner"].includes(membership.state)) return null;
+    return {
+      tier: membership.state === "owner" ? "owner" : "pro",
+      pro: true,
+      signedIn: true,
+      source: "network",
+      subscription: membership.state === "all_access" ? {
+        plan: membership.plan || null,
+        status: "active",
+        current_period_end: membership.current_period_end || null,
+        cancel_at_period_end: Boolean(membership.cancel_at_period_end),
+        product_key: membership.product_key || "pbe_all_access",
+      } : null,
+      membership,
+      ledger: "skipped",
+      revokeSession: false,
+    };
+  } catch {
+    return null;
+  }
+}
+
 async function resolve(withBilling: boolean): Promise<UfcAccess> {
   /* Reading the cookie store unconditionally makes every route that asks for
    * access dynamic, so a Pro render can never be cached and replayed. */
   const jar = await cookies();
   const account = await getCurrentAccount();
-  if (!account) return FREE_SIGNED_OUT;
+  if (!account) return (await networkAccess(jar)) || FREE_SIGNED_OUT;
   const owner = ufcOwnerEmail();
   const ledger: LedgerRead = withBilling || needsLedger(account, owner) ? await readUfcEntitlement(account.email) : { state: "skipped" };
   const access = decideUfcAccess(account, ledger, owner);
