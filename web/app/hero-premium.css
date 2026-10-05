@@ -344,23 +344,41 @@
   padding-bottom: var(--s-3);
 }
 .hero .hero-feature .poster-names .n { text-shadow: 0 2px 16px rgba(0,0,0,.92), 0 1px 3px rgba(0,0,0,.8); }
-.hero .hero-feature .poster-names .r { color: var(--pbe-paper-2); text-shadow: 0 1px 8px rgba(0,0,0,.9); }
-.hero .hero-feature .hero-moneyline {
-  display: block;
-  width: fit-content;
+.hero .hero-feature .poster-names .r {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
   margin-top: 4px;
-  padding: 4px 7px;
-  border: 1px solid rgba(212,175,55,.28);
-  border-radius: 999px;
-  background: rgba(13,11,8,.74);
+  color: var(--pbe-paper-2);
+  text-shadow: 0 1px 8px rgba(0,0,0,.9);
+}
+.hero .hero-feature .hero-record {
+  display: block;
+  min-height: 18px;
+  font: 700 12px/1.2 var(--pbe-font-data);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .02em;
+}
+.hero .hero-feature .hero-moneyline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid rgba(212,175,55,.34);
+  border-radius: 7px;
+  background: linear-gradient(180deg, rgba(29,24,16,.9), rgba(13,11,8,.88));
   color: var(--pbe-gold-bright);
-  font: 800 10px/1 var(--pbe-font-data);
-  letter-spacing: .045em;
+  font: 850 11px/1 var(--pbe-font-data);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .055em;
   text-transform: uppercase;
   white-space: nowrap;
   text-shadow: none;
 }
-.hero .hero-feature .poster-names .b .hero-moneyline { margin-left: auto; }
+.hero .hero-feature .poster-names .b .hero-moneyline { margin-left: 0; }
 
 /* The VS mark sits between the two portraits, so it must clear the plate too. */
 .hero .hero-feature .poster-faces .vs { padding-bottom: 92px; }
@@ -417,6 +435,8 @@
   .hero.hero-cinematic .stat { padding: 13px 12px; gap: 9px; }
   .hero.hero-cinematic .stat-ico { width: 26px; height: 26px; }
   .hero .hero-feature .poster { min-height: 330px; }
+  .hero .hero-feature .poster-names { gap: 10px; padding-inline: 14px; }
+  .hero .hero-feature .hero-moneyline { min-height: 30px; padding-inline: 6px; font-size: 10.5px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
