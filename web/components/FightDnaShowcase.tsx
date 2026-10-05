@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FightDnaPortrait } from "@/components/FightDnaPortrait";
-import { DnaCard, DnaDeltas, DnaTiles, FinishDonut, RoundPaceChart, SplitBar, StanceColumns, StanceRings, finishParts } from "@/components/dnaViz";
+import { DivisionStanding, DnaCard, DnaDeltas, DnaTiles, FinishDonut, RoundPaceChart, SplitBar, StanceColumns, StanceRings, finishParts } from "@/components/dnaViz";
 import { fmtMetric } from "@/lib/dna";
 import { getFightDnaDemo, type FightDnaDemo } from "@/lib/fightDnaDemo";
 import type { DemoCandidate } from "@/lib/fightDnaDemoModel";
@@ -108,6 +108,7 @@ export async function FightDnaShowcase({ candidates }: { candidates: DemoCandida
               <div><dt>As of · v{v.version}</dt><dd>{asOf(v.asOf)}</dd></div>
             </dl>
           )}
+          {demo?.standing && <DivisionStanding ctx={demo.standing} limit={4} title="Division standing" />}
         </div>
       </div>
 

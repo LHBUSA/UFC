@@ -67,14 +67,14 @@ test("no second Pro check exists outside the access decision", () => {
   }
 });
 
-const PREMIUM_READS = /\b(getFighterDna|getMatchupDna|getMarketsFor|getEditorialMarket|marketProviderLive|unresolvedBouts|getAlgoBout|getAlgoCards|getAlgoRecord|getAlgoNextCardSummary|runSimulation)\s*\(/;
+const PREMIUM_READS = /\b(getDnaDivisionContext|getFighterDna|getMatchupDna|getMarketsFor|getEditorialMarket|marketProviderLive|unresolvedBouts|getAlgoBout|getAlgoCards|getAlgoRecord|getAlgoNextCardSummary|runSimulation)\s*\(/;
 /* Data libraries define the reads; the QA fixture page 404s in production. */
-const PREMIUM_READ_ALLOW = new Set(["lib/dna.ts", "lib/market.ts", "lib/editorialMarket.ts", "lib/pregame.ts", "lib/algo.ts", "lib/simulator.ts", "app/qa/preview/page.tsx"]);
+const PREMIUM_READ_ALLOW = new Set(["lib/dna.ts", "lib/dnaDivisionContext.ts", "lib/market.ts", "lib/editorialMarket.ts", "lib/pregame.ts", "lib/algo.ts", "lib/simulator.ts", "app/qa/preview/page.tsx"]);
 /* Every file that performs a premium read, with the exact guard that keeps a
  * free render from performing it. A new premium read site fails this test
  * until its guard is written down here. */
 const GUARDS: Record<string, RegExp[]> = {
-  "app/fighters/[slug]/page.tsx": [/access\.pro \? getFighterDna\(f\.id\) : Promise\.resolve\(null\)/],
+  "app/fighters/[slug]/page.tsx": [/access\.pro \? getFighterDna\(f\.id\) : Promise\.resolve\(null\)/, /access\.pro \? getDnaDivisionContext\(f\.id\)\.catch\(\(\) => null\) : Promise\.resolve\(null\)/],
   "app/fights/[slug]/page.tsx": [
     /access\.pro \? getMatchupDna\(b\.fighter_a\.id, b\.fighter_b\.id, b\.result \? e\.event_date : null\) : Promise\.resolve\(null\)/,
     /access\.pro \? getFighterDna\(b\.fighter_a\.id, e\.event_date\) : Promise\.resolve\(null\)/,
@@ -127,7 +127,8 @@ test("every premium read site asks getUfcAccess first and carries a written guar
     if (PREMIUM_READ_ALLOW.has(file) || !PREMIUM_READS.test(text)) continue;
     if (PUBLIC_DEMO_READS[file]) {
       assert.match(text, PUBLIC_DEMO_READS[file], `${file} lost its pinned public-demo read`);
-      assert.equal([...text.matchAll(new RegExp(PREMIUM_READS.source, "g"))].length, 1, `${file} may make exactly one premium read`);
+      assert.equal([...text.matchAll(new RegExp(PREMIUM_READS.source, "g"))].length, 2, `${file} may make exactly the DNA read and the featured fighter's context read`);
+      assert.match(text, /const standing = await getDnaDivisionContext\(c\.id\)\.catch\(\(\) => null\);/, `${file} reads division context only for the qualifying featured fighter`);
       continue;
     }
     assert.ok(GUARDS[file], `${file} reads premium data but has no guard registered in paywall.test.ts`);

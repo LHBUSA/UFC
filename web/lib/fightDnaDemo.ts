@@ -9,6 +9,7 @@
  * the snapshot: no provenance bout list, no context splits, no position profile. */
 import "server-only";
 import { getFighterDna } from "@/lib/dna";
+import { getDnaDivisionContext, type DnaDivisionContext } from "@/lib/dnaDivisionContext";
 import { getFightersByIds, getImageSourceSizes, getImagesForFighters, type Fighter } from "@/lib/db";
 import { MAX_DNA_READS, buildDemoView, orderCandidates, rotationWindow, snapshotQualifies, type DemoCandidate, type DemoPortrait, type DemoView } from "@/lib/fightDnaDemoModel";
 
@@ -19,6 +20,8 @@ export type FightDnaDemo = {
   view: DemoView;
   /* The rotation window this pick belongs to (inclusive UTC dates). */
   window: { start: string; end: string };
+  /* Ranks only (no values) for the one featured fighter; null when unavailable. */
+  standing: DnaDivisionContext | null;
 };
 
 export async function getFightDnaDemo(candidates: DemoCandidate[]): Promise<FightDnaDemo | null> {
@@ -39,12 +42,14 @@ export async function getFightDnaDemo(candidates: DemoCandidate[]): Promise<Figh
     const [fighter] = await getFightersByIds([c.id]).catch(() => []);
     if (!fighter) continue;
     const p = images.get(c.id)!;
+    const standing = await getDnaDivisionContext(c.id).catch(() => null);
     return {
       fighter: { id: fighter.id, name: fighter.name, nickname: fighter.nickname, espn_athlete_id: fighter.espn_athlete_id, ufcstats_id: fighter.ufcstats_id, record_w: fighter.record_w, record_l: fighter.record_l, record_d: fighter.record_d, record_nc: fighter.record_nc },
       context: c.context,
       image: { src: p.card, credit: p.attribution_text || null },
       view: buildDemoView(dna.data.snapshot),
       window: { start: win.start, end: win.end },
+      standing,
     };
   }
   return null;

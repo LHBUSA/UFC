@@ -10,6 +10,7 @@ import { DwcsLineage } from "@/components/Dwcs";
 import { getFighterBouts, getImagesForFighters, getArticlesForFighter, getFighterRoundStats, getRankings } from "@/lib/db";
 import { storyMedia } from "@/lib/faces";
 import { getFighterDna } from "@/lib/dna";
+import { getDnaDivisionContext } from "@/lib/dnaDivisionContext";
 import { FightDnaSection, FightDnaEmpty } from "@/components/dna";
 import { resolveFighter } from "@/lib/resolve";
 import { Empty, JsonLd, Breadcrumbs, Portrait, Credit, Avatar, TaleOfTheTape } from "@/components/ui";
@@ -94,7 +95,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
    * fetches the Fight DNA profile, so it cannot leak into HTML or RSC. */
   const access = await getUfcAccess();
   const returnPath = `/fighters/${fighterSlug(f)}`;
-  const [bouts, articles, rounds, rankings, dna, videos, statusEvents, dwcsGraph, dwcsClaims, sourceDobs] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), access.pro ? getFighterDna(f.id) : Promise.resolve(null), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => []), getDwcsGraph(), getOutcomeClaims(), getSourceDobs(f.id).catch(() => [])]);
+  const [bouts, articles, rounds, rankings, dna, videos, statusEvents, dwcsGraph, dwcsClaims, sourceDobs, dnaContext] = await Promise.all([getFighterBouts(f.id), getArticlesForFighter(f.id), getFighterRoundStats(f.id), getRankings(), access.pro ? getFighterDna(f.id) : Promise.resolve(null), getVideosForFighters([f.id], 4, "medium").catch(() => []), getFighterStatusHistory(f.id).catch(() => []), getDwcsGraph(), getOutcomeClaims(), getSourceDobs(f.id).catch(() => []), access.pro ? getDnaDivisionContext(f.id).catch(() => null) : Promise.resolve(null)]);
   const dwcsAlum = dwcsGraph?.byFighter.get(f.id) || null;
   const siteToday = today();
   const upcoming = bouts.filter((b) => b.event?.event_date && b.event.event_date >= siteToday && !b.result && b.status !== "cancelled").sort((a, b) => a.event.event_date!.localeCompare(b.event.event_date!));
@@ -253,7 +254,7 @@ export default async function FighterPage({ params }: { params: Promise<{ slug: 
 
       {!access.pro
         ? <section className="segment" id="fight-dna"><h3>{f.name} Fight DNA</h3><ProPreview feature="fight_dna" access={access} returnPath={returnPath} /></section>
-        : dna?.status === "ok" ? <FightDnaSection dna={dna.data} fighterName={f.name} /> : dna?.status === "unavailable" ? <FightDnaEmpty reason={dna.reason} /> : null}
+        : dna?.status === "ok" ? <FightDnaSection dna={dna.data} fighterName={f.name} context={dnaContext} /> : dna?.status === "unavailable" ? <FightDnaEmpty reason={dna.reason} /> : null}
       {/* Fight DNA -> its evidence. The profile is reconstructed from archived
           bouts, and those bouts are the history table below, each linking to
           its fight page and, where rounds are stored, its round analysis. */}

@@ -14,7 +14,8 @@ import { Octagon } from "./ui";
 import { Explain, ExplainToggle, DeeperDetail } from "./Explain";
 import { CONFIDENCE_EXPLAINER, FAMILY, GLOSSARY, PBE_DERIVED_EXPLAINER, SAMPLE_EXPLAINER, lookup, quickRead } from "@/lib/dnaGlossary";
 import { buildDemoView } from "@/lib/fightDnaDemoModel";
-import { DnaCard, DnaDeltas, FinishDonut, PairedRoundChart, RoundCounts, RoundPaceChart, SplitBar, StanceColumns, StanceRings, finishParts } from "./dnaViz";
+import type { DnaDivisionContext } from "@/lib/dnaDivisionContextModel";
+import { DivisionStanding, DnaCard, DnaDeltas, FinishDonut, PairedRoundChart, RoundCounts, RoundPaceChart, SplitBar, StanceColumns, StanceRings, finishParts } from "./dnaViz";
 
 const LEARN = "/learn/fight-dna";
 
@@ -295,7 +296,7 @@ function DnaDeck({ s }: { s: DnaSnapshot }) {
 }
 
 /* ---- fighter page section ------------------------------------------------ */
-export function FightDnaSection({ dna, fighterName }: { dna: FighterDna; fighterName: string }) {
+export function FightDnaSection({ dna, fighterName, context = null }: { dna: FighterDna; fighterName: string; context?: DnaDivisionContext | null }) {
   const s = dna.snapshot;
   const m = s.metrics || {};
   const fp = s.finish_profile || {};
@@ -330,6 +331,7 @@ export function FightDnaSection({ dna, fighterName }: { dna: FighterDna; fighter
 
       <Coverage s={s} />
       <QuickRead s={s} />
+      {context && <DivisionStanding ctx={context} />}
       <DnaDeck s={s} />
 
       <div className="dna-grid" id="dna-detail">

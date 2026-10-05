@@ -8,6 +8,7 @@ import Link from "next/link";
 import type { MetricObject, RecordObj } from "@/lib/dna";
 import { fmtMetric, STANCE_LABEL } from "@/lib/dna";
 import type { RoundPoint, ShareBar, StanceRow, Tile } from "@/lib/fightDnaDemoModel";
+import type { DivisionRank, DnaDivisionContext } from "@/lib/dnaDivisionContextModel";
 
 const pct = (n: number) => `${Math.round(n * 100)}%`;
 export const lowSample = (c: string) => c === "low" || c === "insufficient";
@@ -238,5 +239,67 @@ export function PairedRoundChart({ a, b }: { a: { name: string; rounds: RoundPoi
         })}
       </svg>
     </figure>
+  );
+}
+
+/* ---- division standing: ranks only, never values ---------------------------
+ * Rank 1 is the best in the stated direction among active fighters in the same
+ * current division with at least three completed bouts and medium/high
+ * confidence on that metric. The label states the direction, so "1st" is
+ * never ambiguous; no rank is described as good or bad. */
+const RANK_LABEL: Record<string, [string, string]> = {
+  sig_landed_per_min: ["Sig. strikes landed / min", "most"],
+  sig_accuracy: ["Sig. strike accuracy", "highest"],
+  sig_defense: ["Sig. strike defense", "highest"],
+  sig_absorbed_per_min: ["Sig. strikes absorbed / min", "fewest"],
+  sig_diff_per_min: ["Strike differential / min", "highest"],
+  knockdowns_per_15: ["Knockdowns / 15 min", "most"],
+  td_attempts_per_15: ["Takedown attempts / 15", "most"],
+  td_landed_per_15: ["Takedowns landed / 15", "most"],
+  td_accuracy: ["Takedown accuracy", "highest"],
+  control_share: ["Control time share", "highest"],
+  sub_attempts_per_15: ["Submission attempts / 15", "most"],
+  finish_rate: ["Finish rate", "highest"],
+  pace_retention_r3_vs_r1: ["R3 pace retention", "highest"],
+};
+export function ordinal(n: number): string {
+  const s = n % 100 >= 11 && n % 100 <= 13 ? "th" : ({ 1: "st", 2: "nd", 3: "rd" } as Record<number, string>)[n % 10] || "th";
+  return `${n}${s}`;
+}
+/* Ranks ordered by relative standing (rank / n), best first; ties by metric order. */
+export function standingRows(ranks: DivisionRank[]): DivisionRank[] {
+  const order = Object.keys(RANK_LABEL);
+  return ranks.filter((r) => RANK_LABEL[r.metric]).sort((a, b) => a.rank / a.n - b.rank / b.n || order.indexOf(a.metric) - order.indexOf(b.metric));
+}
+export function rankPhrase(r: DivisionRank): string {
+  const [label, dir] = RANK_LABEL[r.metric] || [r.metric, r.better === "lower" ? "fewest" : "highest"];
+  return r.rank === 1 ? `${dir === "fewest" ? "Fewest" : dir === "most" ? "Most" : "Highest"} · ${label}` : `${ordinal(r.rank)} ${dir} · ${label}`;
+}
+
+export function DivisionStanding({ ctx, limit, title = "Division standing" }: { ctx: DnaDivisionContext; limit?: number; title?: string }) {
+  const rows = standingRows(ctx.ranks).slice(0, limit ?? 99);
+  if (!rows.length) return null;
+  return (
+    <section className="dv-standing" aria-label={`${title}: ${ctx.division.label}`}>
+      <header>
+        <span className="k">{title}</span>
+        <b>{ctx.division.label}</b>
+        <small>{ctx.division.population} ranked active fighters · as of {ctx.as_of}</small>
+      </header>
+      <ol>
+        {rows.map((r) => {
+          const [label] = RANK_LABEL[r.metric];
+          const pos = r.n > 1 ? 1 - (r.rank - 1) / (r.n - 1) : 1;
+          return (
+            <li key={r.metric} title={`${rankPhrase(r)}: ${ordinal(r.rank)} of ${r.n} eligible ${ctx.division.label} fighters`}>
+              <span className="lbl">{label}</span>
+              <span className="bar" aria-hidden="true"><i style={{ width: `${Math.max(pos * 100, 2)}%` }} /></span>
+              <b>{ordinal(r.rank)}<small> of {r.n}</small></b>
+            </li>
+          );
+        })}
+      </ol>
+      <p className="dv-note">Rank 1 = most / highest, or fewest strikes absorbed. Active fighters in the same division with three or more completed bouts and medium or high confidence on that metric.</p>
+    </section>
   );
 }
