@@ -41,9 +41,32 @@
 .ufc-aa-title { margin: 0; color: #fff; font: 900 clamp(28px, 3.2vw, 40px)/1 var(--pbe-font-display, 'Playfair Display', Georgia, serif); letter-spacing: -.01em; text-transform: uppercase; }
 .ufc-aa-price { display: inline-flex; align-items: baseline; gap: 2px; color: var(--pbe-gold-bright, #e9c75a); font: 800 13px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .04em; white-space: nowrap; }
 .ufc-aa-price strong { color: #fff; font: 900 clamp(26px, 2.6vw, 34px)/1 var(--pbe-font-ui, Inter, system-ui, sans-serif); letter-spacing: -.04em; }
-.ufc-aa-tagline { margin: 0; color: var(--pbe-paper, #f5f1eb); font: 600 15px/1.35 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
-.ufc-aa-sports { margin: 0; color: var(--pbe-paper-2, #e8e1d4); font: 500 12px/1.45 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
-.ufc-aa-sports b { color: #fff; font: 800 12px/1.45 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .06em; }
+/* What the membership contains: today's network first (sports, then the
+   Predictions intelligence product in its own block), capabilities, then the
+   future-facing line. Sports wrap as chips so a phone never gets one long string. */
+.ufc-aa-value { margin: 2px 0 0; color: #fff; font: 800 clamp(17px, 1.7vw, 21px)/1.25 var(--pbe-font-ui, Inter, system-ui, sans-serif); letter-spacing: -.01em; }
+.ufc-aa-secondary { margin: 0; max-width: 62ch; color: var(--pbe-paper-2, #e8e1d4); font: 500 13.5px/1.5 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
+.ufc-aa-includes { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 10px; margin-top: 6px; }
+.ufc-aa-group { display: grid; align-content: start; gap: 8px; padding: 12px; border: 1px solid rgba(255,245,220,.12); border-radius: 10px; background: rgba(20,17,13,.55); }
+.ufc-aa-group-k { color: var(--pbe-dim, #b8b3a8); font: 800 9.5px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .16em; text-transform: uppercase; }
+.ufc-aa-sports { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.ufc-aa-sports li { padding: 5px 9px; border: 1px solid rgba(233,199,90,.28); border-radius: 6px; background: rgba(233,199,90,.06); color: #fff; font: 800 11px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .06em; white-space: nowrap; }
+.ufc-aa-sports li.is-owned { border-color: rgba(255,245,220,.16); background: transparent; color: var(--pbe-dim, #b8b3a8); }
+.ufc-aa-sports li small { color: var(--pbe-faint, #8e8a80); font: 700 9.5px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .04em; }
+.ufc-aa-intel { border-color: rgba(233,199,90,.42); background: linear-gradient(150deg, rgba(233,199,90,.12), rgba(20,17,13,.6)); }
+.ufc-aa-predictions { display: grid; gap: 6px; color: var(--pbe-paper, #f5f1eb); text-decoration: none; }
+.ufc-aa-predictions b { display: flex; align-items: center; gap: 8px; color: #fff; font: 800 15px/1.2 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
+.ufc-aa-predictions b i { color: var(--pbe-gold-bright, #e9c75a); font-style: normal; font-size: 12px; }
+.ufc-aa-predictions span { color: var(--pbe-paper-2, #e8e1d4); font: 500 12.5px/1.45 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
+.ufc-aa-predictions:hover b { color: var(--pbe-gold-bright, #e9c75a); }
+.ufc-aa-caps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 14px; margin: 4px 0 0; padding: 10px 0 0; list-style: none; border-top: 1px solid rgba(255,245,220,.1); }
+.ufc-aa-caps li { display: grid; gap: 2px; min-width: 0; padding-left: 10px; border-left: 2px solid rgba(233,199,90,.45); }
+.ufc-aa-caps b { color: #fff; font: 800 10.5px/1.25 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .08em; text-transform: uppercase; }
+.ufc-aa-caps span { color: var(--pbe-dim, #b8b3a8); font: 500 11.5px/1.35 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
+.ufc-aa-fine { margin: 0; color: var(--pbe-faint, #8e8a80); font: 500 11px/1.45 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
+.ufc-aa-active { display: grid; gap: 3px; margin: 0 0 10px; padding: 10px 12px; border: 1px solid rgba(233,199,90,.4); border-radius: 9px; background: rgba(233,199,90,.07); }
+.ufc-aa-active b { color: var(--pbe-gold-bright, #e9c75a); font: 900 10px/1.2 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .14em; }
+.ufc-aa-active span { color: var(--pbe-paper, #f5f1eb); font: 600 13px/1.35 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
 .ufc-aa-promo { margin: 0; color: var(--pbe-gold-bright, #e9c75a); font: 700 12px/1.45 var(--pbe-font-ui, Inter, system-ui, sans-serif); }
 .ufc-aa-code { margin-left: 2px; padding: 1px 7px; border: 1px solid rgba(233,199,90,.55); border-radius: 6px; background: rgba(233,199,90,.12); color: #fff; font: 800 11px/1.45 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .1em; }
 .ufc-aa-actions { display: flex; align-items: center; gap: 10px 18px; flex-wrap: wrap; margin-top: 4px; }
@@ -61,6 +84,7 @@
 .ufc-aa-hero.is-panel { padding: 18px 20px 16px; gap: 7px; }
 .ufc-aa-hero.is-panel .ufc-aa-title { font-size: clamp(22px, 2.2vw, 28px); }
 .ufc-aa-hero.is-panel .ufc-aa-price strong { font-size: 24px; }
+.ufc-aa-hero.is-panel .ufc-aa-caps { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 
 /* the seam between the umbrella and the single-sport alternative */
 .ufc-aa-divider { display: flex; align-items: center; gap: 12px; margin: 2px 0; color: var(--pbe-dim, #b8b3a8); font: 800 10px/1 var(--pbe-font-data, 'JetBrains Mono', ui-monospace, monospace); letter-spacing: .16em; text-transform: uppercase; text-align: center; }
@@ -89,8 +113,16 @@
 .ftr .ftr-aa-link:hover { color: #fff; }
 
 /* ---- phones ----------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .ufc-aa-includes { grid-template-columns: minmax(0, 1fr); }
+  .ufc-aa-caps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 620px) {
   .ufc-aa-hero { padding: 18px 16px 16px; }
+  .ufc-aa-group { padding: 11px; }
+  .ufc-aa-sports li { font-size: 10.5px; padding: 5px 8px; }
+  /* price + CTA stay near the fold; the network detail follows directly */
+  .ufc-aa-includes, .ufc-aa-caps, .ufc-aa-fine { order: 2; }
   .ufc-aa-actions { flex-direction: column; align-items: stretch; }
   .ufc-aa-cta { min-height: 48px; }
   .ufc-aa-learn { justify-content: center; }

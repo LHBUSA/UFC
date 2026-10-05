@@ -12,11 +12,56 @@
  *   owner       nothing to sell: null
  *
  * Every commercial fact (price, promo, checkout link) comes from the shared
- * membership contract (lib/pbe-membership.js); nothing is restated here. */
+ * membership contract (lib/pbe-membership.js); nothing is restated here.
+ *
+ * What the membership CONTAINS comes from the vendored network registry
+ * (lib/family.json, generated from LHBUSA/propbetedge-workers
+ * shared/network/pbe-network.js): its sports are counted as sports, its
+ * products (PropBetEdge Predictions) are shown as included intelligence and
+ * are never counted as a sport. */
 import { ALL_ACCESS_OFFER, ALL_ACCESS_URL, STATES, type Membership, type MembershipState } from "./pbe-membership.js";
+import family from "./family.json" with { type: "json" };
 
-export const ALL_ACCESS_SPORTS_LINE = "MLB · NFL · NBA · NHL · WNBA · UFC · Tennis · Soccer";
-export const ALL_ACCESS_SPORTS_NEXT = "plus every Pro sport added next.";
+type FamilyEntry = { key: string; label: string; name: string; url: string };
+const FAMILY = family as { sports: FamilyEntry[]; products: FamilyEntry[] };
+
+/** A sport's customer label: the short league label, or the product name when
+ *  the registry names the product rather than the league (F1 Intelligence). */
+function sportLabel(s: FamilyEntry): string {
+  return s.name.startsWith("PropBetEdge ") ? s.label : s.name;
+}
+
+/** Every sport All Access includes today, in registry order. Products are not sports. */
+export const ALL_ACCESS_SPORTS: ReadonlyArray<{ key: string; label: string }> = Object.freeze(FAMILY.sports.map((s) => ({ key: s.key, label: sportLabel(s) })));
+export const ALL_ACCESS_SPORT_COUNT = ALL_ACCESS_SPORTS.length;
+export const ALL_ACCESS_SPORTS_LINE = ALL_ACCESS_SPORTS.map((s) => s.label).join(" · ");
+
+const PREDICTIONS_ENTRY = FAMILY.products.find((p) => p.key === "predictions");
+if (!PREDICTIONS_ENTRY) throw new Error("lib/family.json: PropBetEdge Predictions product missing");
+/** Included intelligence product. Counted separately from the sports, never "free". */
+export const ALL_ACCESS_PREDICTIONS = Object.freeze({
+  key: PREDICTIONS_ENTRY.key,
+  name: PREDICTIONS_ENTRY.name,
+  url: PREDICTIONS_ENTRY.url,
+  blurb: "Independent, source-backed forecasts with model probability, market comparison and a scored record.",
+});
+
+export const ALL_ACCESS_VALUE_LINE = `${ALL_ACCESS_SPORT_COUNT} sports + ${ALL_ACCESS_PREDICTIONS.name}.`;
+export const ALL_ACCESS_SECONDARY = "One membership across the PropBetEdge intelligence network.";
+export const ALL_ACCESS_UPGRADE_LINE = `Add the entire PropBetEdge network — ${ALL_ACCESS_SPORT_COUNT} sports plus ${ALL_ACCESS_PREDICTIONS.name} — under one membership.`;
+export const ALL_ACCESS_FUTURE_LINE = "Future PropBetEdge Pro sports join All Access at launch.";
+export const ALL_ACCESS_MINI_LINE = `${ALL_ACCESS_SPORT_COUNT} sports + Predictions →`;
+export const ALL_ACCESS_ACTIVE_LINE = `${ALL_ACCESS_SPORT_COUNT} sports + Predictions included`;
+/** What the network contains, honestly scoped: features vary by sport. */
+export const ALL_ACCESS_CAPABILITIES: ReadonlyArray<{ key: string; name: string; note: string }> = Object.freeze([
+  { key: "picks", name: "PBE Picks", note: "Official qualified calls" },
+  { key: "dna", name: "Player / Team DNA", note: "Proprietary performance intelligence" },
+  { key: "pbecast", name: "PBEcast", note: "Live intelligence surfaces" },
+  { key: "model", name: "Model + Market", note: "Probability, fair line and market context" },
+  { key: "research", name: "Simulation + Research", note: "Advanced sport-specific intelligence" },
+  { key: "records", name: "Track Records", note: "Permanent graded evidence" },
+]);
+export const ALL_ACCESS_CAPABILITIES_NOTE = "Where supported — features vary by sport.";
 export const ALL_ACCESS_BADGE = "BEST VALUE · MOST COMPLETE";
 export const ALL_ACCESS_EYEBROW = "PROPBETEDGE NETWORK";
 export const ALL_ACCESS_DIVIDER = "ONLY WANT UFC?";
@@ -33,9 +78,16 @@ export type AllAccessHeroModel = {
   price: string;
   amount: string;
   cadence: string;
-  tagline: string;
+  valueLine: string;
+  secondary: string;
+  sports: ReadonlyArray<{ key: string; label: string; owned: boolean }>;
   sportsLine: string;
-  sportsNext: string;
+  sportCount: number;
+  predictions: typeof ALL_ACCESS_PREDICTIONS;
+  capabilities: typeof ALL_ACCESS_CAPABILITIES;
+  capabilitiesNote: string;
+  futureLine: string;
+  miniLine: string;
   promoLine: string;
   promoCode: string;
   checkoutUrl: string;
@@ -68,9 +120,17 @@ export function allAccessHeroModel(m: Membership | null | undefined): AllAccessH
     price: ALL_ACCESS_OFFER.price,
     amount,
     cadence,
-    tagline: ALL_ACCESS_OFFER.tagline,
+    valueLine: ALL_ACCESS_VALUE_LINE,
+    /* A UFC Pro member already owns UFC: lead with what the network ADDS. */
+    secondary: upgrade ? ALL_ACCESS_UPGRADE_LINE : ALL_ACCESS_SECONDARY,
+    sports: ALL_ACCESS_SPORTS.map((s) => ({ ...s, owned: upgrade && s.key === "ufc" })),
     sportsLine: ALL_ACCESS_SPORTS_LINE,
-    sportsNext: ALL_ACCESS_SPORTS_NEXT,
+    sportCount: ALL_ACCESS_SPORT_COUNT,
+    predictions: ALL_ACCESS_PREDICTIONS,
+    capabilities: ALL_ACCESS_CAPABILITIES,
+    capabilitiesNote: ALL_ACCESS_CAPABILITIES_NOTE,
+    futureLine: ALL_ACCESS_FUTURE_LINE,
+    miniLine: ALL_ACCESS_MINI_LINE,
     promoLine: ALL_ACCESS_OFFER.promoLine,
     promoCode: ALL_ACCESS_OFFER.promoCode,
     checkoutUrl: ALL_ACCESS_OFFER.checkoutUrl,

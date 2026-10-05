@@ -17,7 +17,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ALL_ACCESS_OFFER, ALL_ACCESS_URL, deriveMembership, type Membership } from "./pbe-membership.js";
-import { ALL_ACCESS_BADGE, ALL_ACCESS_DIVIDER, ALL_ACCESS_SPORTS_LINE, ALL_ACCESS_SPORTS_NEXT, allAccessHeroModel, promoParts, shouldRenderAllAccessHero } from "./allAccessHero.ts";
+import { ALL_ACCESS_BADGE, ALL_ACCESS_CAPABILITIES, ALL_ACCESS_DIVIDER, ALL_ACCESS_PREDICTIONS, ALL_ACCESS_SPORTS, ALL_ACCESS_SPORTS_LINE, ALL_ACCESS_SPORT_COUNT, ALL_ACCESS_VALUE_LINE, allAccessHeroModel, promoParts, shouldRenderAllAccessHero } from "./allAccessHero.ts";
 import { NAV } from "./site.ts";
 
 register("../scripts/test-tsx-hooks.mjs", import.meta.url);
@@ -57,17 +57,60 @@ test("model: every commercial fact is the shared contract's, verbatim", () => {
   assert.equal(m.learnUrl, ALL_ACCESS_URL);
   assert.equal(m.price, "$29/month");
   assert.deepEqual([m.amount, m.cadence], ["$29", "month"]);
-  assert.equal(m.tagline, "Every current and future PropBetEdge Pro sport.");
   assert.equal(m.promoCode, "THEEDGE25");
   assert.equal(m.promoLine, "25% off while active with code THEEDGE25");
   assert.deepEqual(promoParts(m), { before: "25% off while active with code ", code: "THEEDGE25", after: "" });
   assert.equal(m.eyebrow, "PROPBETEDGE NETWORK");
   assert.equal(m.badge, "BEST VALUE · MOST COMPLETE");
   assert.equal(ALL_ACCESS_BADGE, m.badge);
-  assert.equal(ALL_ACCESS_SPORTS_LINE, "MLB · NFL · NBA · NHL · WNBA · UFC · Tennis · Soccer");
-  assert.equal(ALL_ACCESS_SPORTS_NEXT, "plus every Pro sport added next.");
   assert.equal(ALL_ACCESS_DIVIDER, "ONLY WANT UFC?");
   assert.deepEqual([m.ctaLabel, m.learnLabel], ["GET ALL ACCESS", "WHAT'S INCLUDED"]);
+});
+
+/* ---- the current network offer (owner brief 2026-10-05) ------------------- */
+
+const family = JSON.parse(readFileSync(join(WEB, "lib", "family.json"), "utf8")) as { sports: Array<{ key: string }>; products: Array<{ key: string; name: string }> };
+
+test("offer: $29/month, exactly 10 sports incl. Golf and F1 Intelligence, Predictions included but never counted as a sport", () => {
+  const m = allAccessHeroModel(free)!;
+  assert.equal(m.price, "$29/month");                                                   // 1
+  assert.equal(ALL_ACCESS_SPORT_COUNT, 10);                                            // 2
+  assert.equal(m.sports.length, 10);
+  assert.deepEqual(ALL_ACCESS_SPORTS.map((s) => s.key), family.sports.map((s) => s.key), "sports come from the vendored family registry, in order");
+  assert.ok(ALL_ACCESS_SPORTS.some((s) => s.key === "golf" && s.label === "Golf"));     // 3
+  assert.ok(ALL_ACCESS_SPORTS.some((s) => s.key === "f1" && s.label === "F1 Intelligence")); // 4
+  assert.equal(ALL_ACCESS_PREDICTIONS.name, "PropBetEdge Predictions");                  // 5
+  assert.equal(m.predictions.name, "PropBetEdge Predictions");
+  assert.ok(family.products.some((p) => p.key === "predictions"));
+  assert.ok(!ALL_ACCESS_SPORTS.some((s) => s.key === "predictions" || /predictions/i.test(s.label)), "Predictions is not a sport"); // 6
+  assert.equal(ALL_ACCESS_VALUE_LINE, "10 sports + PropBetEdge Predictions.");          // 7
+  assert.equal(m.valueLine, ALL_ACCESS_VALUE_LINE);
+  assert.equal(ALL_ACCESS_SPORTS_LINE, "MLB · NFL · NBA · WNBA · NHL · UFC · Tennis · Soccer · Golf · F1 Intelligence");
+  assert.equal(allAccessHeroModel(sportPro)!.title, "UPGRADE TO ALL ACCESS");          // 8
+  assert.equal(allAccessHeroModel(allAccess), null);                                    // 9
+  assert.equal(allAccessHeroModel(owner), null);                                        // 10
+  assert.equal(m.checkoutUrl, ALL_ACCESS_OFFER.checkoutUrl);                            // 11
+  assert.equal(m.promoCode, "THEEDGE25");                                               // 12
+  assert.equal(m.promoLine, ALL_ACCESS_OFFER.promoLine);
+  assert.equal(m.promoLine, "25% off while active with code THEEDGE25");
+  assert.ok(ALL_ACCESS_CAPABILITIES.length >= 6 && ALL_ACCESS_CAPABILITIES.every((c) => !/predictions/i.test(c.name)), "capabilities are features, Predictions has its own block");
+});
+
+test("no customer-facing UFC source still carries the stale eight-sport offer", () => {
+  const files = ["components/Membership.tsx", "lib/allAccessHero.ts", "app/pro/page.tsx", "app/account/page.tsx", "components/ProPreview.tsx", "components/ui.tsx", "components/FightWeek.tsx", "components/Shell.tsx"];
+  for (const f of files) {
+    const src = read(f);
+    assert.doesNotMatch(src, /MLB · NFL · NBA · NHL · WNBA · UFC · Tennis · Soccer(?! ·)/, `${f}: stale sport list`);
+    assert.doesNotMatch(src, /every Pro sport →|plus every Pro sport added next|11 sports/, `${f}: stale or wrong offer copy`);
+  }
+});
+
+test("active All Access account: navigation line, never an upsell; others get nothing from it", async () => {
+  const { M, html } = await render();
+  assert.equal(html(M.AllAccessActive, { m: allAccess }), '<p class="ufc-aa-active" data-ufc-all-access="active"><b>ALL ACCESS ACTIVE</b><span>10 sports + Predictions included</span></p>');
+  for (const m of [free, sportPro, owner]) assert.equal(html(M.AllAccessActive, { m }), "", m.state);
+  assert.doesNotMatch(html(M.AllAccessActive, { m: allAccess }), /buy\.stripe|GET ALL ACCESS/);
+  assert.match(read("app/account/page.tsx"), /<AllAccessActive m=\{m\} \/>/);
 });
 
 /* ---- rendered HTML (react-dom/server) ------------------------------------ */
@@ -88,8 +131,17 @@ test("hero HTML (free): identity, $29/month, THEEDGE25 chip, exact Stripe checko
   assert.match(out, /<span class="ufc-aa-badge">BEST VALUE · MOST COMPLETE<\/span>/);
   assert.match(out, /<h3 class="ufc-aa-title">ALL ACCESS<\/h3>/);
   assert.match(out, /<span class="ufc-aa-price" aria-label="\$29\/month"><strong>\$29<\/strong>\/month<\/span>/);
-  assert.match(out, /<p class="ufc-aa-tagline">Every current and future PropBetEdge Pro sport\.<\/p>/);
-  assert.match(out, /<p class="ufc-aa-sports"><b>MLB · NFL · NBA · NHL · WNBA · UFC · Tennis · Soccer<\/b> <span>plus every Pro sport added next\.<\/span><\/p>/);
+  assert.match(out, /<p class="ufc-aa-value">10 sports \+ PropBetEdge Predictions\.<\/p>/);
+  assert.match(out, /<p class="ufc-aa-secondary">One membership across the PropBetEdge intelligence network\.<\/p>/);
+  assert.equal((out.match(/<li[^>]*data-sport="/g) || []).length, 10, "ten sport chips");
+  assert.match(out, /data-sport="golf">Golf<\/li>/);
+  assert.match(out, /data-sport="f1">F1 Intelligence<\/li>/);
+  assert.match(out, /data-ufc-all-access-group="intelligence"[^]*?<a class="ufc-aa-predictions" href="https:\/\/predictions\.propbetedge\.ai\/"[^]*?PropBetEdge Predictions<\/b><span>Independent, source-backed forecasts/);
+  assert.doesNotMatch(out, /data-sport="predictions"/, "Predictions is not a sport chip");
+  assert.doesNotMatch(out, /free|11 sports|eleven sports|Boxing/i, "no FREE Predictions, no 11 sports, no unreleased sport");
+  assert.match(out, /Where supported — features vary by sport\./);
+  assert.match(out, /Future PropBetEdge Pro sports join All Access at launch\./);
+  assert.doesNotMatch(out, /MLB · NFL · NBA · NHL · WNBA · UFC · Tennis · Soccer(?! ·)/, "the stale eight-sport list is gone");
   assert.match(out, /<p class="ufc-aa-promo">Launch offer: 25% off while active with code <b class="ufc-aa-code">THEEDGE25<\/b><\/p>/);
   assert.match(out, new RegExp(`<a class="ufc-aa-cta" href="${STRIPE_ALL_ACCESS.replace(/[.\/]/g, "\\$&")}" rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access-cta="checkout">GET ALL ACCESS</a>`));
   assert.match(out, /<a class="ufc-aa-learn" href="https:\/\/propbetedge\.ai\/pro" rel="noopener" data-ufc-all-access-cta="learn">WHAT(&#x27;|')S INCLUDED<\/a>/);
@@ -105,6 +157,9 @@ test("hero HTML (sport_pro): UPGRADE TO ALL ACCESS with the same exact checkout;
   const out = html(M.AllAccessHero, { m: sportPro, variant: "panel", email: sportPro.email });
   assert.match(out, /class="ufc-aa-hero is-panel is-upgrade"[^>]*data-ufc-all-access-state="sport_pro"/);
   assert.match(out, /<h3 class="ufc-aa-title">UPGRADE TO ALL ACCESS<\/h3>/);
+  assert.match(out, /<p class="ufc-aa-secondary">Add the entire PropBetEdge network — 10 sports plus PropBetEdge Predictions — under one membership\.<\/p>/);
+  assert.match(out, /<li class="is-owned" data-sport="ufc">UFC<small> · yours<\/small><\/li>/, "UFC is marked as already owned, not sold back");
+  assert.equal((out.match(/class="is-owned"/g) || []).length, 1);
   assert.match(out, /THEEDGE25/);
   assert.match(out, /href="https:\/\/buy\.stripe\.com\/8x2eVdgmOaqy4pv8Ez7wA0N\?prefilled_email=pro%40example\.com"/);
   assert.doesNotMatch(out, /\$9\.99|\$3\.99|Unlock PBE Picks|Unlock UFC Pro/);
@@ -124,7 +179,7 @@ test("hero / divider / mini HTML (all_access, owner): nothing renders — no CTA
 test("mini HTML: one gold line, the exact checkout, the price", async () => {
   const { M, html } = await render();
   const out = html(M.AllAccessMini, { className: "fw-rail-aa" });
-  assert.equal(out, `<a class="ufc-aa-mini fw-rail-aa" href="${STRIPE_ALL_ACCESS}" rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access="mini"><span>ALL ACCESS</span><b>$29/month</b><i>every Pro sport →</i></a>`);
+  assert.equal(out, `<a class="ufc-aa-mini fw-rail-aa" href="${STRIPE_ALL_ACCESS}" rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access="mini"><span>ALL ACCESS</span><b>$29/month</b><i>10 sports + Predictions →</i></a>`);
   assert.match(html(M.AllAccessMini, { m: sportPro }), /<span>UPGRADE TO ALL ACCESS<\/span>/);
 });
 

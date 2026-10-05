@@ -8,7 +8,7 @@ import { getCustomerOrders } from "@/lib/store/customer-orders";
 import { formatPrice } from "@/lib/store/types";
 import { Mark } from "@/components/Brand";
 import { planText } from "@/lib/pbe-membership.js";
-import { AllAccessHero, ManageLink, MembershipBadge, NetworkLink, NetworkRow } from "@/components/Membership";
+import { AllAccessActive, AllAccessHero, ManageLink, MembershipBadge, NetworkLink, NetworkRow } from "@/components/Membership";
 
 export const metadata: Metadata = { title: "UFC Account", description: "Your PropBetEdge UFC access, entitlements and store orders.", robots: { index: false, follow: false } };
 
@@ -71,6 +71,7 @@ export default async function AccountPage() {
             {m.show_purchase_cta && <Link href="/pro" className="btn gold">{sub ? "Resubscribe" : "Unlock UFC Pro"}</Link>}
           </div>
           <div className="pbe-mbr-panel mt-4">
+            <AllAccessActive m={m} />
             <div className="pbe-mbr-links"><NetworkLink m={m} /></div>
             <NetworkRow current="ufc" />
           </div>

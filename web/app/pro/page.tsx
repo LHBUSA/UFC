@@ -11,6 +11,7 @@ import { getCurrentAccount } from "@/lib/auth";
 import { algoCallsActive, getAlgoPublicRecord, getAlgoUpsetProof } from "@/lib/algo";
 import { PbeUpsetRadar } from "@/components/PbeUpsetRadar";
 import { AllAccessHero, ManageLink, MembershipBadge } from "@/components/Membership";
+import { ALL_ACCESS_VALUE_LINE } from "@/lib/allAccessHero";
 
 export const metadata: Metadata = {
   title: "UFC Pro — PBE Picks, UFC Predictions, Fight DNA & Market Edge",
@@ -85,7 +86,7 @@ export default async function ProPage({ searchParams }: { searchParams: Promise<
               <div className="eyebrow">{owner ? "Owner access" : allAccess ? "PropBetEdge All Access" : "UFC Pro"}</div>
               <h2 className="serif" style={{ margin: "7px 0 8px" }}>{owner ? "Unlimited UFC access is active." : allAccess ? "All Access covers UFC Pro on this account." : "Your UFC Pro access is active."}</h2>
               <p className="dim sm" style={{ maxWidth: 720 }}>
-                {owner ? "No usage cap. No expiry. No checkout required." : allAccess ? "Every current and future PropBetEdge Pro sport is active for this account." : "Your server-side entitlement is active for this account."} Fight DNA and every released Pro surface are available to your account; features that do not yet have verified source/model output remain truthfully unavailable rather than being fabricated.
+                {owner ? "No usage cap. No expiry. No checkout required." : allAccess ? `All Access is active: ${ALL_ACCESS_VALUE_LINE} Future PropBetEdge Pro sports join at launch.` : "Your server-side entitlement is active for this account."} Fight DNA and every released Pro surface are available to your account; features that do not yet have verified source/model output remain truthfully unavailable rather than being fabricated.
               </p>
             </div>
             <MembershipBadge m={membership} className="account-plan" />

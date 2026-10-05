@@ -4,7 +4,7 @@
 
 export type MembershipState = "free" | "sport_pro" | "all_access" | "owner";
 export type AccessSource = "sport" | "all_access" | "owner";
-export type SportKey = "mlb" | "nfl" | "nba" | "nhl" | "wnba" | "ufc";
+export type SportKey = "mlb" | "nfl" | "nba" | "nhl" | "wnba" | "ufc" | "tennis" | "soccer" | "golf" | "f1";
 
 export type LegacyTier = "founding" | "season_pass";
 

@@ -30,7 +30,7 @@ const verdict = (over: Partial<Extract<LedgerRead, { state: "ok" }>> & { plan?: 
 /* ---- the contract itself ---------------------------------------------- */
 
 test("contract: version, states and the four labels exactly", () => {
-  assert.equal(CONTRACT_VERSION, "1.2.0");
+  assert.equal(CONTRACT_VERSION, "1.4.0");
   assert.deepEqual([...STATES], ["free", "sport_pro", "all_access", "owner"]);
   assert.equal(membershipLabel("free", "ufc"), "FREE");
   assert.equal(membershipLabel("sport_pro", "ufc"), "UFC PRO ACTIVE");
@@ -57,7 +57,7 @@ test("contract: All Access commercial facts and links are the shared ones", () =
   assert.equal(ALL_ACCESS_OFFER.checkoutUrl, "https://buy.stripe.com/8x2eVdgmOaqy4pv8Ez7wA0N");
   assert.equal(ALL_ACCESS_URL, "https://propbetedge.ai/pro");
   assert.equal(MANAGE_URL, "https://billing.stripe.com/p/login/cNi3cv2vY7em3lr4oj7wA00");
-  assert.deepEqual(NETWORK.map((s) => s.key), ["mlb", "nfl", "nba", "nhl", "wnba", "ufc", "tennis", "soccer"]);
+  assert.deepEqual(NETWORK.map((s) => s.key), ["mlb", "nfl", "nba", "nhl", "wnba", "ufc", "tennis", "soccer", "golf", "f1"]);
 });
 
 /* ---- deriving the UFC state from the verdict ------------------------------ */
@@ -167,7 +167,8 @@ test("the session route returns the browser-safe membership object and nothing l
 
 test("UI reads the derived flags, never re-derives from plan names or prices", () => {
   const shell = read("components/Shell.tsx");
-  assert.match(shell, /<MembershipBadge m=\{access\.membership\} href="\/account"/);
+  /* 6c4629e: a network-auth session's account door is the shared account surface; a local UFC session keeps /account. */
+  assert.equal((shell.match(/<MembershipBadge m=\{access\.membership\} href=\{access\.source === "network" \? ALL_ACCESS_URL : "\/account"\}/g) || []).length, 2, "header and drawer route the badge by session source");
   assert.equal((shell.match(/access\.membership\.show_purchase_cta && <Link href="\/pro" className="btn gold">Go Pro<\/Link>/g) || []).length, 2, "header and drawer both gate Go Pro on show_purchase_cta");
   assert.doesNotMatch(shell, /access\.tier === "owner" \? "Owner" : access\.pro \? "Pro"/);
   /* Owner decision: the header and drawer carry no All Access item; the footer does. */

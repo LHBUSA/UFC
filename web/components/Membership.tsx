@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ALL_ACCESS_OFFER, ALL_ACCESS_URL, MANAGE_URL, NETWORK, STATES, membershipLabel, type Membership } from "@/lib/pbe-membership.js";
-import { ALL_ACCESS_DIVIDER, allAccessHeroModel, promoParts } from "@/lib/allAccessHero";
+import { ALL_ACCESS_ACTIVE_LINE, ALL_ACCESS_DIVIDER, ALL_ACCESS_FUTURE_LINE, ALL_ACCESS_SPORTS_LINE, ALL_ACCESS_VALUE_LINE, allAccessHeroModel, promoParts } from "@/lib/allAccessHero";
 
 /* React renderings of the shared PropBetEdge membership contract
  * (lib/pbe-membership.js). Same class hooks and copy as the contract's own
@@ -36,7 +36,7 @@ export function AllAccessCard({ m, compact = false }: { m: Membership | null | u
     <aside className={`pbe-mbr-aa${compact ? " is-compact" : ""}`} aria-label="PropBetEdge All Access">
       <div className="pbe-mbr-aa-head"><span className="pbe-mbr-aa-eyebrow">PropBetEdge Network</span><span className="pbe-mbr-aa-price">{ALL_ACCESS_OFFER.price}</span></div>
       <h3 className="pbe-mbr-aa-title">{heading}</h3>
-      <p className="pbe-mbr-aa-copy">{ALL_ACCESS_OFFER.tagline} MLB · NFL · NBA · NHL · WNBA · UFC · Tennis · Soccer, plus every sport added next.</p>
+      <p className="pbe-mbr-aa-copy">{ALL_ACCESS_VALUE_LINE} {ALL_ACCESS_SPORTS_LINE} · PropBetEdge Predictions. {ALL_ACCESS_FUTURE_LINE}</p>
       <p className="pbe-mbr-aa-promo">Launch offer: {ALL_ACCESS_OFFER.promoLine}</p>
       <div className="pbe-mbr-aa-actions">
         <a className="pbe-mbr-aa-cta" href={ALL_ACCESS_OFFER.checkoutUrl} rel="noopener" data-pbe-placement="all_access_checkout">Get All Access →</a>
@@ -77,8 +77,27 @@ export function AllAccessHero({ m, variant = "surface", email = null }: { m: Mem
         <h3 className="ufc-aa-title">{model.title}</h3>
         <span className="ufc-aa-price" aria-label={model.price}><strong>{model.amount}</strong>/{model.cadence}</span>
       </div>
-      <p className="ufc-aa-tagline">{model.tagline}</p>
-      <p className="ufc-aa-sports"><b>{model.sportsLine}</b> <span>{model.sportsNext}</span></p>
+      <p className="ufc-aa-value">{model.valueLine}</p>
+      <p className="ufc-aa-secondary">{model.secondary}</p>
+      <div className="ufc-aa-includes">
+        <div className="ufc-aa-group" data-ufc-all-access-group="sports">
+          <span className="ufc-aa-group-k">Sports · {model.sportCount}</span>
+          <ul className="ufc-aa-sports" aria-label={model.sportsLine}>
+            {model.sports.map((s) => <li key={s.key} className={s.owned ? "is-owned" : undefined} data-sport={s.key}>{s.label}{s.owned && <small> · yours</small>}</li>)}
+          </ul>
+        </div>
+        <div className="ufc-aa-group ufc-aa-intel" data-ufc-all-access-group="intelligence">
+          <span className="ufc-aa-group-k">Intelligence</span>
+          <a className="ufc-aa-predictions" href={model.predictions.url} rel="noopener" data-product={model.predictions.key}>
+            <b><i aria-hidden="true">◆</i>{model.predictions.name}</b>
+            <span>{model.predictions.blurb}</span>
+          </a>
+        </div>
+      </div>
+      <ul className="ufc-aa-caps" aria-label="What the network includes">
+        {model.capabilities.map((c) => <li key={c.key}><b>{c.name}</b><span>{c.note}</span></li>)}
+      </ul>
+      <p className="ufc-aa-fine">{model.capabilitiesNote} {model.futureLine}</p>
       <p className="ufc-aa-promo">Launch offer: {promo.before}<b className="ufc-aa-code">{promo.code}</b>{promo.after}</p>
       <div className="ufc-aa-actions">
         <a className="ufc-aa-cta" href={checkout} rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access-cta="checkout">{model.ctaLabel}</a>
@@ -99,9 +118,15 @@ export function AllAccessMini({ m = null, className = "" }: { m?: Membership | n
   if (!model) return null;
   return (
     <a className={`ufc-aa-mini${className ? ` ${className}` : ""}`} href={model.checkoutUrl} rel="noopener" data-pbe-placement="all_access_checkout" data-ufc-all-access="mini">
-      <span>{model.title}</span><b>{model.price}</b><i>every Pro sport →</i>
+      <span>{model.title}</span><b>{model.price}</b><i>{model.miniLine}</i>
     </a>
   );
+}
+
+/** What an ALL ACCESS ACTIVE account already has: navigation, never an upsell. */
+export function AllAccessActive({ m }: { m: Membership | null | undefined }) {
+  if (stateOf(m) !== "all_access") return null;
+  return <p className="ufc-aa-active" data-ufc-all-access="active"><b>ALL ACCESS ACTIVE</b><span>{ALL_ACCESS_ACTIVE_LINE}</span></p>;
 }
 
 /** Restrained network row: every PropBetEdge sport, the current one marked. */
