@@ -70,25 +70,38 @@ a.ufc-kc:focus-visible { outline: 2px solid var(--ufc-kc-ink); outline-offset: 2
   z-index: 2;
   display: flex;
   justify-content: center;
-  width: 100%;
-  margin: 0;
-  padding: 8px var(--s-5) 10px;
-  border-top: 1px solid rgba(255,255,255,.06);
-  border-bottom: 1px solid rgba(212,175,55,.12);
-  background: rgba(8,7,6,.58);
+  width: auto;
+  margin: 7px var(--s-5) 0;
+  padding: 7px 10px 8px;
+  border: 1px solid rgba(143,122,216,.26);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(143,122,216,.085), rgba(8,7,6,.7));
 }
 .hero .hero-feature .hero-vc .ufc-vc { width: 100%; min-width: 0; }
 .hero .hero-feature .hero-vc .kx-vchip {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto minmax(0,1fr);
   justify-content: center;
-  align-items: center;
+  align-items: baseline;
   width: 100%;
-  gap: 6px;
+  gap: 5px;
   text-align: center;
-  font-size: 10.5px;
-  line-height: 1.4;
+  font-size: 10px;
+  line-height: 1.35;
 }
-.hero .hero-feature .hero-vc .kx-vchip__px { display: inline-flex; gap: 6px; align-items: baseline; }
+.hero .hero-feature .hero-vc .kx-vchip i {
+  color: #b7a8f5;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+.hero .hero-feature .hero-vc .kx-vchip__px {
+  display: inline-flex;
+  justify-content: center;
+  gap: 6px;
+  align-items: baseline;
+  color: var(--pbe-paper-2);
+}
+.hero .hero-feature .hero-vc .kx-vchip__px b { color: #d8cffd; font-size: 10.5px; }
 
 /* Bout rows: the pair chip sits centred on the row's own full-width line (above). */
 .bout .ufc-kx-line .ufc-kc { justify-content: center; }
@@ -119,7 +132,7 @@ a.ufc-kc:focus-visible { outline: 2px solid var(--ufc-kc-ink); outline-offset: 2
 }
 
 @media (max-width: 560px) {
-  .hero .hero-feature .hero-vc { padding-inline: 14px; }
-  .hero .hero-feature .hero-vc .kx-vchip { flex-wrap: wrap; row-gap: 3px; }
-  .hero .hero-feature .hero-vc .kx-vchip__px { flex-basis: 100%; justify-content: center; }
+  .hero .hero-feature .hero-vc { margin-inline: 14px; padding-inline: 9px; }
+  .hero .hero-feature .hero-vc .kx-vchip { grid-template-columns: auto 1fr; row-gap: 3px; }
+  .hero .hero-feature .hero-vc .kx-vchip__px { grid-column: 1 / -1; justify-content: center; }
 }

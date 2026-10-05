@@ -196,12 +196,12 @@ function KalshiBoardInner({ initial, children }: { initial: Board; children: Rea
 /** Compact venue cue for list / card surfaces ("MARKET · POLYMARKET  Allen 61.5¢ · Duncan 38.5¢"): every venue other
  * than Kalshi with a current market on this bout (Kalshi keeps its own chip). Independent of Kalshi: shown whether or not
  * Kalshi lists the bout. `result`: a finished bout shows no live venue price. */
-export function VenueCue({ boutId, initial = null, result = false, wrapClass = null }: { boutId: string; initial?: DeskEvent | null; result?: boolean; wrapClass?: string | null }) {
+export function VenueCue({ boutId, initial = null, result = false, wrapClass = null, variant = "compact" }: { boutId: string; initial?: DeskEvent | null; result?: boolean; wrapClass?: string | null; variant?: "compact" | "hero" }) {
   const desk = useContext(DeskContext);
   const d = desk ? desk[boutId] ?? initial : initial;
   const html = useMemo(() => (result ? "" : venueChip(d)), [d, result]);
   if (!html) return null;
-  const cue = <span className="ufc-vc" data-ufc-vc={boutId} dangerouslySetInnerHTML={{ __html: html }} />;
+  const cue = <span className="ufc-vc" data-ufc-vc={boutId} data-ufc-vc-variant={variant} dangerouslySetInnerHTML={{ __html: html }} />;
   return wrapClass ? <span className={wrapClass}>{cue}</span> : cue;
 }
 
