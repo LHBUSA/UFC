@@ -147,19 +147,27 @@ export function Footer() {
           </div>
         </div>
         <PreferredSource surface="footer" />
-        <nav className="net" aria-label="PropBetEdge sports">
-          {NETWORK.sports.map((s) => s.key === CURRENT_SPORT
-            ? <Link key={s.key} href={s.href} className="here"><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></Link>
-            : <a key={s.key} href={s.href}><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></a>)}
-        </nav>
-        <nav className="net-intel" aria-label="PropBetEdge intelligence">
-          <span className="net-intel-k">Intelligence</span>
-          {NETWORK_PRODUCTS.map((p) => <a key={p.key} href={p.href}><span>{p.name}</span><small>{p.blurb}</small></a>)}
-        </nav>
-        <p className="disclaimer">
-          PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, Paramount, or any sportsbook. Links labeled Official UFC go directly to UFC-owned destinations so readers can verify the official record, watch licensed programming and shop official merchandise.{/* source-brand:allow (legal non-affiliation disclaimer) */}
-          Rights-cleared fighter media carries source/license provenance. Nothing on this site is betting advice. Model output is labelled MODEL; provider data is labelled LIVE; anything unavailable is labelled as such. Please gamble responsibly. 21+ where applicable.
-        </p>
+        {/* The PropBetEdge network directory: 10 sports from the registry, then
+            the non-sport products in their own row (never counted as a sport). */}
+        <section className="net-sec" aria-labelledby="net-sec-title">
+          <div className="net-head">
+            <span className="net-head-k">PropBetEdge Network</span>
+            <h2 id="net-sec-title">Explore the intelligence network</h2>
+            <p>{NETWORK.sports.length} sports + PropBetEdge Predictions.</p>
+          </div>
+          <nav className="net" aria-label="PropBetEdge sports">
+            {NETWORK.sports.map((s) => s.key === CURRENT_SPORT
+              ? <Link key={s.key} href={s.href} className="here"><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small><em className="net-here">Here</em></Link>
+              : <a key={s.key} href={s.href}><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></a>)}
+          </nav>
+          <nav className="net-intel" aria-label="PropBetEdge intelligence">
+            {NETWORK_PRODUCTS.map((p) => <a key={p.key} href={p.href}><span className="net-intel-k">Intelligence</span><span className="net-intel-name">{p.name}</span><small>{p.blurb}</small><em className="net-intel-tag">All Access</em><i aria-hidden="true">→</i></a>)}
+          </nav>
+        </section>
+        <div className="disclaimer">
+          <p>PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, Paramount, or any sportsbook. Links labeled Official UFC go directly to UFC-owned destinations so readers can verify the official record, watch licensed programming and shop official merchandise.{/* source-brand:allow (legal non-affiliation disclaimer) */}</p>
+          <p>Rights-cleared fighter media carries source/license provenance. Nothing on this site is betting advice. Model output is labelled MODEL; provider data is labelled LIVE; anything unavailable is labelled as such. Please gamble responsibly. 21+ where applicable.</p>
+        </div>
         <div className="ftr-rail">
           <div><strong style={{ color: "var(--pbe-paper)" }}>PropBetEdge</strong> · Independent sports intelligence built from the data layer up.</div>
           <div>© {year} {SITE.publisher} · <a href={SITE.parent}>propbetedge.ai</a></div>

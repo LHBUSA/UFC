@@ -33,7 +33,7 @@ export type NetworkSport = { key: "mlb" | "nfl" | "ufc" | "nhl" | "nba" | "wnba"
 export type NetworkProduct = { key: "predictions"; label: string; name: string; blurb: string; href: string };
 
 export const NETWORK_PRODUCTS: readonly NetworkProduct[] = [
-  { key: "predictions", label: "Predictions", name: "PropBetEdge Predictions", blurb: "Market prices read against PropBetEdge models", href: "https://predictions.propbetedge.ai/" },
+  { key: "predictions", label: "Predictions", name: "PropBetEdge Predictions", blurb: "Independent probability · market comparison · scored record", href: "https://predictions.propbetedge.ai/" },
 ];
 
 export const CURRENT_SPORT: NetworkSport["key"] = "ufc";

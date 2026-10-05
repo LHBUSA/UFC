@@ -75,3 +75,43 @@ test("no invented destinations: no LinkedIn, and Privacy only from the propbeted
   assert.ok(!/linkedin/i.test(footer));
   for (const m of footer.matchAll(/privacy/gi)) assert.ok(footer.slice(m.index! - 30, m.index!).includes("propbetedge.ai/"), "privacy link must be https://propbetedge.ai/privacy");
 });
+
+/* Lower footer (2026-10-05): a compact network directory for the 10-sport network. */
+const polish = readFileSync(new URL("../app/footer-network-polish.css", import.meta.url), "utf8");
+
+test("network section: a small header, then the sports rail, then the Predictions product row", () => {
+  const iHead = footer.indexOf('className="net-head"');
+  const iNet = footer.indexOf('className="net"');
+  const iIntel = footer.indexOf('className="net-intel"');
+  assert.ok(iHead > 0 && iHead < iNet && iNet < iIntel);
+  assert.match(footer, /<h2 id="net-sec-title">Explore the intelligence network<\/h2>/);
+  assert.match(footer, /\{NETWORK\.sports\.length\} sports \+ PropBetEdge Predictions\./, "count comes from the registry");
+  assert.match(footer, /<nav className="net" aria-label="PropBetEdge sports">/);
+  assert.match(footer, /<nav className="net-intel" aria-label="PropBetEdge intelligence">/);
+});
+
+test("Predictions row: whole row is one registry link, tagged All Access, never free, never a sport", () => {
+  const intel = footer.slice(footer.indexOf('className="net-intel"'), footer.indexOf("</nav>", footer.indexOf('className="net-intel"')));
+  assert.match(intel, /NETWORK_PRODUCTS\.map\(\(p\) => <a key=\{p\.key\} href=\{p\.href\}>/);
+  assert.match(intel, /<em className="net-intel-tag">All Access<\/em>/);
+  assert.doesNotMatch(footer, /\bfree\b/i);
+  const net = footer.slice(footer.indexOf('className="net"'), footer.indexOf('className="net-intel"'));
+  assert.doesNotMatch(net, /predictions|NETWORK_PRODUCTS/i);
+});
+
+test("current sport is marked with text, not colour alone", () => {
+  assert.match(footer, /className="here"><b>\{s\.label\}<\/b><span>\{s\.name\}<\/span><small>\{s\.blurb\}<\/small><em className="net-here">Here<\/em>/);
+});
+
+test("legal disclaimer keeps every obligation, as two paragraphs", () => {
+  const legal = footer.slice(footer.indexOf('className="disclaimer"'), footer.indexOf('className="ftr-rail"'));
+  assert.equal((legal.match(/<p>/g) || []).length, 2);
+  for (const must of ["independent sports intelligence product", "not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, Paramount, or any sportsbook", "Links labeled Official UFC go directly to UFC-owned destinations", "source/license provenance", "Nothing on this site is betting advice", "labelled MODEL", "labelled LIVE", "anything unavailable is labelled as such", "Please gamble responsibly", "21+ where applicable"]) assert.ok(legal.includes(must), must);
+});
+
+test("sports grid is balanced for 10 sports: 5 columns, 2 columns below 900px, no 112px cards", () => {
+  assert.match(polish, /\.ftr \.net \{ grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/);
+  assert.match(polish, /@media \(max-width: 899px\) \{\s*\.ftr \.net \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
+  assert.doesNotMatch(polish, /repeat\(3,|min-height: 112px|six-sport/);
+  assert.match(polish, /min-width: 38px;/, "badges size to content from a minimum");
+});

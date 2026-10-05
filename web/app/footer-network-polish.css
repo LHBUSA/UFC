@@ -1,64 +1,155 @@
-/* Keep the six-sport PropBetEdge network rail balanced as the network grows. */
-.net {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
+/* Lower footer: Preferred Source band, PropBetEdge network directory
+ * (10 sports from NETWORK.sports + the Predictions product row), legal copy
+ * and the closing rail. The directory is navigation, not promotion: compact
+ * cards in a balanced grid (5 x 2 on desktop, 2 x 5 on small screens) so no
+ * sport is ever left alone on a row. */
 
-.net a {
-  min-width: 0;
-  min-height: 112px;
-  align-content: center;
-}
-
-.net a span,
-.net a small {
-  min-width: 0;
-}
-
-@media (max-width: 900px) {
-  .net {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .net {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .net a {
-    min-height: 0;
-  }
-}
-
-/* Intelligence row: non-sport PropBetEdge products (Predictions). Its own row,
- * never a card in the sports rail; visible at every width. */
-.net-intel {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 6px 14px;
-  margin-top: 12px;
-  padding: 12px 16px;
-  border: 1px solid var(--pbe-line);
+/* ---- Preferred Source: one compact dark bar in the gold system ---- */
+.ftr .pbe-psrc--footer {
+  margin: var(--s-6) 0 0;
+  padding: 12px 14px 12px 18px;
+  gap: 12px 24px;
   border-radius: var(--r-md);
+  border-color: var(--pbe-line);
+  background: rgba(255, 245, 220, .025);
 }
+.ftr .pbe-psrc--footer .pbe-psrc-copy { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
+.ftr .pbe-psrc--footer .pbe-psrc-eyebrow { flex-basis: 100%; font-size: 10px; letter-spacing: .14em; }
+.ftr .pbe-psrc--footer .pbe-psrc-copy strong { font-size: 14px; }
+.ftr .pbe-psrc--footer .pbe-psrc-copy span:not(.pbe-psrc-eyebrow) { font-size: 12.5px; color: #b3ada3; }
+.ftr .pbe-psrc--footer .pbe-psrc-btn {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid rgba(212, 175, 55, .6);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--pbe-gold-bright, #e9c75a);
+  font: 700 12px/1 var(--pbe-font-data);
+  letter-spacing: .06em;
+}
+.ftr .pbe-psrc--footer .pbe-psrc-btn::after { content: "→"; margin-left: 8px; }
+.ftr .pbe-psrc--footer .pbe-psrc-btn:hover { background: var(--pbe-gold); border-color: var(--pbe-gold); color: var(--pbe-ink); transform: none; }
 
-.net-intel-k {
-  font: 700 var(--fs-label)/1.4 var(--pbe-font-data);
-  letter-spacing: .08em;
+/* ---- Network section ---- */
+.net-sec { margin-top: var(--s-7); }
+.net-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.net-head-k { flex-basis: 100%; font: 700 10px/1.4 var(--pbe-font-data); letter-spacing: .16em; text-transform: uppercase; color: var(--pbe-gold); }
+.net-head h2 { margin: 0; font: 700 19px/1.2 var(--pbe-font-display); letter-spacing: -.01em; color: var(--pbe-paper); }
+.net-head p { margin: 0; font-size: var(--fs-sm); color: #b3ada3; }
+
+.ftr .net { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+.ftr .net a {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  row-gap: 3px;
+  align-items: start;
+  align-content: start;
+  border-radius: var(--r-sm);
+  transition: border-color .15s ease, background-color .15s ease;
+}
+.ftr .net a b {
+  grid-row: span 2;
+  width: auto;
+  min-width: 38px;
+  height: 26px;
+  padding: 0 7px;
+  font: 800 11.5px/1 var(--pbe-font-data);
+  letter-spacing: .04em;
+  border-radius: 5px;
+}
+.ftr .net a span { font-size: 12.5px; line-height: 1.3; min-width: 0; }
+.ftr .net a small { font-size: 10.5px; line-height: 1.35; min-width: 0; }
+.ftr .net a:hover { border-color: rgba(212, 175, 55, .55); background: rgba(42, 36, 28, .75); }
+.ftr .net a:focus-visible,
+.ftr .net-intel a:focus-visible { outline: 2px solid var(--pbe-gold); outline-offset: 2px; }
+.ftr .net a.here { border-color: rgba(212, 175, 55, .6); background: rgba(212, 175, 55, .06); }
+.net-here {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  font: 700 8.5px/1 var(--pbe-font-data);
+  font-style: normal;
+  letter-spacing: .12em;
   text-transform: uppercase;
   color: var(--pbe-gold);
 }
+.ftr .net a.here span { padding-right: 30px; }
 
+/* ---- Predictions: a different product class, same visual system ---- */
+.net-intel { margin-top: 8px; }
 .net-intel a {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 10px;
-  min-width: 0;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 6px 14px;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid var(--pbe-line);
+  border-left: 2px solid var(--pbe-gold);
+  border-radius: var(--r-sm);
+  background: linear-gradient(90deg, rgba(212, 175, 55, .07), rgba(29, 25, 20, .7) 45%);
+  transition: border-color .15s ease, background-color .15s ease;
 }
+.net-intel-k { font: 700 10px/1.4 var(--pbe-font-data); letter-spacing: .14em; text-transform: uppercase; color: var(--pbe-gold); }
+.net-intel-name { color: var(--pbe-paper); font-weight: 700; font-size: 13.5px; }
+.net-intel a small { color: #b3ada3; font-size: 11.5px; min-width: 0; }
+.net-intel-tag {
+  font: 700 9.5px/1 var(--pbe-font-data);
+  font-style: normal;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--pbe-gold);
+  padding: 5px 8px;
+  border: 1px solid rgba(212, 175, 55, .45);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.net-intel a i { font-style: normal; color: var(--pbe-gold); }
+.net-intel a:hover { border-color: rgba(212, 175, 55, .55); border-left-color: var(--pbe-gold); }
+.net-intel a:hover .net-intel-name { color: var(--pbe-gold-bright, #e9c75a); }
 
-.net-intel a span { color: var(--pbe-paper); font-weight: 600; font-size: var(--fs-sm); }
-.net-intel a small { color: #b3ada3; font-size: var(--fs-label); }
-.net-intel a:hover span { color: var(--pbe-gold); }
+/* ---- Legal + closing rail ---- */
+.ftr .disclaimer {
+  max-width: none;
+  margin-top: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--pbe-line-faint);
+  font-size: 11.5px;
+  line-height: 1.75;
+}
+.ftr .disclaimer p { margin: 0; max-width: 88ch; }
+.ftr .disclaimer p + p { margin-top: 8px; }
+.ftr .ftr-rail { margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--pbe-line-strong); align-items: baseline; }
+
+/* 900-1179: still 5 x 2, badge above the text so names never crush. */
+@media (max-width: 1179px) {
+  .ftr .net a { grid-template-columns: minmax(0, 1fr); }
+  .ftr .net a b { grid-row: auto; justify-self: start; margin-bottom: 4px; }
+}
+/* < 900: 2 x 5, badge beside the text again; Predictions wraps to two lines. */
+@media (max-width: 899px) {
+  .ftr .net { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ftr .net a { grid-template-columns: auto minmax(0, 1fr); }
+  .ftr .net a b { grid-row: span 2; margin-bottom: 0; }
+  .net-intel a { grid-template-columns: minmax(0, 1fr) auto; }
+  .net-intel-k, .net-intel-name, .net-intel a small { grid-column: 1; }
+  .net-intel-tag { grid-column: 2; grid-row: 1 / span 3; align-self: center; }
+  .net-intel a i { display: none; }
+}
+/* < 600: compact 2-column cards, badge on top; stacked bars. */
+@media (max-width: 599px) {
+  .ftr .net a { grid-template-columns: minmax(0, 1fr); padding: 10px; }
+  .ftr .net a b { grid-row: auto; justify-self: start; margin-bottom: 4px; }
+  .ftr .pbe-psrc--footer { padding: 14px; }
+  .ftr .pbe-psrc--footer .pbe-psrc-btn { width: 100%; }
+  .ftr .ftr-rail { flex-direction: column; gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ftr .net a, .net-intel a { transition: none; }
+}
