@@ -635,3 +635,16 @@ test("99/1 one-sided book: full Kalshi card with truthful Bid/Ask/Last, no Mid-m
   old.kalshi.outcomes = e.kalshi.outcomes.map(({ renderable, ...x }: any) => x);
   assert.equal(ufcKalshiCardHtml(old as KalshiEntry), "", "an older API block without renderable fails closed");
 });
+
+
+test("homepage hero markets use aligned full-width fighter cells and a centered venue rail", () => {
+  const hero = read("app/hero-premium.css");
+  const market = read("app/kalshi-ufc.css");
+  const page = read("app/page.tsx");
+  assert.match(hero, /\.hero \.hero-feature \.hero-moneyline \{[\s\S]*width: 100%;[\s\S]*justify-content: center;/);
+  assert.match(hero, /\.hero \.hero-feature \.poster-names \.r \{[\s\S]*display: grid;/);
+  assert.match(market, /\.hero \.hero-feature \.hero-vc \{[\s\S]*justify-content: center;[\s\S]*width: 100%;/);
+  assert.match(market, /\.hero \.hero-feature \.hero-vc \.kx-vchip \{[\s\S]*justify-content: center;[\s\S]*width: 100%;/);
+  assert.match(page, /wrapClass="ufc-kc-row hero-vc"/);
+  assert.doesNotMatch(page, /wrapClass="ufc-kc-row ufc-kc-row--start hero-vc"/);
+});
