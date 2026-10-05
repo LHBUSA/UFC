@@ -251,7 +251,7 @@ export default async function Home() {
                       <div className="a">
                         <div className="n">{mainEvent.fighter_a.name}</div>
                         <div className="r">
-                          {fmtRecord(mainEvent.fighter_a)}
+                          <span className="hero-record">{fmtRecord(mainEvent.fighter_a)}</span>
                           {mainMarket?.a?.consensus != null && (
                             <span
                               className="hero-moneyline"
@@ -266,7 +266,7 @@ export default async function Home() {
                       <div className="b">
                         <div className="n">{mainEvent.fighter_b.name}</div>
                         <div className="r">
-                          {fmtRecord(mainEvent.fighter_b)}
+                          <span className="hero-record">{fmtRecord(mainEvent.fighter_b)}</span>
                           {mainMarket?.b?.consensus != null && (
                             <span
                               className="hero-moneyline"
@@ -279,7 +279,7 @@ export default async function Home() {
                         </div>
                       </div>
                     </div>
-                    {mainEvent ? <VenueCue boutId={mainEvent.id} result={Boolean(mainEvent.result)} wrapClass="ufc-kc-row ufc-kc-row--start hero-vc" /> : null}
+                    {mainEvent ? <VenueCue boutId={mainEvent.id} result={Boolean(mainEvent.result)} wrapClass="ufc-kc-row hero-vc" /> : null}
                   </>
                 ) : (
                   <div className="poster-faces" style={{ display: "grid", placeItems: "center" }}><div className="stack" style={{ alignItems: "center", textAlign: "center", padding: 24 }}><Octagon className="" /><div className="faint sm">Card announcement pending. Bouts appear the moment they are published.</div></div></div>
