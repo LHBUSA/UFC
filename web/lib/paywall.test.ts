@@ -90,8 +90,6 @@ const GUARDS: Record<string, RegExp[]> = {
    * the free branch is a resolved empty list, never a call. */
   "app/algo/card/page.tsx": [/const access = await getUfcAccess\(\);\s*const \[cards, upsetProof, performance\] = await Promise\.all\(\[\s*access\.pro \? getAlgoCards\(access\) : Promise\.resolve\(\[\]\),\s*getAlgoUpsetProof\(\),\s*getAlgoPerformanceProof\(\),\s*\]\);/],
   "app/events/[slug]/page.tsx": [/const providerLive = access\.pro \? await marketProviderLive\(\) : false;/, /const marketMap = done \|\| !providerLive/, /const unresolved = done \|\| !providerLive/],
-  /* Home-page showcase: access is resolved in the component, and the DNA read sits inside `if (pro)`. */
-  "components/FightDnaShowcase.tsx": [/pro = Boolean\(access\.pro\);[\s\S]{0,160}?if \(pro\) \{\s*const dna = await getFighterDna\(fighterId\)/],
   /* Upset Radar takes the caller's access decision as a prop (see ACCESS_BY_PROP) and reads upcoming calls only on === true. */
   "components/PbeUpsetRadar.tsx": [/if \(access\.pro === true\) \{\s*const cards = providedCards \?\? await getAlgoCards\(access\);/],
   /* Homepage hero: the owner made the MAIN EVENT's two consensus moneylines public (6ad5117,
@@ -117,9 +115,21 @@ const ACCESS_BY_PROP: Record<string, { tag: string; prop: RegExp; callers: strin
  * snippet; the value is never rendered. */
 const METADATA_ONLY = [/const \[bouts, rounds, dna\] = await Promise\.all\(\[getFighterBouts\(f\.id\), getFighterRoundStats\(f\.id\), getFighterDna\(f\.id\)\]\)/, /getRoundStats\(b\.id\), getFightTotals\(b\.id\)\.catch\(\(\) => \[\]\), getMatchupDna\(b\.fighter_a\.id, b\.fighter_b\.id, e\.event_date\)/];
 
+/* Owner decision 2026-10-05: the homepage Fight DNA module is ONE public sample of the
+ * product, identical for every visitor, so it deliberately makes no access decision.
+ * Its single read is pinned here and by the "Fight DNA public demo" test below. */
+const PUBLIC_DEMO_READS: Record<string, RegExp> = {
+  "lib/fightDnaDemo.ts": /const ordered = orderCandidates\(candidates, portraits\)\.slice\(0, MAX_DNA_READS\);\s*for \(const c of ordered\) \{\s*const dna = await getFighterDna\(c\.id\)\.catch\(\(\) => null\);/,
+};
+
 test("every premium read site asks getUfcAccess first and carries a written guard", () => {
   for (const { file, text } of source) {
     if (PREMIUM_READ_ALLOW.has(file) || !PREMIUM_READS.test(text)) continue;
+    if (PUBLIC_DEMO_READS[file]) {
+      assert.match(text, PUBLIC_DEMO_READS[file], `${file} lost its pinned public-demo read`);
+      assert.equal([...text.matchAll(new RegExp(PREMIUM_READS.source, "g"))].length, 1, `${file} may make exactly one premium read`);
+      continue;
+    }
     assert.ok(GUARDS[file], `${file} reads premium data but has no guard registered in paywall.test.ts`);
     const handed = ACCESS_BY_PROP[file];
     if (handed) {
@@ -235,4 +245,27 @@ test("homepage hero moneyline: public exposure is the main event's two consensus
   assert.deepEqual(fields, ["a.consensus", "b.consensus", "bookCount", "stale"], "only the two consensus moneylines (plus staleness and book count in the tooltip) may render publicly");
   assert.doesNotMatch(page, /=\{mainMarket\}|\{\.\.\.mainMarket\}/, "the market object is never handed to another component");
   assert.equal((page.match(/getMarketsFor\(/g) || []).length, 1, "exactly one market read on the homepage");
+});
+
+test("Fight DNA public demo: one bounded sample, same for every visitor, never the raw snapshot", () => {
+  const read = (f: string) => source.find((s) => s.file === f)!.text;
+  const demo = read("lib/fightDnaDemo.ts");
+  const model = read("lib/fightDnaDemoModel.ts");
+  const card = read("components/FightDnaShowcase.tsx").replace(/\/\*[\s\S]*?\*\//g, "");
+
+  /* Bounded: a few reads at most per render, in a fixed candidate order. */
+  const max = Number(model.match(/export const MAX_DNA_READS = (\d+);/)?.[1]);
+  assert.ok(max >= 1 && max <= 3, "MAX_DNA_READS stays small");
+  /* What leaves the loader is the reduced view, never the snapshot or its provenance. */
+  assert.match(demo, /view: buildDemoView\(dna\.data\.snapshot\),/);
+  assert.doesNotMatch(demo.replace(/\/\*[\s\S]*?\*\//g, ""), /snapshot:|provenance|context_splits|position_profile/, "the loader returns no raw snapshot fields");
+  assert.doesNotMatch(model.replace(/\/\*[\s\S]*?\*\//g, ""), /provenance|context_splits|position_profile/, "the view model never copies provenance or premium-only splits");
+  /* Entitlement must not change the homepage demo: no access decision, no paywall copy. */
+  assert.doesNotMatch(card, /getUfcAccess|access\.pro|getFighterDna\(/, "the showcase makes no access decision and no direct DNA read");
+  assert.doesNotMatch(card, /Unlock|"PRO"|PRO INTELLIGENCE|>PRO</, "no paywall language in the public demo");
+  /* Only the homepage renders it, and only the showcase calls the loader. */
+  assert.deepEqual(source.filter((s) => s.text.includes("<FightDnaShowcase")).map((s) => s.file), ["app/page.tsx"]);
+  assert.deepEqual(source.filter((s) => s.file !== "lib/fightDnaDemo.ts" && /getFightDnaDemo\(/.test(s.text)).map((s) => s.file), ["components/FightDnaShowcase.tsx"]);
+  /* Full profiles stay Pro. */
+  assert.match(read("app/fighters/[slug]/page.tsx"), /access\.pro \? getFighterDna\(f\.id\) : Promise\.resolve\(null\)/);
 });

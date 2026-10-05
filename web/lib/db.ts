@@ -608,6 +608,20 @@ export async function getImageById(id: string): Promise<PortraitSet | null> {
   return portraitSet(row);
 }
 
+/* Original source size the media pipeline recorded in identity_evidence when it
+ * stored the portrait. Read-only; an image without a recorded size (display-only
+ * provider fallbacks, older rows) is simply absent from the map. */
+export async function getImageSourceSizes(imageIds: string[]): Promise<Map<string, { width: number; height: number }>> {
+  const m = new Map<string, { width: number; height: number }>();
+  const ids = [...new Set(imageIds.filter((id) => /^[0-9a-f-]{36}$/i.test(id)))];
+  if (!ids.length) return m;
+  const rows = (await rest<Array<{ id: string; w: number | null; h: number | null }>>(
+    `ufc_images?select=id,w:identity_evidence->source->width,h:identity_evidence->source->height&id=in.(${ids.join(",")})`, [], { revalidate: 900 },
+  )).data;
+  for (const r of rows) if (Number(r.w) > 0 && Number(r.h) > 0) m.set(r.id, { width: Number(r.w), height: Number(r.h) });
+  return m;
+}
+
 export async function getImageCount(): Promise<number | null> {
   return (await rest<unknown[]>("ufc_images?select=id&fighter_id=not.is.null&limit=1", [], { count: true, revalidate: 900 })).count;
 }
