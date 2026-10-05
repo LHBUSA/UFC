@@ -46,7 +46,7 @@ export async function Header() {
           {/* Signed-in members see their shared membership badge (UFC PRO ACTIVE /
               ALL ACCESS ACTIVE / OWNER) as the account door; "Go Pro" is sold only
               to a reader the server says has nothing yet. */}
-          {access.signedIn ? <MembershipBadge m={access.membership} href="/account" className="account-btn" title="Account" /> : <Link href="/login" className="btn account-btn">Sign in</Link>}
+          {access.signedIn ? <MembershipBadge m={access.membership} href={access.source === "network" ? ALL_ACCESS_URL : "/account"} className="account-btn" title="Account" /> : <Link href="/login" className="btn account-btn">Sign in</Link>}
           {access.membership.show_purchase_cta && <Link href="/pro" className="btn gold">Go Pro</Link>}
           <label htmlFor="mnav-toggle" className="menu-btn" aria-label="Open menu"><span /><span /><span /></label>
         </div>
@@ -56,7 +56,7 @@ export async function Header() {
         <div className="mnav-foot">
           <StoreCartButton mobile />
           {next && <Link href={nextHref} className="btn">{nextLabel} · {fmtDate(next.event_date, { month: "short", day: "numeric" })}</Link>}
-          {access.signedIn ? <MembershipBadge m={access.membership} href="/account" title="Account" /> : <Link href="/login" className="btn">Sign in</Link>}
+          {access.signedIn ? <MembershipBadge m={access.membership} href={access.source === "network" ? ALL_ACCESS_URL : "/account"} title="Account" /> : <Link href="/login" className="btn">Sign in</Link>}
           {access.membership.show_purchase_cta && <Link href="/pro" className="btn gold">Go Pro</Link>}
         </div>
       </MobileNav>
