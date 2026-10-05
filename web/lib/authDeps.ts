@@ -12,7 +12,7 @@ import { EMAIL_FOOTER_HTML, EMAIL_FOOTER_TEXT } from "@/lib/emailFooter";
 /* Real dependencies for lib/authFlow.ts. Throttle keys are HMACs keyed with a
  * server-only secret, so the attempts table holds no recoverable email or IP. */
 
-const FROM = "PropBetEdge UFC <picks@propbetedge.ai>";
+const FROM = "PropBetEdge <access@propbetedge.ai>";
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] || c));
@@ -20,7 +20,7 @@ function escapeHtml(value: string): string {
 
 function emailHtml(link: string) {
   const safe = escapeHtml(link);
-  return `<!doctype html><html><body style="margin:0;background:#0d0b08;color:#f5f1eb;font-family:Arial,sans-serif"><table width="100%" cellpadding="0" cellspacing="0" style="padding:38px 16px;background:#0d0b08"><tr><td align="center"><table width="100%" style="max-width:620px;background:#17130f;border:1px solid rgba(212,175,55,.34);border-radius:18px;padding:34px"><tr><td><img src="https://propbetedge.ai/logo/pbe-full-400.png" width="190" alt="PropBetEdge" style="display:block;max-width:190px;height:auto;margin-bottom:26px"><div style="font-size:11px;font-weight:800;letter-spacing:2.2px;color:#d4af37">UFC · SECURE ACCESS</div><h1 style="font-size:34px;line-height:1.08;margin:12px 0;color:#fff">Your fight room is ready.</h1><p style="color:#b8b3a8;font-size:15px;line-height:1.65;margin:0 0 24px">Use this one-time link to sign in to PropBetEdge UFC. Your browser will stay signed in for 30 days.</p><a href="${safe}" style="display:inline-block;padding:15px 22px;border-radius:8px;background:#d4af37;color:#14110d;text-decoration:none;font-weight:900">OPEN PROPBETEDGE UFC →</a><p style="margin-top:24px;color:#777168;font-size:11px;line-height:1.6">This link expires in 15 minutes and can be used once. If you did not request it, ignore this message.</p>${EMAIL_FOOTER_HTML}</td></tr></table></td></tr></table></body></html>`;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"></head><body style="margin:0;padding:0;background:#090b0d;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;color:#f5f2e8;-webkit-text-size-adjust:100%"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background:#090b0d"><tr><td align="center" style="padding:28px 14px 36px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:520px;background:#111512;border:1px solid #343225;border-radius:16px"><tr><td style="padding:28px 24px 18px;text-align:center"><div style="font-family:Georgia,'Times New Roman',serif;font-size:27px;line-height:1;font-weight:700;color:#f5f2e8">PROPBETEDGE <span style="color:#d4af37">/</span></div><div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;line-height:1.4;color:#d4af37;letter-spacing:.18em;margin-top:8px">SPORTS INTELLIGENCE NETWORK</div></td></tr><tr><td style="padding:4px 24px 8px"><div style="font-size:24px;line-height:1.18;font-weight:750;color:#fff;margin:0 0 10px">Your sign-in link is ready.</div><div style="font-size:15px;line-height:1.6;color:#c9cec8">Open the secure sign-in screen, then tap <strong style="color:#fff">Continue to PropBetEdge</strong> to finish signing in to UFC.</div></td></tr><tr><td style="padding:18px 24px 22px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" bgcolor="#d4af37" style="border-radius:10px"><a href="${safe}" target="_blank" style="display:block;width:100%;box-sizing:border-box;padding:17px 18px;color:#0b0d0b;text-decoration:none;font-size:16px;line-height:1.15;font-weight:800;text-align:center;border-radius:10px">Open secure sign-in</a></td></tr></table></td></tr><tr><td style="padding:0 24px 24px"><div style="padding:14px 15px;border:1px solid #2b302c;border-radius:10px;background:#0c0f0d;font-size:12px;line-height:1.55;color:#969e98"><strong style="color:#d4af37">15-minute secure link</strong><br>Email previews and security scanners can open this page, but they cannot complete your sign-in.</div></td></tr></table>${EMAIL_FOOTER_HTML}</td></tr></table></body></html>`;
 }
 
 async function sendLoginEmail(email: string, rawToken: string): Promise<void> {
@@ -34,13 +34,16 @@ async function sendLoginEmail(email: string, rawToken: string): Promise<void> {
     body: JSON.stringify({
       from: FROM,
       to: [email],
-      subject: "PropBetEdge UFC — secure sign-in",
+      subject: "Sign in to PropBetEdge",
       html: emailHtml(verify.toString()),
-      text: `Your PropBetEdge UFC sign-in link:
+      text: `Your secure PropBetEdge sign-in link is ready.
 
 ${verify}
 
-This one-time link expires in 15 minutes.${EMAIL_FOOTER_TEXT}`,
+Open the link, then tap Continue to PropBetEdge to finish signing in to UFC.
+The link expires in 15 minutes.
+
+${EMAIL_FOOTER_TEXT}`,
     }),
     cache: "no-store",
   });
