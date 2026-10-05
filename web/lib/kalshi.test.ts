@@ -526,8 +526,8 @@ test("presentation placements: hero, card rows, matchup cards, schedule, event p
   assert.equal((home.match(/getKalshiBoard\(/g) || []).length, 1, "homepage: one board read");
   assert.doesNotMatch(home.split("\n").find((l) => l.includes("getKalshiBoard("))!, /access|\.pro/);
   assert.match(home, /<KalshiBoard initial=\{kalshi\}( desk=\{[^\n]+\})?>/);
-  assert.equal((home.match(/variant="hero" side="[ab]"/g) || []).length, 2, "hero: one chip per fighter");
-  assert.match(home, /favLabel=\{!heroBook\}/);
+  assert.equal((home.match(/variant="pair" result=\{Boolean\(mainEvent\.result\)\} placement="hero"/g) || []).length, 1, "hero: one shared Kalshi market rail");
+  assert.doesNotMatch(home, /variant="hero" side="[ab]"/, "hero no longer splits market prices into fighter-corner chips");
   assert.match(home, /<CardSegments [^>]*kalshi=\{kalshi\}/);
   assert.match(home, /<MatchupCard [^>]*kalshi=\{kalshi\[b\.id\] \?\? null\}/);
   const ev = read("app/events/[slug]/page.tsx");
@@ -637,14 +637,16 @@ test("99/1 one-sided book: full Kalshi card with truthful Bid/Ask/Last, no Mid-m
 });
 
 
-test("homepage hero markets use aligned full-width fighter cells and a centered venue rail", () => {
+test("homepage hero markets are one shared sportsbook rail plus centered prediction-market rails", () => {
   const hero = read("app/hero-premium.css");
   const market = read("app/kalshi-ufc.css");
   const page = read("app/page.tsx");
-  assert.match(hero, /\.hero \.hero-feature \.hero-moneyline \{[\s\S]*width: 100%;[\s\S]*justify-content: center;/);
-  assert.match(hero, /\.hero \.hero-feature \.poster-names \.r \{[\s\S]*display: grid;/);
-  assert.match(market, /\.hero \.hero-feature \.hero-vc \{[\s\S]*justify-content: center;[\s\S]*width: 100%;/);
-  assert.match(market, /\.hero \.hero-feature \.hero-vc \.kx-vchip \{[\s\S]*justify-content: center;[\s\S]*width: 100%;/);
-  assert.match(page, /wrapClass="ufc-kc-row hero-vc"/);
-  assert.doesNotMatch(page, /wrapClass="ufc-kc-row ufc-kc-row--start hero-vc"/);
+  assert.match(hero, /\.hero \.hero-feature \.hero-book-rail \{[\s\S]*border:/);
+  assert.match(hero, /\.hero \.hero-feature \.hero-market-grid \{[\s\S]*grid-template-columns: repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(hero, /\.hero \.hero-feature \.poster-faces \.face\[data-art-mode="fitted"\]/);
+  assert.match(page, /pickVariant\(img, "desk", img \? framing\.get\(img\.id\) \?\? null : null\)/);
+  assert.match(page, /className="hero-book-rail"/);
+  assert.match(page, /className="hero-kalshi-rail"/);
+  assert.match(page, /wrapClass="ufc-kc-row hero-vc" variant="hero"/);
+  assert.match(market, /\.hero \.hero-feature \.hero-vc \{[\s\S]*border-radius: 8px;/);
 });
