@@ -28,11 +28,13 @@ export type NetworkSport = { key: "mlb" | "nfl" | "ufc" | "nhl" | "nba" | "wnba"
 
 /* Non-sport PropBetEdge products. Deliberately NOT in NETWORK.sports: nothing
  * that iterates sports (footer rail, house promos, membership) may pick these
- * up, and they are never counted as a sport. Footer renders them in their own
- * "Intelligence" row. */
-export type NetworkProduct = { key: "predictions"; label: string; name: string; blurb: string; href: string };
+ * up, and they are never counted as a sport. Footer renders them in the
+ * "All Access" row. */
+export type NetworkProduct = { key: "members" | "compare" | "predictions"; label: string; name: string; blurb: string; href: string };
 
 export const NETWORK_PRODUCTS: readonly NetworkProduct[] = [
+  { key: "members", label: "Command Center", name: "PropBetEdge Command Center", blurb: "Your live All Access workspace", href: "https://members.propbetedge.ai/" },
+  { key: "compare", label: "Compare", name: "PropBetEdge Compare", blurb: "Kalshi · Polymarket · PBE market comparison", href: "https://compare.propbetedge.ai/" },
   { key: "predictions", label: "Predictions", name: "PropBetEdge Predictions", blurb: "Independent probability · market comparison · scored record", href: "https://predictions.propbetedge.ai/" },
 ];
 
