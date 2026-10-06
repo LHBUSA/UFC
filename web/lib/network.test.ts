@@ -43,7 +43,7 @@ test("network sports follow the family order; the footer rail renders them from 
 // LHBUSA/propbetedge-workers shared/network/family.json (generated; never hand-edit).
 type FamilyEntry = { key: string; kind: string; label: string; name: string; url: string };
 const family = JSON.parse(readFileSync(new URL("./family.json", import.meta.url), "utf8")) as {
-  organization: string; sports: FamilyEntry[]; products: FamilyEntry[]; network: FamilyEntry[]; all_access_line: string; retired_hosts: string[];
+  organization: string; sports: FamilyEntry[]; products: FamilyEntry[]; all_access: FamilyEntry[]; network: FamilyEntry[]; all_access_line: string; retired_hosts: string[];
 };
 
 test("family parity: sports set, order and URLs match the canonical registry (self may be relative)", () => {
@@ -56,25 +56,25 @@ test("family parity: sports set, order and URLs match the canonical registry (se
   assert.equal(NETWORK.sports.find((s) => s.key === "f1")!.name, "F1 Intelligence");
 });
 
-test("family parity: Predictions is a product, never a sport", () => {
-  assert.deepEqual(NETWORK_PRODUCTS.map((p) => [p.key, p.name, p.href]), family.products.map((p) => [p.key, p.name, p.url]));
-  assert.ok(!NETWORK.sports.some((s) => (s.key as string) === "predictions" || /predictions\./.test(s.href)), "not in the sports rail");
-  assert.equal(NETWORK.sports.length, 10, "ten sports; Predictions is not counted");
+test("family parity: All Access products are products, never sports", () => {
+  assert.deepEqual(NETWORK_PRODUCTS.map((p) => [p.key, p.href]), family.products.map((p) => [p.key, p.url]));
+  for (const p of NETWORK_PRODUCTS) assert.ok(!NETWORK.sports.some((s) => (s.key as string) === p.key || s.href === p.href), p.key);
+  assert.equal(NETWORK.sports.length, 10, "ten sports; premium products are not counted");
 });
 
-test("family parity: network URLs (hub, All Access, Learn)", () => {
+test("family parity: network URLs (hub + Learn) and All Access URL", () => {
   const url = (k: string) => family.network.find((n) => n.key === k)!.url;
   assert.equal(NETWORK.news.href, url("hub"));
-  assert.equal(ALL_ACCESS_URL, url("all_access"));
+  assert.equal(ALL_ACCESS_URL, family.all_access.find((n) => n.key === "all_access")!.url);
   assert.equal(NETWORK.learn.href, url("learn"));
 });
 
 test("footer: exactly one F1 and one Predictions anchor, canonical https, no retired hosts", () => {
   const shell = readFileSync(new URL("../components/Shell.tsx", import.meta.url), "utf8");
   const footer = shell.slice(shell.indexOf("export function Footer()"));
-  assert.ok(footer.includes("NETWORK_PRODUCTS.map("), "Intelligence row reads the registry");
+  assert.ok(footer.includes("NETWORK_PRODUCTS.map("), "All Access row reads the registry");
   assert.equal(footer.split("NETWORK.sports.map(").length - 1, 1, "sports rail rendered once");
-  assert.equal(footer.split("NETWORK_PRODUCTS.map(").length - 1, 1, "Intelligence row rendered once");
+  assert.equal(footer.split("NETWORK_PRODUCTS.map(").length - 1, 1, "All Access row rendered once");
   assert.ok(footer.indexOf('className="net-intel"') > footer.indexOf('className="net"'), "own row, after the sports rail");
   const reg = readFileSync(new URL("./network.ts", import.meta.url), "utf8");
   assert.equal(reg.split('"https://f1.propbetedge.ai/"').length - 1, 1);
