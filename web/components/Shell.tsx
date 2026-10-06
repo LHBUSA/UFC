@@ -160,8 +160,9 @@ export function Footer() {
               ? <Link key={s.key} href={s.href} className="here"><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small><em className="net-here">Here</em></Link>
               : <a key={s.key} href={s.href}><b>{s.label}</b><span>{s.name}</span><small>{s.blurb}</small></a>)}
           </nav>
-          <nav className="net-intel" aria-label="PropBetEdge intelligence">
-            {NETWORK_PRODUCTS.map((p) => <a key={p.key} href={p.href}><span className="net-intel-k">Intelligence</span><span className="net-intel-name">{p.name}</span><small>{p.blurb}</small><em className="net-intel-tag">All Access</em><i aria-hidden="true">→</i></a>)}
+          <nav className="net-intel" aria-label="PropBetEdge All Access">
+            <a href="https://propbetedge.ai/pro"><span className="net-intel-k">All Access</span><span className="net-intel-name">PropBetEdge All Access</span><small>One membership. The premium PropBetEdge network.</small><em className="net-intel-tag">All Access</em><i aria-hidden="true">→</i></a>
+            {NETWORK_PRODUCTS.map((p) => <a key={p.key} href={p.href}><span className="net-intel-k">All Access</span><span className="net-intel-name">{p.label}</span><small>{p.blurb}</small><em className="net-intel-tag">Included</em><i aria-hidden="true">→</i></a>)}
           </nav>
         </section>
         <div className="disclaimer">
