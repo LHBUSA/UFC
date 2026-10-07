@@ -134,7 +134,6 @@ export function Footer() {
             </div>
             <div className="col" data-ufc-footer-group="community">
               <h4>Community</h4>
-              {NETWORK.discord && <a href={NETWORK.discord} target="_blank" rel="noopener">Discord ↗</a>}
               <a href={SITE.xUrl} target="_blank" rel="noopener noreferrer" aria-label={`Follow PropBetEdge on X (${SITE.twitter})`} title="Follow PropBetEdge on X"><span aria-hidden="true">𝕏</span> {SITE.twitter}</a>
             </div>
             <div className="col" data-ufc-footer-group="company-legal">
