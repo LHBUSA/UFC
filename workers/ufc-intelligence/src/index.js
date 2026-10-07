@@ -447,6 +447,11 @@ async function runDnaGuard(env) {
   const key = `dna:guard_attempts:${today}`;
   let attempts = 0;
   try { attempts = Number((env.INTEL_STATE && (await env.INTEL_STATE.get(key))) || 0); } catch { /* treated as 0 */ }
+  /* Every hourly tick closes platform-terminated rows, even on days that already succeeded (src/dnaRuns.js). */
+  try {
+    const reaped = await reapAbandonedRuns((method, path, opts) => sb(env, method, path, opts), Date.parse(nowIso));
+    if (reaped.length) console.warn(`[${WORKER}] dna_guard reaper closed ${reaped.length} abandoned run(s): ${reaped.join(',')}`);
+  } catch (e) { console.error(`[${WORKER}] dna_guard reaper: ${String(e.message).slice(0, 200)}`); }
   let runs;
   try { runs = await todaysDnaRuns(env, today); } catch (e) {
     console.error(`[${WORKER}] dna_guard could not read build runs: ${String(e.message).slice(0, 200)}`);
