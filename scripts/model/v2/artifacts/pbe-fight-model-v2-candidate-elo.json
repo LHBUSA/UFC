@@ -1,0 +1,232 @@
+{
+  "status": "FROZEN_RESEARCH_CANDIDATE - not registered, not deployed, not published",
+  "model_version": "pbe-fight-model-v2-candidate-elo",
+  "feature_version": "pbe-fight-features-v2-elo",
+  "base_feature_version": "pbe-fight-features-v1",
+  "features": [
+    "age_diff_years",
+    "reach_diff_in",
+    "height_diff_in",
+    "experience_log_diff",
+    "five_round_exp_diff",
+    "title_exp_diff",
+    "winrate_diff",
+    "recent5_winrate_diff",
+    "streak_diff",
+    "layoff_log_diff",
+    "slpm_diff",
+    "sapm_diff",
+    "sig_diff_per_min_diff",
+    "sig_accuracy_diff",
+    "sig_defense_diff",
+    "kd_per15_diff",
+    "kd_absorbed_per15_diff",
+    "td_landed_per15_diff",
+    "td_accuracy_diff",
+    "td_defense_diff",
+    "control_share_diff",
+    "sub_att_per15_diff",
+    "finish_rate_diff",
+    "ko_rate_diff",
+    "sub_rate_diff",
+    "ko_loss_rate_diff",
+    "sub_loss_rate_diff",
+    "pace_retention_diff",
+    "champ_round_delta_diff",
+    "southpaw_edge",
+    "sos_diff",
+    "quality_wins_diff",
+    "stat_sample_log_diff",
+    "elo_diff"
+  ],
+  "coefficients": {
+    "age_diff_years": -0.33832378282758435,
+    "reach_diff_in": 0.0925420746947024,
+    "height_diff_in": 0.008172671023155604,
+    "experience_log_diff": -0.11589565663720722,
+    "five_round_exp_diff": 0.022215040452761348,
+    "title_exp_diff": 0.044928191504789564,
+    "winrate_diff": -0.14818923592639419,
+    "recent5_winrate_diff": -0.05290148990789243,
+    "streak_diff": 0.07550514927443293,
+    "layoff_log_diff": -0.04610817287774427,
+    "slpm_diff": 0.04026821020526941,
+    "sapm_diff": -0.06454048059732088,
+    "sig_diff_per_min_diff": 0.0818998455753326,
+    "sig_accuracy_diff": 0.0526588866423236,
+    "sig_defense_diff": 0.09362299570655781,
+    "kd_per15_diff": -0.08344000114299159,
+    "kd_absorbed_per15_diff": -0.0042952858643280955,
+    "td_landed_per15_diff": 0.11397726821492364,
+    "td_accuracy_diff": -0.03553484128506849,
+    "td_defense_diff": 0.05419111124476042,
+    "control_share_diff": 0.01727036207379315,
+    "sub_att_per15_diff": -0.058092767235821886,
+    "finish_rate_diff": 0.02745148974244841,
+    "ko_rate_diff": 0.006874151565478681,
+    "sub_rate_diff": 0.02371037637157408,
+    "ko_loss_rate_diff": -0.05778679135685552,
+    "sub_loss_rate_diff": -0.0011692516851332141,
+    "pace_retention_diff": -0.03566951737941904,
+    "champ_round_delta_diff": -0.009359740878601181,
+    "southpaw_edge": 0.06831010231429245,
+    "sos_diff": 0.029196602536753102,
+    "quality_wins_diff": -0.01028474153791365,
+    "stat_sample_log_diff": 0.07169997747391357,
+    "elo_diff": 0.40193850933653263
+  },
+  "scale": [
+    5.20262636502606,
+    3.0596301019384096,
+    2.5381295965431954,
+    0.6893462971523424,
+    0.5815368186332237,
+    0.5150739846263135,
+    0.14523682934358303,
+    0.3052784945912007,
+    1.986221322828534,
+    0.68632200618743,
+    2.270588611048653,
+    1.9170480722115075,
+    2.6278388666329824,
+    0.11681650697698068,
+    0.11469182342465153,
+    3.8585562007400673,
+    1.8189969632592056,
+    2.156650300363797,
+    0.2526413768074523,
+    0.2602270887484096,
+    0.1910701468475021,
+    1.905888081516012,
+    0.35743348615145304,
+    0.3409182891671217,
+    0.31685792564458437,
+    0.21960030094095295,
+    0.1914485071292683,
+    1.0786866519411502,
+    1.0137969250402683,
+    0.5501157251530402,
+    0.22338440357502057,
+    0.6382784383340919,
+    0.7499150099405101,
+    0.8408937902222678
+  ],
+  "lambda": 20,
+  "elo_k": 48,
+  "elo_rule": "start 1500; K*(1+2/(n+1)) per corner; date-block reads before updates; draws 0.5; NC skipped; elo_diff = (r1-r2)/100",
+  "feature_scale": {
+    "age_diff_years": 5.20262636502606,
+    "reach_diff_in": 3.0596301019384096,
+    "height_diff_in": 2.5381295965431954,
+    "experience_log_diff": 0.6893462971523424,
+    "five_round_exp_diff": 0.5815368186332237,
+    "title_exp_diff": 0.5150739846263135,
+    "winrate_diff": 0.14523682934358303,
+    "recent5_winrate_diff": 0.3052784945912007,
+    "streak_diff": 1.986221322828534,
+    "layoff_log_diff": 0.68632200618743,
+    "slpm_diff": 2.270588611048653,
+    "sapm_diff": 1.9170480722115075,
+    "sig_diff_per_min_diff": 2.6278388666329824,
+    "sig_accuracy_diff": 0.11681650697698068,
+    "sig_defense_diff": 0.11469182342465153,
+    "kd_per15_diff": 3.8585562007400673,
+    "kd_absorbed_per15_diff": 1.8189969632592056,
+    "td_landed_per15_diff": 2.156650300363797,
+    "td_accuracy_diff": 0.2526413768074523,
+    "td_defense_diff": 0.2602270887484096,
+    "control_share_diff": 0.1910701468475021,
+    "sub_att_per15_diff": 1.905888081516012,
+    "finish_rate_diff": 0.35743348615145304,
+    "ko_rate_diff": 0.3409182891671217,
+    "sub_rate_diff": 0.31685792564458437,
+    "ko_loss_rate_diff": 0.21960030094095295,
+    "sub_loss_rate_diff": 0.1914485071292683,
+    "pace_retention_diff": 1.0786866519411502,
+    "champ_round_delta_diff": 1.0137969250402683,
+    "southpaw_edge": 0.5501157251530402,
+    "sos_diff": 0.22338440357502057,
+    "quality_wins_diff": 0.6382784383340919,
+    "stat_sample_log_diff": 0.7499150099405101,
+    "elo_diff": 0.8408937902222678
+  },
+  "lambda_scan": [
+    {
+      "lambda": 1,
+      "validation_log_loss": 0.6469169452884329
+    },
+    {
+      "lambda": 2,
+      "validation_log_loss": 0.6468916113917623
+    },
+    {
+      "lambda": 5,
+      "validation_log_loss": 0.646836607459631
+    },
+    {
+      "lambda": 10,
+      "validation_log_loss": 0.6467866661890815
+    },
+    {
+      "lambda": 20,
+      "validation_log_loss": 0.6467622463662279
+    },
+    {
+      "lambda": 40,
+      "validation_log_loss": 0.6468482656136677
+    },
+    {
+      "lambda": 80,
+      "validation_log_loss": 0.6472389055077691
+    },
+    {
+      "lambda": 160,
+      "validation_log_loss": 0.6482660777913182
+    },
+    {
+      "lambda": 320,
+      "validation_log_loss": 0.6503522816611874
+    }
+  ],
+  "converged": true,
+  "training": {
+    "cutoff_exclusive": "2026-10-07",
+    "bouts": 9249,
+    "window_start": "1993-11-12",
+    "window_end": "2026-10-06",
+    "dataset_sha256": "c174ca8f76a090f6f9f4ec9cc40321125125441a98777c59f2b6e3412f55c73b"
+  },
+  "selection_policy": {
+    "version": "pbe-algo-selection-v2-candidate",
+    "debut_corner": "no_call",
+    "min_features_available": 20,
+    "primary": {
+      "rule": "uniform",
+      "min_pick_probability": 0.6
+    },
+    "variant_tiers": {
+      "rule": "by_min_prior_bouts",
+      "tiers": [
+        {
+          "min_prior_bouts": 1,
+          "max_prior_bouts": 2,
+          "min_pick_probability": 0.625
+        },
+        {
+          "min_prior_bouts": 3,
+          "max_prior_bouts": 5,
+          "min_pick_probability": 0.65
+        },
+        {
+          "min_prior_bouts": 6,
+          "max_prior_bouts": null,
+          "min_pick_probability": 0.6
+        }
+      ]
+    },
+    "tuned_on": "walk-forward folds 2015-2021; objective = Wilson lower bound of published hit rate with >= 35% coverage"
+  },
+  "spec_sha256": "cc84aa7c2ece16e5b499b9e1f0a7cee6863193d3078adaaaccc0584de518d029",
+  "code_sha": "567bc0cd44cca283fe125d4eeef45f9dcb4a26be",
+  "generated_at": "2026-10-07T21:04:45.975Z"
+}

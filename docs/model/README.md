@@ -5,6 +5,7 @@
 | [METHODOLOGY.md](METHODOLOGY.md) | How the model is built, what it can and cannot see, and what v1 is honestly worth |
 | [LEAKAGE.md](LEAKAGE.md) | The six checks that prove the model could not read the future, with their results |
 | [BACKTEST_v1.md](BACKTEST_v1.md) | Generated results: every metric, every slice, every fold |
+| [V2_RESEARCH.md](V2_RESEARCH.md) | V2 research sprint (2026-10-07): V1 failure analysis, candidates, walk-forward metrics, selection policy, frozen SHADOW candidate |
 | [LIVE_CONTRACT.md](LIVE_CONTRACT.md) | What has to be true for a published pick to mean anything, and where each rule is enforced |
 
 Code lives in `scripts/model/`. Schema lives in
