@@ -1,0 +1,56 @@
+name: Deploy retired Discord senders
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/ufc-discord-retirement-deploy.yml"
+      - "workers/ufc-record-alerts/**"
+      - "workers/combat-wikipedia-ingest/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-ufc-discord-retirement
+  cancel-in-progress: false
+
+jobs:
+  deploy-record-alerts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Verify Cloudflare credential
+        run: test -n "$CLOUDFLARE_API_TOKEN"
+      - name: Test record alerts
+        working-directory: workers/ufc-record-alerts
+        run: npm test
+      - name: Deploy record alerts
+        working-directory: workers/ufc-record-alerts
+        run: npx --yes wrangler@4.62.0 deploy
+
+  deploy-combat-wikipedia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Verify Cloudflare credential
+        run: test -n "$CLOUDFLARE_API_TOKEN"
+      - name: Install and test combat ingest
+        working-directory: workers/combat-wikipedia-ingest
+        run: npm install && npm test
+      - name: Deploy combat ingest
+        working-directory: workers/combat-wikipedia-ingest
+        run: npx wrangler deploy
