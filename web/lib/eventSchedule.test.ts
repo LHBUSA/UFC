@@ -3,7 +3,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import test from "node:test";
 import {
-  APPROVED_SCHEDULES, APPROVED_SOURCE, PARAMOUNT_UFC_URL,
+  APPROVED_SCHEDULES, APPROVED_SOURCE, PARAMOUNT_UFC_URL, SERIES_CARRIERS, seriesCarrier,
   mergeApprovedSchedules, resolveEventSchedule, resolveScheduleFields, scheduleSourceLabel,
 } from "./eventSchedule.ts";
 import { startLines, localTime, linkableBroadcasts, watchState, isFinished, type EventBroadcast } from "./broadcast-display.ts";
@@ -146,4 +146,42 @@ test("8b. nothing outside lib/broadcast.ts queries ufc_event_broadcasts", () => 
   };
   for (const d of ["app", "components", "lib"]) walk(join(WEB, d));
   assert.deepEqual(offenders, []);
+});
+
+/* ---- series carriers: Dana White's Contender Series on Paramount+ ---- */
+
+const DWCS = { id: "c373d384-25c1-4272-b310-2e6b9bbb3517", name: "Dana White's Contender Series: Season 10, Week 10", event_date: "2026-10-13", venue: null, city: null, region: null, country: null };
+
+test("DWCS with no stored row resolves to Paramount+ and NO start time", () => {
+  const r = resolveEventSchedule(DWCS, null)!;
+  assert.equal(r.broadcasts.length, 1);
+  assert.equal(r.broadcasts[0].provider, "Paramount+");
+  assert.equal(r.broadcasts[0].watch_url, PARAMOUNT_UFC_URL);
+  assert.equal(r.early_prelims_start_utc, null);
+  assert.equal(r.prelims_start_utc, null);
+  assert.equal(r.main_card_start_utc, null);
+  assert.equal(r.source, APPROVED_SOURCE);
+  assert.equal(linkableBroadcasts(r)[0].provider, "Paramount+");
+});
+
+test("DWCS keeps stored times and adds only the carrier when UFC.com published none", () => {
+  const stored = storedRow({ event_id: DWCS.id, event_name: DWCS.name, event_date: DWCS.event_date, broadcasts: [], main_card_start_utc: "2026-10-14T00:00:00Z", prelims_start_utc: null });
+  const r = resolveEventSchedule(DWCS, stored)!;
+  assert.equal(r.main_card_start_utc, "2026-10-14T00:00:00Z");
+  assert.equal(r.prelims_start_utc, null);
+  assert.equal(r.broadcasts[0].provider, "Paramount+");
+});
+
+test("a stored DWCS carrier always wins over the series carrier", () => {
+  const own = [{ provider: "UFC Fight Pass", region: "US", type: "streaming", watch_url: "https://ufcfightpass.com/", segments: ["main_card"] }];
+  const r = resolveEventSchedule(DWCS, storedRow({ event_id: DWCS.id, event_name: DWCS.name, broadcasts: own as EventBroadcast["broadcasts"] }))!;
+  assert.deepEqual(r.broadcasts, own);
+});
+
+test("the series carrier never reaches a numbered or Fight Night card", () => {
+  assert.equal(seriesCarrier(UNKNOWN), null);
+  assert.equal(seriesCarrier(ROSAS), null);
+  assert.equal(resolveEventSchedule(UNKNOWN, null), null);
+  for (const s of SERIES_CARRIERS) for (const b of s.broadcasts) assert.ok(b.watch_url?.startsWith("https://"));
+  assert.ok(SERIES_CARRIERS.every((s) => !("main_card_start_utc" in s) && !("prelims_start_utc" in s)), "series carriers never carry times");
 });

@@ -60,6 +60,30 @@ export const APPROVED_SCHEDULES: Record<string, ApprovedSchedule> = {
   },
 };
 
+/* SERIES CARRIERS — the one exception to "keyed by id, never by name", and it
+ * is deliberately narrow: a series-wide CARRIER only, never a start time. A
+ * series airs on one platform under a rights deal; its weekly start times do
+ * not carry over and are never filled from here. Used only when the stored row
+ * (or a per-event approved entry) has no carrier of its own, so UFC.com wins the
+ * moment it publishes one. */
+export type SeriesCarrier = { series: string; match: RegExp; broadcasts: Broadcast[]; approved_at: string; basis: string };
+
+export const SERIES_CARRIERS: SeriesCarrier[] = [
+  {
+    series: "Dana White's Contender Series",
+    match: /contender series|dwcs/i,
+    /* Paramount+ has no DWCS show page (/shows/dana-whites-contender-series/ is a 404 on 2026-10-07);
+     * its UFC hub is the stable official landing page, curl-verified 200 the same day. */
+    broadcasts: [{ provider: "Paramount+", region: "US", type: "streaming", watch_url: PARAMOUNT_UFC_URL, segments: ["main_card"] }],
+    approved_at: "2026-10-07T20:00:00Z",
+    basis: "owner-stated 2026-10-07: Dana White's Contender Series streams on Paramount+",
+  },
+];
+
+export function seriesCarrier(event: Pick<ScheduleEvent, "name"> | null): SeriesCarrier | null {
+  return event ? SERIES_CARRIERS.find((s) => s.match.test(event.name || "")) ?? null : null;
+}
+
 export function approvedScheduleIds(): string[] {
   return Object.keys(APPROVED_SCHEDULES);
 }
@@ -112,40 +136,50 @@ export function resolveScheduleFields(eventId: string, stored: Partial<ScheduleF
  * not claim "verified from UFC.com" for a value it did not read there.
  */
 export function resolveEventSchedule(event: ScheduleEvent | null, stored: EventBroadcast | null | undefined): EventBroadcast | null {
+  const resolved = resolveApproved(event, stored);
+  const series = seriesCarrier(event);
+  if (!series || !event || (resolved?.broadcasts?.length ?? 0) > 0) return resolved;
+  /* Carrier only: times stay exactly what the stored/approved row said (or null). */
+  const base = resolved ?? fallbackRow(event, { approved_at: series.approved_at });
+  return { ...base, broadcasts: series.broadcasts, source: APPROVED_SOURCE };
+}
+
+function resolveApproved(event: ScheduleEvent | null, stored: EventBroadcast | null | undefined): EventBroadcast | null {
   const fill = event ? APPROVED_SCHEDULES[event.id] : undefined;
   if (!fill) return stored ?? null;
   if (!event) return stored ?? null;
-
-  if (!stored) {
-    const place = [event.city, event.region || event.country].filter(Boolean).join(", ") || null;
-    return {
-      ufc_slug: slugFromUrl(fill.ufc_event_url) || event.id,
-      event_id: event.id,
-      match_status: "matched",
-      event_name: event.name,
-      event_headline: null,
-      event_date: event.event_date,
-      venue: event.venue ?? null,
-      city: event.city ?? null,
-      region: event.region ?? null,
-      country: event.country ?? null,
-      location_raw: place,
-      early_prelims_start_utc: fill.early_prelims_start_utc ?? null,
-      prelims_start_utc: fill.prelims_start_utc ?? null,
-      main_card_start_utc: fill.main_card_start_utc ?? null,
-      broadcasts: fill.broadcasts ?? [],
-      ufc_event_url: fill.ufc_event_url || "https://www.ufc.com/events",
-      tickets_url: null,
-      source: APPROVED_SOURCE,
-      source_url: fill.ufc_event_url || "https://www.ufc.com/events",
-      parser: "approved-schedule-v1",
-      verified_at: fill.approved_at,
-      last_changed_at: fill.approved_at,
-    };
-  }
-
+  if (!stored) return fallbackRow(event, fill);
   const { filled, ...fields } = resolveScheduleFields(event.id, stored)!;
   return { ...stored, ...fields, event_id: stored.event_id || event.id, source: filled ? APPROVED_SOURCE : stored.source };
+}
+
+/** The row an event gets when nothing is stored: only what `fill` verified, everything else null. */
+function fallbackRow(event: ScheduleEvent, fill: Partial<ApprovedSchedule> & { approved_at: string }): EventBroadcast {
+  const place = [event.city, event.region || event.country].filter(Boolean).join(", ") || null;
+  return {
+    ufc_slug: slugFromUrl(fill.ufc_event_url) || event.id,
+    event_id: event.id,
+    match_status: "matched",
+    event_name: event.name,
+    event_headline: null,
+    event_date: event.event_date,
+    venue: event.venue ?? null,
+    city: event.city ?? null,
+    region: event.region ?? null,
+    country: event.country ?? null,
+    location_raw: place,
+    early_prelims_start_utc: fill.early_prelims_start_utc ?? null,
+    prelims_start_utc: fill.prelims_start_utc ?? null,
+    main_card_start_utc: fill.main_card_start_utc ?? null,
+    broadcasts: fill.broadcasts ?? [],
+    ufc_event_url: fill.ufc_event_url || "https://www.ufc.com/events",
+    tickets_url: null,
+    source: APPROVED_SOURCE,
+    source_url: fill.ufc_event_url || "https://www.ufc.com/events",
+    parser: "approved-schedule-v1",
+    verified_at: fill.approved_at,
+    last_changed_at: fill.approved_at,
+  };
 }
 
 /** Where the displayed values came from, in the words a reader sees. */
