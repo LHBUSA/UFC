@@ -23,6 +23,7 @@ import { marketComparison, officialMarketColumns } from './market.js';
 import { resolveChampion } from './champion.js';
 import { cardTruth } from './cardTruth.js';
 import { activeChallenger } from './learning/daily.js';
+import { loadV2Track, v2Call, writeV2Shadow } from './research/v2shadow.js';
 import { shadowCall, writeShadow, gradeShadow } from './learning/shadow.js';
 import artifact from '../../../web/lib/generated/model-v1.json';
 import { db } from './supabase.js';
@@ -171,6 +172,14 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
     let challenger = null;
     try { challenger = model.live ? await activeChallenger(q, model.model_version) : null; } catch (e) { shadowError('challenger', e); }
     report.challenger = challenger ? { training_run_id: challenger.id, spec_sha256: challenger.spec_sha256, training_bouts: challenger.training_bouts, created_at: challenger.created_at } : null;
+    /* V2 research shadow (src/research/v2shadow.js): private, isolated like the challenger track, never official.
+     * A dry run builds Elo in memory and stores nothing; only an armed cycle writes the R2 artifact and shadow rows. */
+    report.writes.research_shadow = { inserted: 0, updated: 0, locked: 0, skipped_locked: 0, errors: [] };
+    const v2Error = (where, e) => { if (report.writes.research_shadow.errors.length < 20) report.writes.research_shadow.errors.push(`${where}: ${String(e?.message || e).slice(0, 200)}`); };
+    let v2 = null;
+    try { v2 = model.live ? await loadV2Track(q, env.ARTIFACTS, nowIso, { write: mode === 'armed' }) : null; } catch (e) { v2Error('track', e); }
+    report.research_shadow = v2 ? { registered: v2.registered, spec_sha256: v2.spec.spec_sha256, training_run_id: v2.run_id ?? null, elo: v2.elo ? { key: v2.elo.key, sha256: v2.elo.sha256, source: v2.elo.source } : null } : null;
+    if (v2 && !v2.registered) v2 = null;
     if (mode === 'armed' && !model.live) {
       report.blocked = model.blocked;
       await q.patch(`ufc_model_runs?id=eq.${run.id}`, { status: 'blocked', finished_at: new Date().toISOString(), counts: report.writes, error: model.blocked }, 'return=minimal');
@@ -195,6 +204,10 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
       let shadowByBout = null;
       if (mode === 'armed' && challenger && card.bouts.length) {
         try { shadowByBout = new Map((await q.inChunks('ufc_model_shadow_predictions', 'bout_id', card.bouts.map((b) => b.id), 'id,bout_id,locked_at', `&training_run_id=eq.${challenger.id}`)).map((x) => [x.bout_id, x])); } catch (e) { shadowError('shadow read', e); }
+      }
+      let v2ByBout = null;
+      if (mode === 'armed' && v2 && card.bouts.length) {
+        try { v2ByBout = new Map((await q.inChunks('ufc_model_shadow_predictions', 'bout_id', card.bouts.map((b) => b.id), 'id,bout_id,locked_at', `&training_run_id=eq.${v2.run_id}`)).map((x) => [x.bout_id, x])); } catch (e) { v2Error('read', e); }
       }
       if (mode === 'armed') {
         for (const d of staleDrafts) {
@@ -264,6 +277,18 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
           shadow: shadow ? { decision: shadow.decision, reasons: shadow.reasons, pick_fighter_id: shadow.pick_fighter_id, pick_probability: shadow.raw_pick_probability, same_pick_as_champion: shadow.raw_pick_fighter_id === pickFighter } : null,
         };
         // Admin report only: exactly what a draft would store, so a dry run can be audited feature by feature.
+        /* V2 on V1's exact row and decision. The pair holds V1's locked probability when V1 has locked. */
+        let v2c = null;
+        if (v2 && row) {
+          try {
+            const lockedV1 = lockedByBout.get(b.id);
+            const v1 = lockedV1 && lockedV1.prob_a != null
+              ? { source: 'locked', p1: b.fighter_a_id === row.fighter_1_id ? Number(lockedV1.prob_a) : 1 - Number(lockedV1.prob_a) }
+              : { source: 'cycle', p1 };
+            v2c = v2Call({ track: v2, row, bout: b, decision, v1, market });
+            boutReport.research_shadow = { evaluable: v2c.policy.evaluable, v2_pick_probability: v2c.policy.v2.pick_probability, same_pick: v2c.policy.same_pick, publish: { v1_rule: v2c.policy.v1.publish_v1_rule, v2_primary_60: v2c.policy.v2.publish_primary_60, v2_variant_tiers: v2c.policy.v2.publish_variant_tiers } };
+          } catch (e) { v2Error(`score ${b.id}`, e); }
+        }
         if (eligible) {
           boutReport.prob_a = round(probA, 8);
           boutReport.feature_vector = Object.fromEntries(FEATURE_KEYS.map((k, i) => [k, row.x[i]]));
@@ -329,6 +354,16 @@ export async function runCycle(env, { trigger = 'cron', mode: requested, now = D
               });
               for (const k of ['inserted', 'updated', 'locked', 'skipped_locked']) report.writes.shadow[k] += w[k];
             } catch (e) { shadowError(`shadow write ${b.id}`, e); }
+          }
+          /* V2 research shadow last: shadow table and its lock RPC only, never allowed to throw into official work. */
+          if (v2 && v2c) {
+            try {
+              const w = await writeV2Shadow(q, {
+                track: v2, championVersion: model.model_version, eligibilityVersion: ELIGIBILITY_VERSION, event, bout: b, call: v2c,
+                existing: v2ByBout?.get(b.id) || null, lockOpen: win.open, minLeadHours: RULES.lockMinLeadHours, generatedAt: new Date(now - 1000).toISOString(),
+              });
+              for (const k of ['inserted', 'updated', 'locked', 'skipped_locked']) report.writes.research_shadow[k] += w[k];
+            } catch (e) { v2Error(`write ${b.id}`, e); }
           }
         }
         cardReport.bouts.push(boutReport);
