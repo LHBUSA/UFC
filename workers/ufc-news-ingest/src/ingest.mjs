@@ -33,7 +33,7 @@ import { normalize } from '../../../shared/alias_resolver.mjs';
 import { linkEntities, loadEventContext } from '../../../scripts/news/ingest_news.mjs';
 import { classifyFocus, initialState } from './ufc_focus.mjs';
 import {
-  loadHealth, saveHealth, isInCooldown, shouldHalfOpen, onSuccess, onFailure,
+  loadHealth, saveHealth, isInCooldown, shouldHalfOpen, onSuccess, onFailure, healthNeedsWrite,
 } from './feed_health.mjs';
 import {
   fallbackUrlsFor, fallbackPagesFor, parseLatestPage, parseArticlePage, SOURCE_BODY_MAX_AGE_MS,
@@ -333,7 +333,9 @@ export async function fetchFeed(env, source, { now = Date.now() } = {}) {
 
       result.not_modified = true;
       onSuccess(health, now, { latencyMs: result.latency_ms, notModified: true });
-      return { result, health, changed: true };
+      /* Change-only: a plain 304 that moved nothing but counters/latency is not
+       * persisted until the heartbeat is due (feed_health.healthNeedsWrite). */
+      return { result, health, changed: healthNeedsWrite(health, now) };
     }
     if (!res.ok) {
       result.error = `http ${res.status}`;

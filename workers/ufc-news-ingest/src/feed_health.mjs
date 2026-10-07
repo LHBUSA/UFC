@@ -122,11 +122,42 @@ export async function loadHealth(kv, name, now = Date.now()) {
   try {
     const raw = await kv.get(key(name));
     const health = raw ? { ...emptyHealth(), ...JSON.parse(raw) } : emptyHealth();
+    /* The record as stored, before any in-memory upgrade, so a run can tell whether
+     * it changed anything worth a KV write (non-enumerable: never serialized). */
+    Object.defineProperty(health, STORED, { value: raw ? { ...emptyHealth(), ...JSON.parse(raw) } : null, enumerable: false });
     migrateLegacyContentWatermark(health);
     return refreshStaleValidators(health, now);
   } catch {
     return emptyHealth();
   }
+}
+
+const STORED = Symbol('stored-health');
+
+/* Fields whose change must reach KV on the very run that changed them: circuit
+ * and failure state, validators, and the body / primary-content watermarks. */
+const MEANINGFUL_FIELDS = ['consecutive_failures', 'last_body_success_ts', 'last_primary_newest_ts', 'last_failure_ts',
+  'last_failure_reason', 'last_etag', 'last_modified', 'circuit_state', 'cooldown_until_ts'];
+
+/* Heartbeat for the observability-only fields (success counters, latency
+ * samples, last_success_ts): a run that changed nothing meaningful still writes
+ * once this long after the stored last_success_ts. Equal to the forced body
+ * refresh, so in practice the record is rewritten by the 10-minute 200 anyway. */
+export const HEALTH_HEARTBEAT_MS = FORCE_BODY_REFRESH_MS;
+
+/**
+ * Change-only persistence. A plain 304 on a healthy feed used to rewrite the
+ * record every two minutes only to bump counters and last_success_ts (~6.5k
+ * UFC_NEWS_KV writes/day for 9 feeds). Returns true when the record must be
+ * written: no stored record, any meaningful field differs from what is stored,
+ * or the heartbeat is due.
+ */
+export function healthNeedsWrite(health, now = Date.now()) {
+  const stored = health?.[STORED];
+  if (!stored) return true;
+  for (const f of MEANINGFUL_FIELDS) if ((stored[f] ?? null) !== (health[f] ?? null)) return true;
+  const last = Number(stored.last_success_ts);
+  return !(Number.isFinite(last) && last > 0 && now - last < HEALTH_HEARTBEAT_MS);
 }
 
 export async function saveHealth(kv, name, health) {
