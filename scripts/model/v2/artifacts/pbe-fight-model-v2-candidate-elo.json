@@ -227,6 +227,6 @@
     "tuned_on": "walk-forward folds 2015-2021; objective = Wilson lower bound of published hit rate with >= 35% coverage"
   },
   "spec_sha256": "cc84aa7c2ece16e5b499b9e1f0a7cee6863193d3078adaaaccc0584de518d029",
-  "code_sha": "567bc0cd44cca283fe125d4eeef45f9dcb4a26be",
-  "generated_at": "2026-10-07T21:04:45.975Z"
+  "code_sha": "5d08c5e84c7d494db7701342506be43e58454e7d",
+  "generated_at": "2026-10-07T21:05:43.692Z"
 }
