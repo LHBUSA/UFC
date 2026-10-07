@@ -25,7 +25,7 @@ test("footer PropBetEdge group renders Learn from the registry, same-tab, once",
   assert.ok(!/learn\.propbetedge\.ai/.test(shell), "the URL lives only in lib/network.ts");
   for (const s of ["All Access", "NETWORK.news", "NETWORK.store"]) assert.ok(col.includes(s), s);
   assert.ok(footerGroup(shell, "account").includes("Manage billing"), "billing lives under Account");
-  assert.ok(footerGroup(shell, "community").includes("NETWORK.discord"), "Discord lives under Community");
+  assert.ok(!/Discord|NETWORK\.discord|discord\.gg/i.test(footerGroup(shell, "community")), "Discord is retired from Community");
 });
 
 test("network sports follow the family order; the footer rail renders them from the registry", () => {
