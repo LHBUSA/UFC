@@ -44,3 +44,8 @@ test('runs for other dates never count as today', () => {
   const r = dnaGuardDecision({ nowIso: `${D}T08:47:00Z`, runs: [{ id: 'y', as_of_date: '2026-09-23', status: 'success', started_at: '2026-09-23T07:17:00Z' }] });
   assert.equal(r.action, 'resume');
 });
+
+test('v0.4.0: a running row past the 15-minute wall limit is stale; one inside it is in progress', () => {
+  assert.equal(dnaGuardDecision({ nowIso: `${D}T08:47:00Z`, runs: [run('running', `${D}T08:35:00Z`)] }).action, 'none');
+  assert.equal(dnaGuardDecision({ nowIso: `${D}T08:47:00Z`, runs: [run('running', `${D}T08:30:00Z`)] }).reason, 'stale_running');
+});

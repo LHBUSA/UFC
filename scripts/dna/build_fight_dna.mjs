@@ -53,8 +53,22 @@
  * 57014, 5xx, 429, network) with backoff and split in half when a batch keeps
  * timing out; resume mode preserves rows an interrupted run already wrote for
  * the same as-of date; every full run reconciles the rows present against the
- * rows expected and is recorded `partial` (never `success`) when they differ. */
-const BUILDER = 'ufc-intelligence/build_fight_dna@v1.3';
+ * rows expected and is recorded `partial` (never `success`) when they differ.
+ *
+ * v1.4: bounded invocations (2026-10-07 incident). The daily build ran as one
+ * all-or-nothing invocation; on 2026-10-07 shared-database saturation stretched
+ * it past the 15-minute Cron Trigger wall limit four times (Cloudflare status
+ * internalError at 900 s wall, ~1-2 s CPU), the isolate was terminated mid
+ * bout-feature write, and every run row was left `running`. Now:
+ *   - a caller-supplied wall-clock DEADLINE is checked before every write chunk
+ *     and before reconciliation; when it passes, the run row is closed
+ *     `partial` with a cursor (never left `running`);
+ *   - a resume continues from that cursor, but ONLY when the newest non-success
+ *     run for this as-of date saw the identical input watermark and counts.
+ *     Otherwise it rewrites everything: a resumed build can never keep rows
+ *     computed from different inputs.
+ * No metric definition changed, so DEFINITION_VERSION stays 1. */
+const BUILDER = 'ufc-intelligence/build_fight_dna@v1.4';
 const DEFINITION_VERSION = 1;
 const FEATURE_VERSION = 1;
 
@@ -73,6 +87,15 @@ let ON_ROWS = null;
  * as-of date; WRITE_STATS is recorded on the run row; SLEEP is injectable for tests. */
 let RESUME = false;
 let WRITE_STATS = {};
+/* v1.4 bounded invocation: absolute epoch-ms deadline (null = unbounded, the CLI default) and the clock it is read with. */
+let DEADLINE = null;
+let NOW = () => Date.now();
+export class BudgetExhausted extends Error {
+  constructor(phase) { super(`wall budget exhausted during ${phase}`); this.name = 'BudgetExhausted'; this.phase = phase; }
+}
+function checkBudget(phase) {
+  if (DEADLINE != null && NOW() >= DEADLINE) throw new BudgetExhausted(phase);
+}
 let SLEEP = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /* One build at a time per isolate. The bindings above are module-level, so two
@@ -96,6 +119,8 @@ let inFlight = null;
  * @param {boolean}[cfg.resume]     keep snapshot / stance rows already present
  *        for this as-of date (a partial earlier run) and write only the rest
  * @param {(ms: number) => Promise<void>} [cfg.sleep]  backoff clock (tests)
+ * @param {number} [cfg.deadline]  epoch ms; past it the run stops before its next write and closes `partial` (resumable)
+ * @param {() => number} [cfg.now]  clock the deadline is read with (tests)
  */
 export async function buildFightDna(cfg = {}) {
   if (inFlight) return { ok: false, skipped: 'a build is already running in this isolate' };
@@ -115,6 +140,8 @@ export async function buildFightDna(cfg = {}) {
   RESUME = Boolean(cfg.resume);
   SLEEP = typeof cfg.sleep === 'function' ? cfg.sleep : (ms) => new Promise((r) => setTimeout(r, ms));
   WRITE_STATS = {};
+  DEADLINE = Number.isFinite(cfg.deadline) ? cfg.deadline : null;
+  NOW = typeof cfg.now === 'function' ? cfg.now : () => Date.now();
 
   inFlight = main();
   try { return await inFlight; } finally { inFlight = null; }
@@ -376,12 +403,16 @@ async function writeChunk(table, conflict, part, stats) {
   throw new Error(`upsert ${table} ${last?.status}: ${String(last?.text || '').slice(0, 400)} (written ${stats.written}/${stats.attempted})`);
 }
 
-async function writeBatch(table, rows, conflict, batch = 200) {
+async function writeBatch(table, rows, conflict, batch = 200, onProgress = null) {
   if (ON_ROWS) ON_ROWS(table, rows);
   const stats = (WRITE_STATS[table] = WRITE_STATS[table] || { attempted: 0, written: 0, retries: 0, splits: 0, failed: 0 });
   if (DRY_RUN || !rows.length) return;
   stats.attempted += rows.length;
-  for (let i = 0; i < rows.length; i += batch) await writeChunk(table, conflict, rows.slice(i, i + batch), stats);
+  for (let i = 0; i < rows.length; i += batch) {
+    checkBudget(`write:${table}`);
+    await writeChunk(table, conflict, rows.slice(i, i + batch), stats);
+    if (onProgress) onProgress(Math.min(i + batch, rows.length));
+  }
 }
 
 /** Fighter ids that already have a row for this as-of date and definition version (Range-paged like selectAll: no row cap). */
@@ -398,6 +429,27 @@ async function fightersPresentAt(table) {
     if (rows.length < 1000) return out;
   }
   throw new Error(`select ${table}: pagination did not terminate`);
+}
+
+/**
+ * The cursor a resume may continue from, or null for a fresh full write.
+ * Only the NEWEST run for this as-of date counts, and only when it is not a
+ * success and saw exactly the same inputs (watermark + counts) as this run.
+ */
+export function resumeCursorFrom(latestRun, sourceCounts) {
+  if (!latestRun || latestRun.status === 'success') return null;
+  const same = JSON.stringify(latestRun.source_watermark ?? null) === JSON.stringify(sourceCounts.watermark ?? null)
+    && JSON.stringify(latestRun.input_counts ?? null) === JSON.stringify(sourceCounts.input_counts ?? null);
+  if (!same) return null;
+  const cursor = Number(latestRun.output_counts?.progress?.bout_features_cursor);
+  return { run_id: latestRun.id, bout_features_cursor: Number.isFinite(cursor) && cursor > 0 ? cursor : 0 };
+}
+
+async function latestRunFor(asOf) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/ufc_dna_build_runs?select=id,status,source_watermark,input_counts,output_counts,started_at&as_of_date=eq.${asOf}&mode=eq.full&definition_version=eq.${DEFINITION_VERSION}&order=started_at.desc`, { headers: { ...HEADERS, Range: '0-0', 'Range-Unit': 'items' } });
+  if (res.status === 416) return null;
+  if (!res.ok) throw new Error(`select ufc_dna_build_runs ${res.status}: ${await res.text()}`);
+  return (await res.json())[0] || null;
 }
 
 async function startRun(sourceCounts) {
@@ -661,6 +713,9 @@ function buildSnapshot(fighter, features, runId, watermarks) {
 
 async function main() {
   const started = Date.now();
+  const timings = {};
+  const mark = (k, t) => { timings[k] = Date.now() - t; };
+  let t0 = Date.now();
   console.log(`Fight DNA builder ${BUILDER} as_of=${AS_OF}${ONLY_FIGHTER ? ` fighter=${ONLY_FIGHTER}` : ''}${DRY_RUN ? ' [DRY]' : ''}`);
 
   /* NO ROW CAPS, AND AN EXPLICIT ORDER.
@@ -722,9 +777,26 @@ async function main() {
     watermark: watermarks,
     input_counts: { fighters: fighters.length, events: events.length, bouts: relevantBouts.length, results: results.length, round_rows: roundStats.length, stat_bouts: statsByBout.size },
   };
+  mark('read_ms', t0);
+  /* Out of budget before any write: open no run row at all (nothing to resume, nothing orphaned). */
+  if (DEADLINE != null && NOW() >= DEADLINE) {
+    console.log(`[fight_dna] ${AS_OF} wall budget spent reading inputs (${timings.read_ms} ms); no run opened, nothing written`);
+    return { ok: false, partial: false, skipped: 'wall budget exhausted before the first write', as_of: AS_OF, timings };
+  }
+  /* Resume only from the newest non-success run of this as-of date that saw identical inputs (v1.4). */
+  const cursor = RESUME && !DRY_RUN && !ONLY_FIGHTER ? resumeCursorFrom(await latestRunFor(AS_OF), sourceCounts) : null;
+  const resumed = Boolean(cursor);
   const runId = await startRun(sourceCounts);
+  const progress = { bout_features_cursor: cursor?.bout_features_cursor ?? 0, resumed_from: cursor?.run_id ?? null };
+  const closePartial = async (error) => {
+    const out = { resume: resumed, progress, timings, writes: WRITE_STATS, elapsed_ms: Date.now() - started, stopped_phase: error.phase };
+    await finishRun(runId, 'partial', out, [], [`${error.message}; resumable from bout_features_cursor=${progress.bout_features_cursor}`]);
+    console.log(`[fight_dna] ${AS_OF} stopped at the wall budget (${error.phase}); run ${runId} closed partial at cursor ${progress.bout_features_cursor}`);
+    return { ok: false, partial: true, build_run_id: runId, as_of: AS_OF, progress, timings };
+  };
 
   try {
+    t0 = Date.now();
     const featureRows = [];
     for (const b of relevantBouts) {
       const event = eventMap.get(b.event_id);
@@ -811,8 +883,15 @@ async function main() {
       }
     }
 
-    console.log(`feature rows=${featureRows.length}`);
-    await writeBatch('ufc_fighter_bout_features', featureRows, 'fighter_id,bout_id,feature_version');
+    mark('compute_features_ms', t0);
+    console.log(`feature rows=${featureRows.length}${progress.bout_features_cursor ? ` (resuming after ${progress.bout_features_cursor})` : ''}`);
+    /* Rows before the cursor were written by the interrupted run from these identical inputs. featureRows order is
+     * deterministic (bouts ordered by id), so the cursor addresses the same rows. */
+    t0 = Date.now();
+    const bfStart = Math.min(progress.bout_features_cursor, featureRows.length);
+    await writeBatch('ufc_fighter_bout_features', featureRows.slice(bfStart), 'fighter_id,bout_id,feature_version', 200, (done) => { progress.bout_features_cursor = bfStart + done; });
+    progress.bout_features_cursor = featureRows.length;
+    mark('write_bout_features_ms', t0);
 
     const byFighter = new Map();
     for (const f of featureRows) {
@@ -866,7 +945,8 @@ async function main() {
      * never touched by any run (the key includes as_of_date), so a partial run can never overwrite last-known-good data. */
     let snapToWrite = snapshots, stanceToWrite = stanceRows;
     const preserved = { snapshots: 0, stance_fighters: 0 };
-    if (RESUME && !DRY_RUN) {
+    /* v1.4: a full build preserves rows already present only on a SAFE resume (identical inputs); otherwise it rewrites all. */
+    if ((ONLY_FIGHTER ? RESUME : resumed) && !DRY_RUN) {
       const haveSnap = await fightersPresentAt('ufc_fighter_dna_snapshots');
       const haveStance = await fightersPresentAt('ufc_fighter_stance_splits');
       snapToWrite = snapshots.filter((x) => !haveSnap.has(x.fighter_id));
@@ -875,8 +955,11 @@ async function main() {
       preserved.stance_fighters = new Set(stanceRows.filter((x) => haveStance.has(x.fighter_id)).map((x) => x.fighter_id)).size;
       console.log(`resume: preserving ${preserved.snapshots} snapshots and stance rows for ${preserved.stance_fighters} fighters already written for ${AS_OF}`);
     }
+    t0 = Date.now();
     await writeBatch('ufc_fighter_dna_snapshots', snapToWrite, 'fighter_id,as_of_date,definition_version', 50);
     await writeBatch('ufc_fighter_stance_splits', stanceToWrite, 'fighter_id,as_of_date,opponent_stance,definition_version', 150);
+    mark('write_snapshots_ms', t0);
+    checkBudget('reconcile');
 
     /* Reconciliation: a full run is `success` only when every expected snapshot and stance fighter is present for AS_OF. */
     let reconciliation = null;
@@ -898,7 +981,9 @@ async function main() {
       stat_bouts_in_snapshots: snapshots.reduce((a, s) => a + s.sample_stat_bouts, 0),
       round_rows_source: roundStats.length,
       elapsed_ms: Date.now() - started,
-      resume: RESUME,
+      resume: resumed,
+      progress,
+      timings,
       preserved,
       writes: WRITE_STATS,
       reconciliation,
@@ -912,11 +997,12 @@ async function main() {
     console.log(JSON.stringify(summary, null, 2));
     return summary;
   } catch (error) {
+    if (error instanceof BudgetExhausted) return closePartial(error);
     console.error(error);
     /* The run row is closed as failed before rethrowing, so a crashed build is
      * visible in ufc_dna_build_runs rather than leaving a row open forever. */
     if (!/ incomplete: /.test(String(error?.message))) {
-      try { await finishRun(runId, 'failed', { writes: WRITE_STATS, resume: RESUME }, [], [String(error?.stack || error)]); } catch (e) { console.error(`failed to close build run: ${e.message}`); }
+      try { await finishRun(runId, 'failed', { writes: WRITE_STATS, resume: resumed, progress, timings }, [],[String(error?.stack || error)]); } catch (e) { console.error(`failed to close build run: ${e.message}`); }
     }
     throw error;
   }

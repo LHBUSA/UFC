@@ -244,7 +244,7 @@ test('(a) snapshot dated D contains only the D-7 bout and none of D\'s stats', a
     assert.ok(snap, `snapshot for ${fid}`);
     assert.equal(snap.as_of_date, D);
     assert.equal(snap.definition_version, 1, 'bug fix, not a metric change: definition_version stays 1');
-    assert.equal(snap.provenance.builder, 'ufc-intelligence/build_fight_dna@v1.3');
+    assert.equal(snap.provenance.builder, 'ufc-intelligence/build_fight_dna@v1.4');
     assert.deepEqual(snap.provenance.bouts, [BOUT.before]);
     assert.equal(snap.sample_bouts, 1);
     assert.equal(snap.sample_completed_bouts, 1);
@@ -350,7 +350,7 @@ test('(f) repair script anchors resolve against the current builder and keep exc
   assert.doesNotMatch(patched, /event_date=lte\./);
   assert.doesNotMatch(patched, /e\.event_date <= AS_OF/);
   assert.doesNotMatch(patched, /event_date <= /, 'no inclusive bout cutoff anywhere in the patched builder');
-  assert.ok(patched.includes("build_fight_dna@v1.3-history-repair'"));
+  assert.ok(patched.includes("build_fight_dna@v1.4-history-repair'"));
   assert.ok(patched.includes(".endsWith('scripts/dna/.history-repair-builder.tmp.mjs')"), 'temp builder CLI guard retargeted');
 
   /* CRLF checkouts must patch identically. */
@@ -418,9 +418,16 @@ function writableStub(tables, store, { failSnapshotChunksAbove = Infinity, failT
     const method = String(init.method || 'GET').toUpperCase();
     const table = url.pathname.replace('/rest/v1/', '');
     if (table === 'ufc_dna_build_runs') {
-      if (method === 'POST') { store.runs.push({ id: `run-${store.runs.length + 1}`, status: 'running' }); return new Response(JSON.stringify([store.runs.at(-1)]), { status: 201 }); }
+      if (method === 'POST') { const body = JSON.parse(init.body); store.runs.push({ id: `run-${store.runs.length + 1}`, ...body, status: 'running', started_at: new Date(Date.UTC(2026, 9, 7, 7, 17, store.runs.length)).toISOString() }); return new Response(JSON.stringify([store.runs.at(-1)]), { status: 201 }); }
       if (method === 'PATCH') { Object.assign(store.runs.at(-1), JSON.parse(init.body)); return new Response(null, { status: 204 }); }
+      if (method === 'GET') {
+        /* Newest run for the as-of date (the builder's resume lookup). */
+        const asOf = (url.searchParams.get('as_of_date') || '').replace('eq.', '');
+        const rows = store.runs.filter((r) => r.as_of_date === asOf).sort((a, b) => b.started_at.localeCompare(a.started_at)).slice(0, 1);
+        return new Response(JSON.stringify(rows), { status: 200 });
+      }
     }
+    if (store.slowWrites && method === 'POST') store.clock.t += store.slowWrites;
     if (method === 'POST') {
       const rows = JSON.parse(init.body);
       if (table === 'ufc_fighter_dna_snapshots') {
@@ -487,6 +494,8 @@ test('resume: rows already written for the same as-of date are preserved (not re
   store.rows.ufc_fighter_dna_snapshots = new Map([[`${keep.fighter_id}|${AS_OF_W}`, { ...keep, marker: 'from-interrupted-run' }]]);
   store.rows.ufc_fighter_stance_splits = new Map();
   store.writes = {};
+  /* v1.4: the newest run for the date must be an interrupted one with identical inputs for a resume to preserve anything. */
+  Object.assign(store.runs.at(-1), { status: 'partial' });
   const summary = await writeBuild(AS_OF_W, store, {}, { resume: true });
   assert.equal(summary.ok, true);
   const run = store.runs.at(-1);
@@ -494,6 +503,66 @@ test('resume: rows already written for the same as-of date are preserved (not re
   assert.equal(store.rows.ufc_fighter_dna_snapshots.get(`${keep.fighter_id}|${AS_OF_W}`).marker, 'from-interrupted-run', 'preserved row not rewritten');
   assert.equal(store.writes.ufc_fighter_dna_snapshots, all.length - 1);
   assert.equal(run.output_counts.reconciliation.complete, true);
+});
+
+/* ------------------------------------------- v1.4 bounded invocations (2026-10-07 incident) --- */
+import { resumeCursorFrom, BudgetExhausted } from './build_fight_dna.mjs';
+
+test('bounded: past the deadline the run stops before its next write and closes PARTIAL with a cursor (never left running)', async () => {
+  const store = newStore();
+  store.clock = { t: 0 };
+  store.slowWrites = 1000; // every write costs 1 s of fake wall time
+  const summary = await writeBuild(AS_OF_W, store, {}, { deadline: 1500, now: () => store.clock.t });
+  assert.equal(summary.ok, false);
+  assert.equal(summary.partial, true);
+  const run = store.runs.at(-1);
+  assert.equal(run.status, 'partial');
+  assert.ok(run.finished_at, 'run row closed');
+  assert.match(run.errors[0], /wall budget exhausted during write:/);
+  assert.ok(run.output_counts.progress.bout_features_cursor > 0, 'cursor records what was written');
+  assert.equal(store.runs.filter((r) => r.status === 'running').length, 0, 'no orphaned running rows');
+});
+
+test('bounded: out of budget before any write opens no run row at all', async () => {
+  const store = newStore();
+  const summary = await writeBuild(AS_OF_W, store, {}, { deadline: 0, now: () => 1 });
+  assert.equal(summary.ok, false);
+  assert.equal(store.runs.length, 0);
+  assert.equal(Object.keys(store.writes).length, 0);
+});
+
+test('bounded: a resume continues bout features from the cursor and completes; the union equals a single full build', async () => {
+  const full = newStore();
+  await writeBuild(AS_OF_W, full);
+  const store = newStore();
+  store.clock = { t: 0 };
+  store.slowWrites = 1000;
+  const first = await writeBuild(AS_OF_W, store, {}, { deadline: 1500, now: () => store.clock.t });
+  assert.equal(first.partial, true);
+  const cursor = store.runs.at(-1).output_counts.progress.bout_features_cursor;
+  store.slowWrites = 0;
+  store.writes = {};
+  const second = await writeBuild(AS_OF_W, store, {}, { resume: true });
+  assert.equal(second.ok, true);
+  const run = store.runs.at(-1);
+  assert.equal(run.status, 'success');
+  assert.equal(run.output_counts.progress.resumed_from, store.runs.at(-2).id);
+  assert.equal(store.writes.ufc_fighter_bout_features ?? 0, full.writes.ufc_fighter_bout_features - cursor, 'only rows after the cursor rewritten');
+  const strip = (m) => JSON.stringify([...m.entries()].sort().map(([k, r]) => [k, { ...r, generated_at: null, provenance: { ...r.provenance, build_run_id: null } }]));
+  assert.equal(strip(store.rows.ufc_fighter_bout_features), strip(full.rows.ufc_fighter_bout_features));
+  assert.equal(strip(store.rows.ufc_fighter_dna_snapshots), strip(full.rows.ufc_fighter_dna_snapshots));
+});
+
+test('safe resume: a cursor is honoured only from the newest non-success run with identical inputs', () => {
+  const src = { watermark: { results_captured_at: 'A' }, input_counts: { bouts: 10 } };
+  const run = (o) => ({ id: 'r', status: 'partial', source_watermark: { results_captured_at: 'A' }, input_counts: { bouts: 10 }, output_counts: { progress: { bout_features_cursor: 400 } }, ...o });
+  assert.deepEqual(resumeCursorFrom(run(), src), { run_id: 'r', bout_features_cursor: 400 });
+  assert.equal(resumeCursorFrom(run({ status: 'success' }), src), null, 'never resume over a success');
+  assert.equal(resumeCursorFrom(run({ source_watermark: { results_captured_at: 'B' } }), src), null, 'new results -> full rewrite');
+  assert.equal(resumeCursorFrom(run({ input_counts: { bouts: 11 } }), src), null, 'new bouts -> full rewrite');
+  assert.equal(resumeCursorFrom(null, src), null);
+  assert.deepEqual(resumeCursorFrom(run({ status: 'failed', output_counts: {} }), src), { run_id: 'r', bout_features_cursor: 0 });
+  assert.ok(new BudgetExhausted('x') instanceof Error);
 });
 
 test('reconciliation: a run whose rows do not all land is recorded partial, never success', async () => {

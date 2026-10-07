@@ -41,13 +41,14 @@ import { main as ingestRankings } from '../../../scripts/rankings/ingest_ranking
 
 import { buildFightDna } from '../../../scripts/dna/build_fight_dna.mjs';
 import { dnaGuardDecision } from './dnaGuard.js';
+import { reapAbandonedRuns, liveRun, acquireLease, buildDeadline } from './dnaRuns.js';
 import { contextExists, writeDivisionContext } from './divisionContext.js';
 
 const DNA_CRON = '17 7 * * *';
 /* Hourly completion guard: resumes today's Fight DNA build when no success is recorded (src/dnaGuard.js). */
 const DNA_GUARD_CRON = '47 * * * *';
 const WORKER = 'ufc-intelligence';
-const VERSION = 'v0.3.0';
+const VERSION = 'v0.4.0';
 const LANES = ['rankings', 'fight_dna', 'dna_division_context'];
 
 const health = { last_run_at: null, last_status: null, last_lane: null, last_result: null, last_error: null };
@@ -175,7 +176,8 @@ export default {
     /* Two lanes, two crons, one owner. Rankings at 11:25 and Fight DNA at
      * 07:17 -- the hour the GitHub workflow used, kept deliberately so the DNA
      * build still lands after the 06:00 stats ingest it depends on. */
-    if (event.cron === DNA_CRON) ctx.waitUntil(runFightDna(env, { invoked: 'cron' }));
+    /* resume: true is safe on the daily cron: the builder only resumes from a non-success run of the same date with identical inputs. */
+    if (event.cron === DNA_CRON) ctx.waitUntil(runFightDna(env, { invoked: 'cron', resume: true }));
     else if (event.cron === DNA_GUARD_CRON) ctx.waitUntil(runDnaGuard(env));
     else ctx.waitUntil(runRankings(env, { invoked: 'cron', cron: event.cron }));
   },
@@ -280,6 +282,27 @@ async function runFightDna(env, { dry = false, invoked = 'cron', asOf = null, fi
     return { lane: 'fight_dna', status: 'skipped_unchanged', as_of: today, fingerprint, invoked };
   }
 
+  /* v0.4.0 run lifecycle (src/dnaRuns.js): close platform-terminated rows, then one build at a time, inside a budget. */
+  const startedMs = Date.now();
+  const q = (method, path, opts) => sb(env, method, path, opts);
+  try {
+    const reaped = await reapAbandonedRuns(q, startedMs);
+    if (reaped.length) console.warn(`[${WORKER}] fight_dna reaper closed ${reaped.length} abandoned run(s): ${reaped.join(',')}`);
+  } catch (e) { console.error(`[${WORKER}] fight_dna reaper: ${String(e.message).slice(0, 200)}`); }
+  if (!dry && !fighterId) {
+    let live = null;
+    try { live = liveRun(await todaysDnaRuns(env, today), startedMs); } catch { /* unreadable: the lease still applies */ }
+    if (live) {
+      health.last_status = 'skipped_in_progress';
+      return { lane: 'fight_dna', status: 'skipped_in_progress', as_of: today, run_id: live.id, invoked };
+    }
+  }
+  const release = dry || fighterId ? async () => {} : await acquireLease(env.INTEL_STATE, startedMs, invoked);
+  if (!release) {
+    health.last_status = 'skipped_in_progress';
+    return { lane: 'fight_dna', status: 'skipped_in_progress', as_of: today, reason: 'lease held', invoked };
+  }
+
   try {
     const summary = await buildFightDna({
       supabaseUrl: env.SUPABASE_URL,
@@ -288,15 +311,18 @@ async function runFightDna(env, { dry = false, invoked = 'cron', asOf = null, fi
       fighterId: fighterId || undefined,
       dry,
       resume,
+      deadline: buildDeadline(startedMs),
     });
-    if (!dry && fingerprint && env.INTEL_STATE) {
-      /* Written only after a successful build, so a crash mid-run leaves the
-       * next tick to retry rather than marking the day done. */
+    if (!dry && fingerprint && env.INTEL_STATE && summary && summary.ok === true) {
+      /* Written only after a COMPLETE build: a partial (budget), skipped or crashed run leaves the next tick to resume. */
       try { await env.INTEL_STATE.put(stateKey, fingerprint, { expirationTtl: 172800 }); } catch { /* best effort */ }
     }
-    health.last_status = summary && summary.ok === false ? 'skipped' : 'ok';
-    health.last_error = null;
-    console.log(`[${WORKER}] fight_dna ${JSON.stringify({ as_of: summary && summary.as_of, snapshots: summary && summary.snapshots })}`);
+    health.last_status = !summary || summary.ok === true ? 'ok' : summary.partial ? 'partial' : 'skipped';
+    health.last_error = summary && summary.partial ? `Fight DNA ${summary.as_of} stopped at the wall budget; resumable (run ${summary.build_run_id})` : null;
+    console.log(`[${WORKER}] fight_dna ${JSON.stringify({ as_of: summary && summary.as_of, snapshots: summary && summary.snapshots, partial: Boolean(summary && summary.partial), timings: summary && summary.timings })}`);
+    if (summary && summary.ok === false) {
+      return { lane: 'fight_dna', status: summary.partial ? 'partial' : 'skipped', dry, invoked, fingerprint, ...summary };
+    }
     /* Division context follows a whole-population build only. Its own ledger row; it can never fail this lane. */
     let divisionContext = null;
     if (!dry && !fighterId && summary && summary.ok === true && summary.as_of) {
@@ -308,6 +334,8 @@ async function runFightDna(env, { dry = false, invoked = 'cron', asOf = null, fi
     health.last_error = String((e && e.message) || e).slice(0, 300);
     console.error(`[${WORKER}] fight_dna failed: ${health.last_error}`);
     return { lane: 'fight_dna', status: 'failed', error: health.last_error };
+  } finally {
+    await release();
   }
 }
 

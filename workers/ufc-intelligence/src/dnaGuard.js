@@ -14,8 +14,10 @@
  *   exhausted  resume attempts used up; the caller must surface it loudly
  */
 export const GUARD_EARLIEST_UTC_HOUR = 8;
-export const GUARD_MAX_ATTEMPTS = 3;
-export const STALE_RUNNING_MS = 30 * 60 * 1000;
+/* v0.4.0: each attempt is bounded (12 min) and resumes from the last cursor, so attempts make progress; 8 covers 08:47-15:47Z. */
+export const GUARD_MAX_ATTEMPTS = 8;
+/* Aligned with dnaRuns.ABANDONED_AFTER_MS: a running row older than the 15-minute Cron wall limit (+1 min) is dead. */
+export const STALE_RUNNING_MS = 16 * 60 * 1000;
 
 export function dnaGuardDecision({ nowIso, runs = [], attempts = 0 }) {
   const now = Date.parse(nowIso);
