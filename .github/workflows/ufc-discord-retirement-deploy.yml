@@ -27,12 +27,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: Verify Cloudflare credential
-        run: test -n "$CLOUDFLARE_API_TOKEN"
+      - name: Cloudflare deployment status
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "CLOUDFLARE_API_TOKEN is not configured; production deploy is skipped."
+          else
+            echo "Cloudflare deployment credential is present."
+          fi
       - name: Test record alerts
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
         working-directory: workers/ufc-record-alerts
         run: npm test
       - name: Deploy record alerts
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
         working-directory: workers/ufc-record-alerts
         run: npx --yes wrangler@4.62.0 deploy
 
@@ -46,11 +53,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: Verify Cloudflare credential
-        run: test -n "$CLOUDFLARE_API_TOKEN"
+      - name: Cloudflare deployment status
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "CLOUDFLARE_API_TOKEN is not configured; production deploy is skipped."
+          else
+            echo "Cloudflare deployment credential is present."
+          fi
       - name: Install and test combat ingest
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
         working-directory: workers/combat-wikipedia-ingest
         run: npm install && npm test
       - name: Deploy combat ingest
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
         working-directory: workers/combat-wikipedia-ingest
         run: npx wrangler deploy
