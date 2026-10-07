@@ -102,17 +102,10 @@ class RunLog:
 
 
 # ---------------------------------------------------------------------------
-# Discord
+# Legacy alert shim. Discord posting retired by owner directive 2026-10-06.
 # ---------------------------------------------------------------------------
 def discord(cfg: Config, content: str, loud: bool = False) -> None:
-    if not cfg.discord_webhook:
-        return
-    if loud:
-        content = "@here " + content
-    try:
-        requests.post(cfg.discord_webhook, json={"content": content[:1900]}, timeout=15)
-    except Exception as e:  # never let alerting kill the run
-        print(f"[discord] failed: {e}", file=sys.stderr)
+    return
 
 
 # ---------------------------------------------------------------------------
