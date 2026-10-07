@@ -166,17 +166,8 @@ export function settle(next, results, now) {
 
 /* Discord webhook, the same contract as ufc-stats-ingest/src/discord.mjs: it
  * never throws, because alerting must not be able to fail anything else. */
-export async function discord(env, content, { loud = false, fetchImpl = fetch } = {}) {
-  const url = String(env.DISCORD_WEBHOOK_URL || '').trim();
-  if (!url) return false;
-  try {
-    const r = await fetchImpl(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ content: `${loud ? '@here ' : ''}${content}`.slice(0, 1900) }) });
-    if (!r.ok) console.error(`[record-alerts] discord HTTP ${r.status}`);
-    return Boolean(r.ok);
-  } catch (e) {
-    console.error(`[record-alerts] discord failed ${String(e?.message || e).slice(0, 120)}`);
-    return false;
-  }
+export async function discord() {
+  return false;
 }
 
 async function readHealth(env, fetchImpl) {
