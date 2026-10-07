@@ -690,17 +690,8 @@ function isAdmin(req, env) {
   return bearer === secret || header === secret;
 }
 
-async function discord(env, text) {
-  if (!env.DISCORD_WEBHOOK_URL) return;
-  try {
-    await fetch(env.DISCORD_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ content: String(text).slice(0, 1900) }),
-    });
-  } catch {
-    // Alerting never changes the data result.
-  }
+async function discord() {
+  return false;
 }
 
 async function handleAdmin(req, env, pathname) {
