@@ -364,3 +364,49 @@ UFC Workers are frozen. Every step below that touches `ufc-algo` or
 
 Open, separate from V2: the `ufc-intelligence` full-build kill (§0) needs the
 Worker's logs.
+
+---
+
+## 10. SHADOW deployment (2026-10-07, owner-approved; no promotion)
+
+**Live:** `ufc-algo` version `8fa120a2` (rollback `50945947`). Deploy source:
+`d9a9916` (byte-identical to the previously live build) + the V2 shadow files
+only, tag `deploy/ufc-algo/2026-10-07-v2-shadow` (`bd3f026` = main `d978b7d`).
+The undeployed 2026-09-19 grade-refresh commits and minute cron stay undeployed.
+
+- **Registration:** `ufc_model_training_runs` `a98335e1` (status `RESEARCH_SHADOW`,
+  spec `cc84aa7c…`, dataset `c174ca8f…`; the dataset and artifact are in R2 under
+  `learning/research/v2/pbe-fight-model-v2-candidate-elo/`, round-trip re-hashed).
+  Migration 036 applied 2026-10-07 22:4xZ (`20261007220000`). The row is immutable.
+- **Elo source:** `ufc-algo-artifacts/learning/elo/<as_of>.json`, built once per
+  day by the first armed cycle, sha256 in R2 metadata, never overwritten. Parity
+  with research: 9,507 bouts, 894 dates, bit-identical (`elo_parity.test.mjs`).
+- **Scoring:** every bout V1 evaluates; paired universe = every V1 gate passes
+  except possibly the 55% threshold; locks in V1's lock pass; graded by the
+  existing shadow grader. Each row freezes the V1/V2 probability pair and the
+  V1 ≥55%, V2 ≥60% (primary) and tier-variant (research only) decisions.
+- **V1 parity:** fake-DB test (official writes identical with and without V2)
+  and a production dry run on live data (29 bouts, 3 cards, every V1 field
+  identical between the baseline and V2 code).
+- **Isolation:** V2 writes only `ufc_model_shadow_predictions` and
+  `ufc_model_lock_shadow`. No learning, review or promotion query selects
+  `RESEARCH_SHADOW`; both tables are service-role only (anon 401); a test scans
+  every public web and Worker surface for V2 identifiers.
+- **Public:** the UFC Picks threshold stays 55%; the ≥60% rule is a frozen shadow
+  policy, not a production policy.
+
+Evaluate prospectively (read-only):
+`node scripts/model/v2/shadow_report.mjs` — paired Brier and log loss, ECE, hit
+rate, coverage under each policy, event-cluster bootstrap, prior-bout and
+five-round non-title slices, the frozen gate, then market as a benchmark. It
+reports `INSUFFICIENT EVIDENCE` until 150 paired graded bouts exist.
+
+### ufc-intelligence daily build fix (same day)
+
+Root cause, from Cloudflare invocation analytics: the four 2026-10-07 builds
+ended `internalError` at 900.0 s wall time (the Cron Trigger limit) with
+1.0–1.7 s CPU. Database saturation stretched one all-or-nothing invocation past
+the limit. v0.4.0 (`a2a38c50`, then `43b4b41f`; rollback `316eaa30`) bounds each
+build to 12 min, closes it `partial` with a cursor, resumes only on identical
+inputs, adds single flight, and reaps `running` rows older than the wall limit.
+The reaper closed the four orphaned rows at 21:47:02Z.
