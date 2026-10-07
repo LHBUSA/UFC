@@ -247,3 +247,56 @@ test('dry mode changes nothing', async () => {
     assert.equal(sb.inserted.ufc_news_pipeline_events.length, 0);
   } finally { globalThis.fetch = orig; }
 });
+
+test('a run whose items all exist already never loads the fighter index or links anything', async () => {
+  const first = fakeSb();
+  const body = feedXml([
+    { title: 'Islam Makhachev vs Arman Tsarukyan rebooked for December', link: 'https://feed.test/a' },
+    { title: 'Alex Pereira out of the main event', link: 'https://feed.test/b' },
+  ]);
+  const { fn } = fakeFetch({ 'https://feed.test/rss': { status: 200, body } });
+  const orig = globalThis.fetch; globalThis.fetch = fn;
+  try {
+    await runIngest({ UFC_NEWS_KV: fakeKV() }, first, { now: NOW });
+    const fps = first.inserted.ufc_news_items.map((r) => r.fingerprint);
+    assert.equal(fps.length, 2);
+
+    const tables = [];
+    const sb = fakeSb({ existingFingerprints: fps });
+    const select = sb.select.bind(sb);
+    sb.select = async (t, q) => { tables.push(t); return select(t, q); };
+    const out = await runIngest({ UFC_NEWS_KV: fakeKV() }, sb, { now: NOW + 120_000 });
+    assert.equal(out.totals.parsed, 2);
+    assert.equal(out.totals.dup_in_db, 2);
+    assert.equal(out.totals.inserted, 0);
+    assert.equal(out.totals.candidates, 0, 'nothing was linked or classified');
+    for (const t of ['ufc_fighters', 'ufc_fighter_aliases', 'ufc_events']) {
+      assert.ok(!tables.includes(t), `${t} must not be read when there is nothing new`);
+    }
+  } finally { globalThis.fetch = orig; }
+});
+
+test('a mixed run links and inserts only the new item, with the same row as a fresh run', async () => {
+  const body = feedXml([
+    { title: 'Islam Makhachev vs Arman Tsarukyan rebooked for December', link: 'https://feed.test/a' },
+    { title: 'Merab Dvalishvili signs new four-fight deal', link: 'https://feed.test/m' },
+  ]);
+  const { fn } = fakeFetch({ 'https://feed.test/rss': { status: 200, body } });
+  const orig = globalThis.fetch; globalThis.fetch = fn;
+  try {
+    const clean = fakeSb();
+    await runIngest({ UFC_NEWS_KV: fakeKV() }, clean, { now: NOW });
+    const byTitle = (rows, p) => rows.find((r) => r.title.startsWith(p));
+    const oldFp = byTitle(clean.inserted.ufc_news_items, 'Islam').fingerprint;
+
+    const sb = fakeSb({ existingFingerprints: [oldFp] });
+    const out = await runIngest({ UFC_NEWS_KV: fakeKV() }, sb, { now: NOW });
+    assert.equal(out.totals.dup_in_db, 1);
+    assert.equal(out.totals.inserted, 1);
+    assert.equal(out.totals.candidates, 1);
+    assert.equal(sb.inserted.ufc_news_items.length, 1);
+    assert.deepEqual(sb.inserted.ufc_news_items[0], byTitle(clean.inserted.ufc_news_items, 'Merab'));
+    assert.deepEqual(sb.inserted.ufc_news_items[0].fighter_ids, ['f-dvalishvili']);
+    assert.equal(sb.inserted.ufc_news_pipeline_events.length, 1);
+  } finally { globalThis.fetch = orig; }
+});

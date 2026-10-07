@@ -95,3 +95,44 @@ test('non-duplicate database failures still fail closed and are never replayed r
     globalThis.fetch = original;
   }
 });
+
+test('a capped unranged select pages on without downloading the first page twice', async () => {
+  const calls = [];
+  const original = globalThis.fetch;
+  const all = Array.from({ length: 2345 }, (_, i) => ({ id: i }));
+  globalThis.fetch = async (url, init = {}) => {
+    const range = init.headers?.Range || null;
+    calls.push(range);
+    let from = 0; let to = 999;
+    if (range) [from, to] = range.split('-').map(Number);
+    return jsonResponse(all.slice(from, to + 1));
+  };
+  try {
+    const sb = new Supabase(ENV);
+    const rows = await sb.select('ufc_fighters', 'select=id&order=id.asc');
+    assert.equal(rows.length, 2345);
+    assert.deepEqual(rows.map((r) => r.id), all.map((r) => r.id), 'no row lost or repeated');
+    assert.deepEqual(calls, [null, '1000-1999', '2000-2999'], 'page 0 must be fetched exactly once');
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+
+test('countAndMax reads the total and the newest value in one request, and fails soft', async () => {
+  const original = globalThis.fetch;
+  let n = 0;
+  globalThis.fetch = async (url, init = {}) => {
+    n += 1;
+    assert.match(String(url), /ufc_fighters\?select=updated_at&order=updated_at\.desc\.nullslast&limit=1$/);
+    assert.equal(init.headers.Prefer, 'count=exact');
+    if (n === 2) return new Response('boom', { status: 500 });
+    return jsonResponse([{ updated_at: '2026-10-07T06:10:33Z' }], 200, { 'content-range': '0-0/3316' });
+  };
+  try {
+    const sb = new Supabase(ENV);
+    assert.deepEqual(await sb.countAndMax('ufc_fighters', 'updated_at'), { count: 3316, max: '2026-10-07T06:10:33Z' });
+    assert.equal(await sb.countAndMax('ufc_fighters', 'updated_at'), null);
+  } finally {
+    globalThis.fetch = original;
+  }
+});

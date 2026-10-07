@@ -28,7 +28,8 @@
  * nothing consumes 'new', and it is one of the reasons the newsroom's ingest
  * phase is retired in Phase 7 rather than left running forever.
  */
-import { parseFeed, parseDate, sha256, domainOf, classify, loadFighterIndex } from '../../../scripts/news/lib.mjs';
+import { parseFeed, parseDate, sha256, domainOf, classify } from '../../../scripts/news/lib.mjs';
+import { getFighterIndex } from './fighter_index.mjs';
 import { normalize } from '../../../shared/alias_resolver.mjs';
 import { linkEntities, loadEventContext } from '../../../scripts/news/ingest_news.mjs';
 import { classifyFocus, initialState } from './ufc_focus.mjs';
@@ -457,14 +458,12 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
     focus_rejected: 0, focus_by_reason: {}, candidates: 0, inserted: 0, errors: 0,
   };
   const perSource = [];
-  const accepted = [];
   const seen = new Set();
   const cutoff = now - MAX_AGE_DAYS * 86400e3;
 
-  /* Entity context is loaded once per run, not once per item: the fighter index
-   * is thousands of rows and the event window is a query. */
-  const [index, ctx] = await Promise.all([loadFighterIndex(sb), loadEventContext(sb, now)]);
-
+  /* Pass 1: cheap per-item work only - staleness, in-run duplicates and the
+   * fingerprint. No entity linking yet. */
+  const offered = [];
   for (const { result } of fetched) {
     const row = {
       source: result.source, status: result.status, latency_ms: result.latency_ms,
@@ -481,9 +480,10 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
       page_detail_ok: result.page_detail_ok,
       primary_newest_at: result.primary_newest_at, effective_newest_at: result.effective_newest_at,
     };
-    if (result.skipped) { totals.circuit_skipped += 1; perSource.push(row); continue; }
-    if (result.not_modified) { totals.not_modified += 1; perSource.push(row); continue; }
-    if (result.error) { totals.failed += 1; perSource.push(row); continue; }
+    perSource.push(row);
+    if (result.skipped) { totals.circuit_skipped += 1; continue; }
+    if (result.not_modified) { totals.not_modified += 1; continue; }
+    if (result.error) { totals.failed += 1; continue; }
     totals.fetched_ok += 1;
     if (result.fallback_used) totals.fallback_sources += 1;
     if (result.page_fallback_used) totals.page_fallback_sources += 1;
@@ -499,7 +499,44 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
       if (seen.has(fingerprint) || seen.has(item.link)) { totals.dup_in_run += 1; continue; }
       seen.add(fingerprint); seen.add(item.link);
       row.fresh += 1;
+      offered.push({ item, published, fingerprint, src, row, source_name: result.source });
+    }
+  }
 
+  /* Pass 2: which offered items are NEW. Only the database knows: a
+   * fingerprint never seen in this run may still have been inserted by the
+   * newsroom's own ingest thirty seconds ago. Asking first also keeps the
+   * detect events honest - an event per offered row would report the same
+   * story as freshly detected on every single run.
+   *
+   * Asked BEFORE entity linking (since 2026-10-07): linking costs ~20 ms of
+   * CPU per item and nearly every offered item is a duplicate, so linking
+   * everything and discarding most of it was ~95% of this Worker's CPU. A dry
+   * run keeps the old preview semantics - it links every offered item and
+   * reports all of them in would_insert - so it skips this check. */
+  const known = new Set();
+  if (!dry) {
+    for (let i = 0; i < offered.length; i += 40) {
+      const batch = offered.slice(i, i + 40);
+      const fps = batch.map((o) => o.fingerprint).join(',');
+      const rows = await sb.select('ufc_news_items', `select=fingerprint,url&fingerprint=in.(${fps})`);
+      for (const r of rows) { known.add(r.fingerprint); known.add(r.url); }
+    }
+  }
+  const toLink = offered.filter((o) => !known.has(o.fingerprint) && !known.has(o.item.link));
+  totals.dup_in_db = offered.length - toLink.length;
+
+  /* Pass 3: entity linking and focus, only for the items that will be
+   * inserted. Entity context is loaded once per run and only when there is
+   * something to link: the fighter index is thousands of rows and the event
+   * window is a query. */
+  const accepted = [];
+  if (toLink.length) {
+    const [index, ctx] = await Promise.all([
+      getFighterIndex(sb, { now, stats: totals }),
+      loadEventContext(sb, now),
+    ]);
+    for (const { item, published, fingerprint, src, row, source_name } of toLink) {
       /* Entity linking comes FIRST, because the focus filter's strongest rule
        * is "names no fighter we have ever recorded". Two boxers in a headline
        * carrying no boxing keyword are invisible to a regex and obvious to the
@@ -540,10 +577,9 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
           detected_at: new Date(now).toISOString(),
         },
         focus,
-        source_name: result.source,
+        source_name,
       });
     }
-    perSource.push(row);
   }
 
   if (dry) {
@@ -560,20 +596,7 @@ export async function runIngest(env, sb, { now = Date.now(), dry = false } = {})
     };
   }
 
-  /* Which rows are NEW is the only number worth reporting, and it can only be
-   * learned from the database: a fingerprint we have never seen in this run may
-   * still have been inserted by the newsroom's own ingest thirty seconds ago.
-   * Asking first also keeps the detect events honest - an event per offered row
-   * would report the same story as freshly detected on every single run. */
-  const known = new Set();
-  for (let i = 0; i < accepted.length; i += 40) {
-    const batch = accepted.slice(i, i + 40);
-    const fps = batch.map((a) => a.row.fingerprint).join(',');
-    const rows = await sb.select('ufc_news_items', `select=fingerprint,url&fingerprint=in.(${fps})`);
-    for (const r of rows) { known.add(r.fingerprint); known.add(r.url); }
-  }
-  const fresh = accepted.filter((a) => !known.has(a.row.fingerprint) && !known.has(a.row.url));
-  totals.dup_in_db = accepted.length - fresh.length;
+  const fresh = accepted;
 
   if (fresh.length) {
     try {

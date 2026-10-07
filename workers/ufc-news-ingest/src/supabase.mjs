@@ -83,10 +83,21 @@ export class Supabase {
    *
    * Range pagination is the documented way past the cap. Pages until a short
    * page arrives, so it costs one extra round trip and never a wrong answer.
+   *
+   * `firstPage` is the rows of an unranged request that already came back at
+   * the cap (see select()). Paging resumes after it instead of downloading
+   * the same thousand rows a second time - which is what this did on every
+   * fighter-index load until 2026-10-07.
    */
-  async selectAll(table, query = 'select=*', { pageSize = 1000, maxPages = 50 } = {}) {
+  async selectAll(table, query = 'select=*', { pageSize = 1000, maxPages = 50, firstPage = null } = {}) {
     const out = [];
-    for (let page = 0; page < maxPages; page += 1) {
+    let start = 0;
+    if (Array.isArray(firstPage)) {
+      out.push(...firstPage);
+      if (firstPage.length < pageSize) return out;
+      start = 1;
+    }
+    for (let page = start; page < maxPages; page += 1) {
       const from = page * pageSize;
       const rows = await this.request('GET', `${table}?${query}`, { range: `${from}-${from + pageSize - 1}` });
       if (!rows?.length) break;
@@ -108,9 +119,30 @@ export class Supabase {
   async select(table, query = 'select=*') {
     const rows = await this.request('GET', `${table}?${query}`);
     if (!/[?&]limit=/.test(`?${query}`) && Array.isArray(rows) && rows.length === 1000) {
-      return this.selectAll(table, query);
+      return this.selectAll(table, query, { firstPage: rows });
     }
     return rows;
+  }
+
+  /**
+   * Row count plus the newest value of one column, in a single request: the
+   * cheap version probe for a table that is otherwise expensive to read.
+   * Returns null on any failure, which callers must treat as "unknown".
+   */
+  async countAndMax(table, column) {
+    try {
+      const res = await fetch(
+        `${this.url}/rest/v1/${table}?select=${column}&order=${column}.desc.nullslast&limit=1`,
+        { headers: this.headers({ Prefer: 'count=exact' }) },
+      );
+      if (!res.ok) return null;
+      const n = Number((res.headers.get('content-range') || '').split('/')[1]);
+      const rows = await res.json();
+      if (!Number.isFinite(n)) return null;
+      return { count: n, max: rows?.[0]?.[column] ?? null };
+    } catch {
+      return null;
+    }
   }
 
   async count(table, filter = '') {
