@@ -41,7 +41,7 @@ This keeps the website, future PropSports customers, MCP, mobile apps, and inter
 - `GET /v1/ufc/fighters/{id}/articles?limit=N`
 - `GET /v1/ufc/bouts/{id}`
 - `GET /v1/ufc/bouts/{id}/stats` — rounds + per-fighter `totals` + `fight_time_sec` + provenance.
-- `GET /v1/ufc/results?limit=N`
+- `GET /v1/ufc/results?limit=N` — each result (and every embedded `bout.result`) adds `first_observed_at`, `occurred_at` (always null: no source finish time), `observed_at` (immutable first observation, migration 037; null for history) and `time_basis` (`first_observed` | null). `captured_at` is the latest ingest pass and is not a finish time.
 - `GET /v1/ufc/rankings?division=&womens=` — verified ufc.com snapshot; `503 rankings_not_available` when no store exists.
 - `GET /v1/ufc/news?story_type=&story_class=&limit=N&offset=N` — rows carry `hero_image_url` + `hero_image` + `analysis_summary`.
 - `GET /v1/ufc/wire?limit=20` — global live wire: attributed `ufc_news_items`, deduped, newest first, mapped to internal pages; 15/30 s cache.

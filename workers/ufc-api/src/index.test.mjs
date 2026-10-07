@@ -34,8 +34,18 @@ test("identityFilter routes UUID, UFCStats ids, and ESPN ids", () => {
 });
 
 test("normalizeBout turns embedded result arrays into one result", () => {
-  assert.deepEqual(__test.normalizeBout({ id: "x", result: [{ bout_id: "x" }] }).result, { bout_id: "x" });
+  assert.deepEqual(__test.normalizeBout({ id: "x", result: [{ bout_id: "x" }] }).result, { bout_id: "x", occurred_at: null, observed_at: null, time_basis: null });
   assert.equal(__test.normalizeBout({ id: "x", result: [] }).result, null);
+});
+
+test("result event-time contract: observed_at = immutable first_observed_at, never captured_at; occurred_at always null", () => {
+  const live = __test.normalizeBout({ id: "x", result: [{ bout_id: "x", method: "KO_TKO", round: 1, time_sec: 144, captured_at: "2026-10-08T22:40:12Z", first_observed_at: "2026-10-07T02:31:05Z" }] }).result;
+  assert.equal(live.observed_at, "2026-10-07T02:31:05Z");
+  assert.equal(live.time_basis, "first_observed");
+  assert.equal(live.occurred_at, null, "round + time is not a wall-clock finish time");
+  assert.equal(live.captured_at, "2026-10-08T22:40:12Z", "captured_at is unchanged and separate");
+  const history = __test.normalizeBout({ id: "y", result: [{ bout_id: "y", captured_at: "2026-10-07T06:10:11Z", first_observed_at: null }] }).result;
+  assert.deepEqual([history.observed_at, history.time_basis, history.occurred_at], [null, null, null], "a re-captured historical result has no observation time");
 });
 
 test("normalizeBout: status is the EFFECTIVE status, and the stored word + evidence ship as card_truth", () => {

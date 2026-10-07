@@ -163,6 +163,12 @@ paths:
   /v1/ufc/results:
     get:
       summary: List completed bout results with bout/event context
+      description: >-
+        Every result (here and embedded as `bout.result`) carries the event-time contract:
+        `occurred_at` (wall-clock finish time from the source; always null for UFC, ESPN publishes none),
+        `observed_at` (= `first_observed_at`, the immutable moment PropBetEdge first observed the result,
+        stamped once while the card is current and never moved by re-ingest or correction; null for history)
+        and `time_basis` (`first_observed` or null). `captured_at` is the latest ingest pass, not a finish time.
       parameters:
         - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 50 } }
       responses:

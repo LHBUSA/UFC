@@ -33,8 +33,19 @@ const EVENT_COLS = [
 const RESULT_COLS = [
   "bout_id", "winner_id", "method", "method_raw", "round", "time_sec",
   "time_format", "referee", "judge_1", "judge_2", "judge_3", "scorecards",
-  "finish_detail", "result_source", "has_stats", "captured_at"
+  "finish_detail", "result_source", "has_stats", "captured_at", "first_observed_at"
 ].join(",");
+
+/* Event-time contract (shared with PLATINUM LIVE): occurred_at = wall-clock time from the authoritative source (ESPN
+ * publishes none for a UFC finish, and round + time-in-round is not one, so it is always null here); observed_at =
+ * first_observed_at, the immutable moment PropBetEdge first saw this result (migration 037: stamped once on insert
+ * while the card is current, never moved by re-ingest or correction; NULL for history); time_basis names which one a
+ * client may rely on. captured_at stays the latest ingest pass and must never be read as a finish time. */
+function withResultTiming(result) {
+  if (!result) return result;
+  const observed = result.first_observed_at ?? null;
+  return { ...result, occurred_at: null, observed_at: observed, time_basis: observed ? "first_observed" : null };
+}
 
 const BOUT_BASE_COLS = [
   "id", "ufcstats_id", "espn_competition_id", "event_id", "weight_class",
@@ -148,7 +159,7 @@ function normalizeBout(row) {
   card_truth.is_active ??= !["cancelled", "replaced"].includes(status);
   card_truth.withdrawal_reported ??= false;
   card_truth.source_receipt_count ??= 0;
-  return { ...rest, status, card_truth, result: normalizeOne(row.result) };
+  return { ...rest, status, card_truth, result: withResultTiming(normalizeOne(row.result)) };
 }
 
 function slugId(fighter) {
@@ -1309,7 +1320,7 @@ async function listResults(env, url) {
   const bp = new URLSearchParams({ select: BOUT_WITH_EVENT_SELECT, id: `in.(${boutIds.join(",")})` });
   const bouts = (await sb(env, BOUTS, bp)).data.map(normalizeBout);
   const byId = new Map(bouts.map((b) => [b.id, b]));
-  return results.map((result) => ({ ...result, bout: byId.get(result.bout_id) || null }));
+  return results.map((result) => ({ ...withResultTiming(result), bout: byId.get(result.bout_id) || null }));
 }
 
 /* ---- weigh-ins ------------------------------------------------------- */
