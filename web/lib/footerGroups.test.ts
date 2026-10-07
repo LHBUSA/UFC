@@ -29,7 +29,7 @@ const EXPECTED: Record<string, { heading: string; hrefs: string[] }> = {
   "official-ufc": { heading: "Official UFC", hrefs: ["UFC_OFFICIAL.home", "UFC_OFFICIAL.athletes", "UFC_OFFICIAL.rankings", "UFC_OFFICIAL.hallOfFame", "UFC_OFFICIAL.fightPass", "UFC_OFFICIAL.store"] },
   propbetedge: { heading: "PropBetEdge", hrefs: ["LOCAL_ALL_ACCESS_PATH", "LOCAL_ALL_ACCESS_PATH", "NETWORK.news.href", "NETWORK.learn.href", "NETWORK.store.href"] },
   account: { heading: "Account", hrefs: ["/account", "/pro", "SITE.billingPortal", "https://propbetedge.ai/support"] },
-  community: { heading: "Community", hrefs: ["NETWORK.discord", "SITE.xUrl"] },
+  community: { heading: "Community", hrefs: ["SITE.xUrl"] },
   "company-legal": { heading: "Company &amp; Legal", hrefs: ["https://propbetedge.ai/about", "https://propbetedge.ai/privacy", "https://propbetedge.ai/terms", "https://propbetedge.ai/legal"] },
 };
 
