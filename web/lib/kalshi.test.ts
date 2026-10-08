@@ -545,10 +545,17 @@ test("presentation placements: hero, card rows, matchup cards, schedule, event p
   assert.match(ui, /placement="matchup-card"/);
   assert.match(ui, /placement="schedule-row"/);
   assert.match(ui, /placement="event-card"/);
-  /* Algo: Pro branch only, after the pinned picks read */
+  /* Algo: Pro branch only, after the pinned picks read. Current Kalshi + Polymarket
+   * come from the shared board/desk while the frozen lock-time comparison remains separate. */
   const card = read("app/algo/card/page.tsx");
-  assert.match(card, /const avm = access\.pro && cards\.length \? avmByBout\(await getAlgoVsMarket\(\)\) : \{\};/);
-  assert.match(read("components/AlgoPick.tsx"), /const avmChip = called && locked \? ufcAvmChip\(avm\) : null;/);
+  assert.match(card, /Promise\.all\(\[getAlgoVsMarket\(\), getKalshiForBouts\(boutIds\)\]\)/);
+  assert.match(card, /<KalshiBoard initial=\{kx\.board\} desk=\{kx\.desk\}>/);
+  assert.match(card, /kalshi=\{kx\.board\[b\.bout_id\] \?\? null\}/);
+  assert.match(card, /desk=\{kx\.desk\[b\.bout_id\] \?\? null\}/);
+  const algoPick = read("components/AlgoPick.tsx");
+  assert.match(algoPick, /const avmChip = called && locked \? ufcAvmChip\(avm\) : null;/);
+  assert.match(algoPick, /<KalshiChip[\s\S]*placement="pbe-picks"/);
+  assert.match(algoPick, /<VenueCue[\s\S]*initial=\{desk\}/);
   /* the browser refresh is one shared board loop; no other market client */
   const comp = read("components/KalshiMarket.tsx");
   assert.equal((comp.match(/await client\(\)\.loadBoard\(\)/g) || []).length, 1, "one board loop");
