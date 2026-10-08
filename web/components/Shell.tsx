@@ -11,6 +11,7 @@ import { getCurrentOrNextUfcEvent } from "@/lib/currentEvent";
 import { getUfcAccess } from "@/lib/access";
 import { MembershipBadge } from "./Membership";
 import { PreferredSource } from "./PreferredSource";
+import { KalshiPartnerOffer } from "./KalshiPartnerOffer";
 import { eventSlug } from "@/lib/slug";
 import { daysUntil, eventShortName, fmtDate } from "@/lib/format";
 
@@ -164,6 +165,8 @@ export function Footer() {
             {NETWORK_PRODUCTS.map((p) => <a key={p.key} href={p.href}><span className="net-intel-k">All Access</span><span className="net-intel-name">{p.label}</span><small>{p.blurb}</small><em className="net-intel-tag">Included</em><i aria-hidden="true">→</i></a>)}
           </nav>
         </section>
+        {/* Commercial partner block: separate from all fight analysis, last before the legal copy. */}
+        <KalshiPartnerOffer />
         <div className="disclaimer">
           <p>PropBetEdge is an independent sports intelligence product and is not affiliated with the UFC, Zuffa LLC, TKO Group, ESPN, Paramount, or any sportsbook. Links labeled Official UFC go directly to UFC-owned destinations so readers can verify the official record, watch licensed programming and shop official merchandise.{/* source-brand:allow (legal non-affiliation disclaimer) */}</p>
           <p>Rights-cleared fighter media carries source/license provenance. Nothing on this site is betting advice. Model output is labelled MODEL; provider data is labelled LIVE; anything unavailable is labelled as such. Please gamble responsibly. 21+ where applicable.</p>

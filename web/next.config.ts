@@ -54,6 +54,16 @@ const nextConfig: NextConfig = {
       { source: "/feed.xml", headers: [{ key: "Cache-Control", value: "public, s-maxage=600, stale-while-revalidate=3600" }] },
     ];
   },
+  /* Kalshi PERPETUALS partner offer (kalshi-partner/2), same-origin so no CSP
+   * or CORS change is needed. Fixed paths to the one network router: the
+   * Worker owns the referral URL and the offer terms; neither ever takes a
+   * destination from the request. Pinned by lib/kalshiPartner.test.ts. */
+  async rewrites() {
+    return [
+      { source: "/go/kalshi-perps", destination: "https://propsports-markets.sales-fd3.workers.dev/go/kalshi-perps" },
+      { source: "/go/kalshi-perps/config", destination: "https://propsports-markets.sales-fd3.workers.dev/v1/partner/kalshi" },
+    ];
+  },
   async redirects() {
     return [
       { source: "/rss", destination: "/feed.xml", permanent: true },

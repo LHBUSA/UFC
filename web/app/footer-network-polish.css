@@ -114,6 +114,47 @@
 .net-intel a:hover { border-color: rgba(212, 175, 55, .55); border-left-color: var(--pbe-gold); }
 .net-intel a:hover .net-intel-name { color: var(--pbe-gold-bright, #e9c75a); }
 
+/* ---- Kalshi partner offer (kalshi-partner/2) ----
+ * Commercial partner block, markup only from /kalshi-partner.js. Muted and
+ * subordinate: no fill, outline CTA, small type, below the network directory. */
+.ftr .kxo-slot { margin-top: var(--s-6); min-width: 0; }
+.ftr .kxo-slot[hidden] { display: none !important; }
+.ftr .kxo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-sm);
+  background: transparent;
+  box-sizing: border-box;
+}
+.ftr .kxo > span { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.ftr .kxo__kicker { font: 700 9.5px/1.4 var(--pbe-font-data); letter-spacing: .14em; text-transform: uppercase; color: #8f897f; }
+.ftr .kxo__title, .ftr .kxo__sub, .ftr .kxo__body { flex: 1 1 320px; font-size: 12px; line-height: 1.5; color: #b3ada3; }
+.ftr .kxo__note, .ftr .kxo__share { font-size: 11px; line-height: 1.5; color: #8f897f; }
+.ftr .kxo__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--pbe-line);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: #b3ada3;
+  font: 700 10.5px/1 var(--pbe-font-data);
+  letter-spacing: .08em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ftr .kxo__cta:hover { border-color: rgba(212, 175, 55, .5); color: var(--pbe-paper); }
+.ftr .kxo__cta:focus-visible { outline: 2px solid var(--pbe-gold); outline-offset: 2px; }
+.ftr .kxo__disc { flex-basis: 100%; font-size: 10.5px; line-height: 1.5; color: #8f897f; }
+
 /* ---- Legal + closing rail ---- */
 .ftr .disclaimer {
   max-width: none;
@@ -149,6 +190,7 @@
   .ftr .pbe-psrc--footer { padding: 14px; }
   .ftr .pbe-psrc--footer .pbe-psrc-btn { width: 100%; }
   .ftr .ftr-rail { flex-direction: column; gap: 6px; }
+  .ftr .kxo__cta { white-space: normal; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ftr .net a, .net-intel a { transition: none; }
