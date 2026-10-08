@@ -1,5 +1,5 @@
 // Kalshi PERPETUALS partner offer (kalshi-partner/2): vendored client, fixed
-// same-origin rewrites, one footer mount, and no offer terms in this repo.
+// same-origin rewrites, controlled commercial mounts, and no offer terms in this repo.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
@@ -42,9 +42,19 @@ test("mount: one offer, in the footer, after the network directory, with the spo
   assert.match(comp, /const CONFIG = "\/go\/kalshi-perps\/config"/);
 });
 
+test("PBE Picks hero uses canonical card offer and first-party referral route", () => {
+  const page = read("app/algo/card/page.tsx");
+  const hero = read("components/KalshiPartnerHero.tsx");
+  assert.match(page, /<KalshiPartnerHero \/>/);
+  assert.match(hero, /placement: "pbe_picks_hero", product: "ufc", sport: "ufc"/);
+  assert.match(hero, /variant: "card", cls: "pbe-kalshi-hero"/);
+  assert.match(hero, /const CONFIG = "\/go\/kalshi-perps\/config"/);
+  assert.ok(!/kalshi\.com\//i.test(hero), "hero must use first-party referral route, not a direct destination");
+});
+
 test("no offer terms or referral id in this repo's own offer code (all copy lives in the vendored client)", () => {
   const cfg = read("next.config.ts");
-  const own = [read("components/KalshiPartnerOffer.tsx"), cfg.slice(cfg.indexOf("async rewrites()"), cfg.indexOf("async redirects()"))];
+  const own = [read("components/KalshiPartnerOffer.tsx"), read("components/KalshiPartnerHero.tsx"), cfg.slice(cfg.indexOf("async rewrites()"), cfg.indexOf("async redirects()"))];
   for (const text of own) {
     assert.ok(!/\$\d|\d+\s*%|\d+\s*(month|year)s?|kalshi\.com\/p\/|referra[l]=|[0-9a-f]{8}-[0-9a-f]{4}-/i.test(text), "offer terms or referral id hardcoded");
   }
