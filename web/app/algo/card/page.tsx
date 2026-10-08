@@ -14,6 +14,7 @@ import { getImagesForFighters, getFightersByIds, getEventById, type Event } from
 import { lockedText, type AlgoBoutView } from "@/lib/algoView";
 import { avmByBout, getAlgoVsMarket, getKalshiForBouts } from "@/lib/kalshi";
 import { KalshiBoard } from "@/components/KalshiMarket";
+import { KalshiPartnerHero } from "@/components/KalshiPartnerHero";
 import { fmtDate, locationLine } from "@/lib/format";
 
 /* PBE PICKS: the official PropBetEdge model selections (UFC Pro PBE Algo card).
@@ -82,11 +83,19 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
       <PbePicksAutoRefresh intervalMs={60_000} />
       <Breadcrumbs items={[{ name: "PBE Algo", href: "/algo" }, { name: "PBE Picks" }]} />
 
-      <header className="pp-hero">
-        <div className="pp-hero-eyebrow">UFC Pro · PBE Algo</div>
-        <h1 className="pp-hero-title">PBE PICKS</h1>
-        <p className="pp-hero-sub">Official PropBetEdge model selections</p>
-        {lead && leadCounts ? (
+      <header className="pp-hero pp-hero-v2">
+        <div className="pp-hero-grid">
+          <div className="pp-hero-copy">
+            <div className="pp-hero-eyebrow">UFC PRO · MODEL + MARKET INTELLIGENCE</div>
+            <h1 className="pp-hero-title">PBE PICKS</h1>
+            <p className="pp-hero-sub">One fight card. Three independent signals.</p>
+            <p className="pp-hero-lede pp-hero-lede-v2">PropBetEdge locks its own UFC win probabilities before the fights, then puts them beside live Kalshi and Polymarket prices so you can see where the model agrees, where the market disagrees and where the gap is largest.</p>
+            <div className="pp-hero-signal-row" aria-label="PBE Picks intelligence layers">
+              <span><b>PBE</b> Model probability</span>
+              <span><b>KALSHI</b> Prediction market</span>
+              <span><b>POLYMARKET</b> Prediction market</span>
+            </div>
+            {lead && leadCounts ? (
           <>
             <div className="pp-hero-event">
               <Link href={`/events/${lead.event_slug}`}>{lead.event_name}</Link>
@@ -102,13 +111,23 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
               <span className={`pp-chip ${leadLifecycle === "PRE-LOCK" ? "prelock" : "locked"}`}>{leadLifecycle}</span>
             </div>
           </>
-        ) : (
-          <p className="pp-hero-lede">Every eligible UFC bout gets a pick with its win probability and confidence, locked on the database clock before the fight and graded after it. A bout the model will not call shows the exact reason.</p>
-        )}
-        <div className="pp-hero-actions">
-          <Link href="/algo/record" className="btn gold">Track Record &amp; Past Picks</Link>
-          <Link href="/algo" className="btn">How PBE Algo works</Link>
-          <Link href="/model" className="btn ghost">Model evidence</Link>
+            ) : (
+              <p className="pp-hero-lede">Every eligible UFC bout gets a pick with its win probability and confidence, locked on the database clock before the fight and graded after it. A bout the model will not call shows the exact reason.</p>
+            )}
+            <div className="pp-hero-actions">
+              <Link href="/algo/record" className="btn gold">See the Track Record</Link>
+              <Link href="/algo" className="btn">How the Model Works</Link>
+              <Link href="/model" className="btn ghost">Model Evidence</Link>
+            </div>
+            <p className="pp-hero-proofline">No gurus. No guarantees. Just locked model calls, market prices and a public record after the fight.</p>
+          </div>
+          <aside className="pp-hero-commerce" aria-label="Kalshi partner offer">
+            <div className="pp-hero-commerce-head">
+              <span>TRADE THE MARKET</span>
+              <b>KALSHI PARTNER OFFER</b>
+            </div>
+            <KalshiPartnerHero />
+          </aside>
         </div>
       </header>
 
