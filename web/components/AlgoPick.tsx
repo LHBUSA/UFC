@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { PortraitSet } from "@/lib/db";
 import { fighterSlug } from "@/lib/slug";
-import { ufcAvmChip, type AvmComparison } from "@/lib/kalshi";
+import { ufcAvmChip, type AvmComparison, type DeskEvent, type KalshiEntry } from "@/lib/kalshi";
+import { KalshiChip, VenueCue } from "@/components/KalshiMarket";
 import { fmtRecord } from "@/lib/format";
 import {
   FEATURES_TOTAL, REASON_COPY, algoStatus, pickOriented, bandEvidence, confidenceCopy, deltaText, drivers, lockedText, pctText, marketView, ageText, agoText, oddsText,
@@ -85,10 +86,13 @@ function Corner({ f, img, record, picked, called, odds }: { f: { id: string; nam
     : <span className={cls} aria-label={label}>{inner}</span>;
 }
 
-export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters, avm = null }: {
+export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters, avm = null, kalshi = null, desk = null }: {
   b: AlgoBoutView; detail?: boolean; showEvent?: boolean;
   /** This bout's frozen Algo-vs-Market comparison (propsports-markets), if the page read one. */
   avm?: AvmComparison | null;
+  /** Current prediction-market state. Kalshi and other venues are independent. */
+  kalshi?: KalshiEntry | null;
+  desk?: DeskEvent | null;
   /** getImagesForFighters() result for this card, if the page read it. */
   imgs?: Map<string, PortraitSet>;
   /** Authoritative fighter rows (record) for this card, if the page read them. */
@@ -199,6 +203,24 @@ export function AlgoPick({ b, detail = false, showEvent = false, imgs, fighters,
             ) : (
               <span className="pp-market-flag"><b>No current market</b>no two-sided price is on file for this bout.</span>
             )}
+          </div>
+
+          <div className="ufc-kc-row ufc-kc-row--start" aria-label="Prediction markets">
+            <KalshiChip
+              boutId={b.bout_id}
+              initial={kalshi}
+              names={{ a: b.fighter_a.name, b: b.fighter_b.name }}
+              variant="named"
+              result={Boolean(b.grade)}
+              placement="pbe-picks"
+              link
+            />
+            <VenueCue
+              boutId={b.bout_id}
+              initial={desk}
+              result={Boolean(b.grade)}
+              variant="compact"
+            />
           </div>
 
           {avmMatches && avmChip ? (
