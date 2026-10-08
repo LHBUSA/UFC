@@ -104,7 +104,7 @@ async function main() {
   const get = async (p) => (await db.selectAll(p.split('?')[0], `?${p.split('?')[1]}`, { limit: 1000 }));
   const [run] = await get('ufc_model_training_runs?select=id,spec_sha256,created_at&status=eq.RESEARCH_SHADOW&order=created_at.asc');
   if (!run) throw new Error('no RESEARCH_SHADOW run registered');
-  const rows = await get(`ufc_model_shadow_predictions?select=id,bout_id,event_id,fighter_a_id,fighter_b_id,locked_at,generated_at,decision,policy,market&training_run_id=eq.${run.id}&order=id.asc`);
+  const rows = await get(`ufc_model_shadow_predictions?select=id,bout_id,event_id,fighter_a_id,fighter_b_id,created_at,locked_at,generated_at,decision,policy,market&training_run_id=eq.${run.id}&order=id.asc`);
   const locked = rows.filter((r) => r.locked_at && r.decision === 'ELIGIBLE' && r.policy?.evaluable);
   const results = new Map();
   for (let i = 0; i < locked.length; i += 100) {
@@ -121,7 +121,10 @@ async function main() {
   const report = {
     generated_at: new Date().toISOString(), training_run_id: run.id, spec_sha256: run.spec_sha256,
     shadow_rows: rows.length, locked_paired_universe: locked.length,
-    first_shadow_generated_at: rows.map((r) => r.generated_at).sort()[0] ?? null,
+    /* Prospective collection starts at the first row's immutable created_at; generated_at is
+       rewritten by every pre-lock cycle, so it only says when the latest unlocked value was computed. */
+    prospective_collection_started_at: rows.map((r) => r.created_at).sort()[0] ?? null,
+    latest_shadow_generated_at: rows.map((r) => r.generated_at).sort().at(-1) ?? null,
     first_lock_at: locked.map((r) => r.locked_at).sort()[0] ?? null,
     graded_pairs: paired.length,
     ...evaluate(paired),

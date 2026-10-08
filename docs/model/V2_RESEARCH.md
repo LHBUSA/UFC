@@ -401,6 +401,11 @@ rate, coverage under each policy, event-cluster bootstrap, prior-bout and
 five-round non-title slices, the frozen gate, then market as a benchmark. It
 reports `INSUFFICIENT EVIDENCE` until 150 paired graded bouts exist.
 
+Prospective collection started **2026-10-07 23:42:13.801Z**: the earliest
+immutable `created_at` of run `a98335e1` (29 rows in the first batch, the last
+at 23:42:28.225Z). The report keys the start on `created_at`, never on
+`generated_at`, which every pre-lock cycle rewrites.
+
 ### ufc-intelligence daily build fix (same day)
 
 Root cause, from Cloudflare invocation analytics: the four 2026-10-07 builds
