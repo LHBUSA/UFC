@@ -12,7 +12,8 @@ import { PbePerformanceTracker } from "@/components/PbePerformanceTracker";
 import { RecentGradedPicks } from "@/components/PbePastPicks";
 import { getImagesForFighters, getFightersByIds, getEventById, type Event } from "@/lib/db";
 import { lockedText, type AlgoBoutView } from "@/lib/algoView";
-import { avmByBout, getAlgoVsMarket } from "@/lib/kalshi";
+import { avmByBout, getAlgoVsMarket, getKalshiForBouts } from "@/lib/kalshi";
+import { KalshiBoard } from "@/components/KalshiMarket";
 import { fmtDate, locationLine } from "@/lib/format";
 
 /* PBE PICKS: the official PropBetEdge model selections (UFC Pro PBE Algo card).
@@ -53,14 +54,19 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
   const view: View = params.view === "nocalls" || params.view === "all" ? params.view : "picks";
 
   const fighterIds = cards.flatMap((c) => c.bouts.flatMap((b) => [b.fighter_a.id, b.fighter_b.id]));
+  const boutIds = cards.flatMap((c) => c.bouts.map((b) => b.bout_id));
   const [imgs, fighterRows, events] = access.pro && fighterIds.length
     ? await Promise.all([getImagesForFighters(fighterIds), getFightersByIds([...new Set(fighterIds)]), Promise.all(cards.map((c) => getEventById(c.event_id)))])
     : [new Map(), [], [] as Array<Event | null>];
   const fighters = new Map<string, AlgoFighterContext>(fighterRows.map((f) => [f.id, f]));
-  /* Algo vs Market (frozen at the PBE lock, propsports-markets): one read, Pro branch
-   * only, keyed by bout. A pending UFC comparison is LOCKED with no selection and
-   * renders nothing; the PBE vs KALSHI chip appears only for a graded comparison. */
-  const avm = access.pro && cards.length ? avmByBout(await getAlgoVsMarket()) : {};
+  /* Prediction markets: one current board/desk read for the card plus the frozen
+   * Algo-vs-Market proof. Kalshi and Polymarket remain separate market layers and
+   * never become model inputs. The board is Pro-only because the picks themselves
+   * are Pro; each card receives only its own bout entry. */
+  const [avmPayload, kx] = access.pro && cards.length
+    ? await Promise.all([getAlgoVsMarket(), getKalshiForBouts(boutIds)])
+    : [null, { board: {}, moves: {}, desk: {} }];
+  const avm = avmByBout(avmPayload);
   const eventById = new Map(events.filter((e): e is Event => Boolean(e)).map((e) => [e.id, e]));
 
   const lead = cards[0];
@@ -109,6 +115,7 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
        * its own data, so this page still performs exactly one portrait read, inside the Pro branch. */}
       <RecentGradedPicks />
 
+      <KalshiBoard initial={kx.board} desk={kx.desk}>
       <div className="pp-picks-layout">
         <aside className="pp-picks-sidecar" aria-label="PBE Upset Radar">
           <PbeUpsetRadar access={access} proof={upsetProof} cards={cards} imgs={imgs} surface="picks" />
@@ -160,7 +167,7 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
                   return (
                     <div key={seg || "card"} className="pp-segment">
                       <h3 className="pp-segment-head">{label}</h3>
-                      <div className="pp-list">{bouts.map((b) => <AlgoPick key={b.bout_id} b={b} imgs={imgs} fighters={fighters} avm={avm[b.bout_id] ?? null} />)}</div>
+                      <div className="pp-list">{bouts.map((b) => <AlgoPick key={b.bout_id} b={b} imgs={imgs} fighters={fighters} avm={avm[b.bout_id] ?? null} kalshi={kx.board[b.bout_id] ?? null} desk={kx.desk[b.bout_id] ?? null} />)}</div>
                     </div>
                   );
                 })}
@@ -171,6 +178,7 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
       )}
         </main>
       </div>
+      </KalshiBoard>
 
       <PbeFamilyNav current="picks" />
     </div>
