@@ -63,9 +63,11 @@ export default async function AlgoCardPage({ searchParams }: { searchParams: Pro
    * Algo-vs-Market proof. Kalshi and Polymarket remain separate market layers and
    * never become model inputs. The board is Pro-only because the picks themselves
    * are Pro; each card receives only its own bout entry. */
+  type MarketBundle = Awaited<ReturnType<typeof getKalshiForBouts>>;
+  const emptyMarkets: MarketBundle = { board: {}, moves: {}, desk: {} };
   const [avmPayload, kx] = access.pro && cards.length
     ? await Promise.all([getAlgoVsMarket(), getKalshiForBouts(boutIds)])
-    : [null, { board: {}, moves: {}, desk: {} }];
+    : [null, emptyMarkets] as const;
   const avm = avmByBout(avmPayload);
   const eventById = new Map(events.filter((e): e is Event => Boolean(e)).map((e) => [e.id, e]));
 
